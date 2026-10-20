@@ -792,6 +792,8 @@ const Store = {
     return items.length;
   },
   put(c, doc, delay = 450) {
+    /* máy chủ chung: gom các lần gõ phím lại, đỡ tốn lượt ghi */
+    if (this.mode === 'team' && delay > 0) delay = Math.max(delay, 1500);
     this.data[c].set(doc.id, doc);
     this.queue(c, doc.id, 'set', delay);
   },
@@ -2954,7 +2956,7 @@ function renderSettings() {
     <section class="card stack"><h3>Dữ liệu</h3>
       <div class="notice ${Store.mode === 'local' ? 'warn' : 'ok'}">${ic('info')}<div>${Store.mode === 'team' ? 'Dữ liệu lưu trên <b>máy chủ chung</b> của xưởng. Mỗi người chỉ thấy phần được phép. Vẫn nên sao lưu mỗi tháng.' : Store.mode === 'cloud' ? 'Dữ liệu lưu trên <b>tài khoản Claude</b> của bạn: mở app trên iPad hay điện thoại đều thấy cùng dữ liệu. Người được chia sẻ ở quyền “xem” không đọc được đơn hàng.' : 'Dữ liệu chỉ lưu <b>trên máy này</b>. Hãy sao lưu mỗi tuần. Muốn chuyển dữ liệu từ bản Sổ Nội Thất trong Claude: mở bản đó → Cài đặt → Sao lưu, rồi ở đây bấm “Khôi phục từ bản sao lưu”.'}</div></div>
       <div class="addbar" style="margin-top:0"><button class="btn" data-act="backup">${ic('dl')}Sao lưu (.json)</button><label class="btn" for="restore-in">${ic('save')}Khôi phục từ bản sao lưu</label><input type="file" id="restore-in" accept="application/json,.json" hidden>
-      ${hasDemo ? `<button class="btn danger" data-act="clear-demo">${ic('trash')}Xóa dữ liệu mẫu</button>` : `<button class="btn" data-act="seed-demo">Tạo dữ liệu mẫu</button>`}</div>
+      ${hasDemo ? `<button class="btn danger" data-act="clear-demo">${ic('trash')}Xóa dữ liệu mẫu</button>` : Team.on() ? '' : `<button class="btn" data-act="seed-demo">Tạo dữ liệu mẫu</button>`}</div>
       <p class="muted" style="font-size:14px">Bản sao lưu gồm đơn hàng, khách, danh mục và cài đặt; không gồm ảnh đính kèm.</p>
     </section>
     ${Team.on() ? '' : teamCardHtml()}
@@ -3099,6 +3101,8 @@ const PERM = {
   assign: ['owner', 'manager'],
   backup: ['owner'],
 };
+const tlog = (...a) => { if (Team.cfg && Team.cfg.emulator) console.info('[snt]', ...a); };
+function hardReload(why) { tlog('reload', why); location.reload(); }
 const can = a => !Team.on() || (PERM[a] || []).includes(Team.role);
 
 /* ---------- gộp 3 chiều (thuần, không phụ thuộc máy chủ) ---------- */
@@ -3215,7 +3219,7 @@ const lsSet = (k, v) => { try { if (v == null) localStorage.removeItem(k); else 
 
 const Team = {
   cfg: null, wid: 'main', state: 'off', msg: '', app: null, auth: null, db: null, user: null, member: null, role: 'owner',
-  members: new Map(), invites: new Map(), jobs: new Map(), conflicts: new Map(), unsubs: [], localCount: 0, busy: false,
+  members: new Map(), invites: new Map(), jobs: new Map(), conflicts: new Map(), jobSig: new Map(), unsubs: [], localCount: 0, busy: false,
   on() { return Store.mode === 'team'; },
   uid() { return this.user ? this.user.uid : ''; },
   myName() { return (this.member && this.member.name) || (this.user && this.user.email) || ''; },
@@ -3240,6 +3244,7 @@ const Team = {
   },
   unsubAll() { for (const u of this.unsubs.splice(0)) { try { u(); } catch (e) { /* bỏ qua */ } } },
   onUser(u) {
+    tlog('user', u && u.email);
     this.unsubAll(); this.user = u; this.member = null;
     if (!u) { this.state = 'signin'; render(); return; }
     this.state = 'boot'; render();
@@ -3250,7 +3255,8 @@ const Team = {
       const m = s.exists ? s.data() : null;
       if (!m && s.metadata.fromCache) return; /* chờ máy chủ trả lời */
       gotServer = true; clearTimeout(timer);
-      if (this.state === 'ready') { if (!m || !m.active || m.role !== this.role) location.reload(); else this.member = m; return; }
+      tlog('member', JSON.stringify(m), this.state, s.metadata.fromCache, s.metadata.hasPendingWrites);
+      if (this.state === 'ready') { if (!m || !m.active || m.role !== this.role) hardReload('member ' + J(m) + ' role ' + this.role); else this.member = m; return; }
       this.member = m; this.afterMember();
     }, () => { gotServer = true; clearTimeout(timer); this.member = null; this.afterMember(); }));
   },
@@ -3294,9 +3300,9 @@ const Team = {
     /* xóa dữ liệu của người vừa đăng xuất khỏi máy (iPad dùng chung) */
     try { await this.db.terminate(); await this.db.clearPersistence(); } catch (e) { /* bỏ qua */ }
     try { const all = await Outbox.all(); for (const e of all) await idbReq(Outbox.st('readwrite').delete(e.key)); } catch (e) { /* bỏ qua */ }
-    location.reload();
+    hardReload('signout');
   },
-  disconnect() { lsSet('snt-team', null); lsSet('snt-invite', null); location.reload(); },
+  disconnect() { lsSet('snt-team', null); lsSet('snt-invite', null); hardReload('disconnect'); },
   async createWorkshop(name, migrate) {
     const u = this.user, now = new Date().toISOString();
     const b = this.db.batch();
@@ -3359,7 +3365,9 @@ const Team = {
       changes: (o.changes || []).filter(c => c.status === 'confirmed').map(c => ({ title: c.title, note: c.note || '' })),
       updatedAt: new Date().toISOString(),
     };
-    try { await withTimeout(this.col('jobs').doc(o.id).set(job), 15000); } catch (e) { /* phiếu công việc sẽ cập nhật ở lần lưu sau */ }
+    const sig = J({ ...job, updatedAt: '' });
+    if (this.jobSig.get(o.id) === sig) return;
+    try { await withTimeout(this.col('jobs').doc(o.id).set(job), 15000); this.jobSig.set(o.id, sig); } catch (e) { /* phiếu công việc sẽ cập nhật ở lần lưu sau */ }
   },
 };
 const conflictLabel = k => ({ draft: 'báo giá nháp', plan: 'lịch thanh toán', status: 'trạng thái', handover: 'nghiệm thu', payments: 'thanh toán', changes: 'phát sinh', notes: 'ghi chú', versions: 'bản đã chốt', owner: 'người phụ trách', workers: 'thợ được giao' }[k] || k);
@@ -3663,7 +3671,7 @@ const TEAM_ACTIONS = {
         if (a !== 'ok') return;
         const cfg = parseFbConfig(el2.querySelector('#tm-cfg').value);
         if (!cfg) { const er = el2.querySelector('#tm-cfg-err'); er.hidden = false; er.textContent = 'Không đọc được. Cần có apiKey, projectId và appId.'; return; }
-        Team.saveCfg(cfg); closeSheet(el2); location.reload();
+        Team.saveCfg(cfg); closeSheet(el2); hardReload('cfg');
       },
     });
     setTimeout(() => softFocus(el.querySelector('#tm-cfg')), 60);
@@ -3677,7 +3685,7 @@ const TEAM_ACTIONS = {
         if (a !== 'ok') return;
         const d = unpackInvite(el2.querySelector('#tm-inv').value);
         if (!d) { const er = el2.querySelector('#tm-inv-err'); er.hidden = false; er.textContent = 'Mã không đúng. Hãy dán cả đoạn bắt đầu bằng SNT1.'; return; }
-        Team.saveCfg(d.c, d.w || 'main'); lsSet('snt-invite', d.k); closeSheet(el2); location.reload();
+        Team.saveCfg(d.c, d.w || 'main'); lsSet('snt-invite', d.k); closeSheet(el2); hardReload('invite');
       },
     });
   },

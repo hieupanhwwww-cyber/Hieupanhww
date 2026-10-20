@@ -14,6 +14,8 @@ async function newUser(browser, name, ipad = true) {
   const page = await ctx.newPage();
   const errs = [];
   page.on('pageerror', e => errs.push(String(e)));
+  page.on('console', m => { if (/\[snt\]/.test(m.text())) console.log(`   [${name}]`, m.text().slice(0, 300)); });
+  page.on('framenavigated', f => { if (f === page.mainFrame()) console.log(`   [${name}] nav ${f.url()}`); });
   page.on('console', m => { if (m.type() === 'error' && !/insufficient permissions|Failed to load resource|ERR_INTERNET_DISCONNECTED|net::|WebChannelConnection|Could not reach Cloud Firestore|offline/i.test(m.text())) errs.push(m.text()); });
   await page.goto(BASE);
   return { ctx, page, errs, name };
