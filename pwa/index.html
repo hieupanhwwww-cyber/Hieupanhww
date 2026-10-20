@@ -3251,7 +3251,7 @@ const Team = {
     let gotServer = false;
     const timer = setTimeout(() => { if (!gotServer && this.state === 'boot') { this.state = 'error'; this.msg = 'Chưa kết nối được máy chủ chung. Kiểm tra mạng rồi bấm Thử lại.'; render(); } }, 15000);
     this.unsubs.push(() => clearTimeout(timer));
-    this.unsubs.push(this.col('members').doc(u.uid).onSnapshot(s => {
+    this.unsubs.push(this.col('members').doc(u.uid).onSnapshot({ includeMetadataChanges: true }, s => {
       const m = s.exists ? s.data() : null;
       if (!m && s.metadata.fromCache) return; /* chờ máy chủ trả lời */
       if (s.metadata.hasPendingWrites) return; /* chờ máy chủ xác nhận việc tạo xưởng / vào xưởng */
