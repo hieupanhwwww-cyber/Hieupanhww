@@ -159,7 +159,7 @@ const shot = (u, n) => u.page.screenshot({ path: `${OUT}/${n}.png` });
     await man.page.fill('#tm-name', 'Hà kế toán'); await man.page.fill('#tm-code', codes.manager);
     await man.page.click('[data-act=tm-join]'); await ready(man);
     await waitFor(man.page, () => Store.list('orders').length === 2);
-    const m11 = await man.page.evaluate(id => { S.tab = 'orders'; S.orderId = id; S.view = 'detail'; render(); return { quote: can('quote'), pay: can('pay'), html: document.body.innerHTML }; }, made.id);
+    const m11 = await man.page.evaluate(id => { S.tab = 'orders'; S.orderId = id; S.view = 'detail'; render(); return { quote: can('quote'), pay: can('pay'), html: document.querySelector('#app').innerHTML }; }, made.id);
     ok(!m11.quote && m11.pay && !/data-act="revise"/.test(m11.html) && !/data-act="new-quote"/.test(m11.html), 'kế toán: thấy mọi đơn, ghi thu được, không có nút sửa/lập báo giá', JSON.stringify({ q: m11.quote, p: m11.pay, rv: /data-act="revise"/.test(m11.html), nq: /data-act="new-quote"/.test(m11.html) }));
     ok(/Hà kế toán/.test(m11.html) && /đã khóa\) – chọn người nhận/.test(m11.html), 'người phụ trách bị khóa: hiện rõ, không tự chọn nhầm người khác');
     await shot(man, '11-ke-toan');
