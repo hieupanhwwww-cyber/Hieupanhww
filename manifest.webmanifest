@@ -1,0 +1,17 @@
+{
+  "name": "Sổ Nội Thất",
+  "short_name": "Sổ Nội Thất",
+  "description": "Lập báo giá, chốt đơn và theo dõi thanh toán cho nội thất trọn gói",
+  "lang": "vi",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#F4EFE8",
+  "theme_color": "#7A4E2D",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
