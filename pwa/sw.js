@@ -1,5 +1,5 @@
 /* Sổ Nội Thất – chạy được khi mất mạng */
-const VERSION = 'snt-20261020233533';
+const VERSION = 'snt-20261020233757';
 const FONTS = 'snt-fonts';
 const LIBS = 'snt-libs';
 const SHELL = ['./', './index.html', './manifest.webmanifest', './icons/icon-180.png', './icons/icon-192.png', './icons/icon-512.png', './icons/favicon-32.png'];

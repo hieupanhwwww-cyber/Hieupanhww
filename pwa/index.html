@@ -1972,7 +1972,8 @@ function listBanners() {
   if (n) out += `<button class="notice bad banner nbtn" data-act="filter" data-f="collect">${ic('money')}<div><b>${n} đợt thanh toán quá hạn</b> · ${moneyD(amt)}. Chạm để xem đơn cần thu.</div></button>`;
   const real = all.filter(o => !o.demo).length, last = meta().lastBackupAt;
   const days = last ? Math.floor((Date.now() - new Date(last).getTime()) / 864e5) : null;
-  if (real && (days === null || days >= 7)) out += `<div class="notice warn banner">${ic('save')}<div>${days === null ? 'Bạn chưa sao lưu dữ liệu lần nào.' : `Đã ${days} ngày chưa sao lưu dữ liệu.`} <button class="linkbtn" data-act="backup">Sao lưu ngay</button></div></div>`;
+  const due = Team.on() ? can('backup') && (days === null || days >= 30) : (days === null || days >= 7);
+  if (real && due) out += `<div class="notice warn banner">${ic('save')}<div>${days === null ? 'Bạn chưa sao lưu dữ liệu lần nào.' : `Đã ${days} ngày chưa sao lưu dữ liệu.`} <button class="linkbtn" data-act="backup">Sao lưu ngay</button></div></div>`;
   return out;
 }
 function renderCards() {
@@ -3597,10 +3598,10 @@ function teamDetailCards(o) {
     ${can('pay') ? `<button class="btn sm primary" data-act="req-ok" data-id="${r.id}">Xác nhận</button><button class="iconbtn" data-act="req-no" data-id="${r.id}" aria-label="Từ chối">${ic('x')}</button>` : '<span class="pill s-quote">Chờ xác nhận</span>'}</div>`).join('')}</div></section>`;
   if (can('assign')) {
     const ms = [...Team.members.values()].filter(m => m.active);
-    const owners = ms.filter(m => m.role !== 'worker'), workers = ms.filter(m => m.role === 'worker');
+    const owners = ms.filter(m => m.role !== 'worker'), workers = ms.filter(m => m.role === 'worker'), cur = Team.members.get(o.owner);
     const wset = new Set(o.workers || []);
     html += `<section class="card"><div class="card-h"><h3>Phân công</h3></div><div class="fgrid">
-      <div class="field"><label for="as-owner">Người phụ trách</label><select class="in" id="as-owner">${owners.map(m => `<option value="${m.uid}" ${m.uid === o.owner ? 'selected' : ''}>${esc(m.name)} (${ROLES[m.role]})</option>`).join('')}</select></div>
+      <div class="field"><label for="as-owner">Người phụ trách</label><select class="in" id="as-owner">${!owners.some(m => m.uid === o.owner) ? `<option value="" selected disabled>${esc(cur ? cur.name + (cur.active ? '' : ' (đã khóa)') : 'Chưa có')} – chọn người nhận</option>` : ''}${owners.map(m => `<option value="${m.uid}" ${m.uid === o.owner ? 'selected' : ''}>${esc(m.name)} (${ROLES[m.role]})</option>`).join('')}</select></div>
       <div class="field"><span class="lbl">Thợ được giao (thấy phiếu công việc, không thấy giá)</span>${workers.length ? workers.map(m => `<label class="check"><input type="checkbox" data-worker="${m.uid}" ${wset.has(m.uid) ? 'checked' : ''}> ${esc(m.name)}</label>`).join('') : '<p class="muted">Chưa có thợ. Mời thợ ở Cài đặt → Nhân viên.</p>'}</div></div></section>`;
   } else if (o.owner && Team.members.get(o.owner)) {
     html += `<p class="muted" style="margin:0 0 12px">Phụ trách: ${esc(Team.members.get(o.owner).name)}</p>`;
@@ -3741,7 +3742,7 @@ function teamChange(el) {
     Team.setMember(el.dataset.mrole, { role: el.value }).then(() => toast(`${m ? m.name : ''}: ${ROLES[el.value]}`)).catch(er => { toast(errText(er), 'bad'); render(); });
     return true;
   }
-  if (el.id === 'as-owner') { const o = curOrder(); if (!o) return true; const m = Team.members.get(el.value); o.owner = el.value; addLog(o, 'Chuyển phụ trách cho ' + (m ? m.name : '')); touchOrder(o, 0); return true; }
+  if (el.id === 'as-owner') { const o = curOrder(); if (!o || !el.value) return true; const m = Team.members.get(el.value); o.owner = el.value; addLog(o, 'Chuyển phụ trách cho ' + (m ? m.name : '')); touchOrder(o, 0); return true; }
   if (el.dataset && el.dataset.worker) {
     const o = curOrder(); if (!o) return true;
     const set = new Set(o.workers || []); if (el.checked) set.add(el.dataset.worker); else set.delete(el.dataset.worker);
