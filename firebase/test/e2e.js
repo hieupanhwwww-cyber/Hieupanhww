@@ -127,10 +127,11 @@ const shot = (u, n) => u.page.screenshot({ path: `${OUT}/${n}.png` });
     await waitFor(own.page, u => Team.members.has(u), kUid);
     await own.page.evaluate(async ([id, k]) => { const o = Store.get('orders', id); o.workers = [k]; touchOrder(o, 0); await Store.idle(20000); }, [made.id, kUid]);
     await waitFor(worker.page, () => Team.jobs.size === 1);
-    const w8 = await worker.page.evaluate(() => ({ job: JSON.stringify([...Team.jobs.values()][0]), orders: Store.list('orders').length, cat: Store.list('catalog').length, text: document.body.innerText }));
+    await worker.page.waitForSelector('.job', { timeout: 15000 });
+    const w8 = await worker.page.evaluate(() => ({ job: JSON.stringify([...Team.jobs.values()][0]), orders: Store.list('orders').length, cat: Store.list('catalog').length, text: document.querySelector('#app').innerText }));
     ok(w8.orders === 0 && w8.cat === 0, 'thợ không tải được đơn có giá hay danh mục giá');
     ok(!/price|3000000|9\.000\.000|amount/.test(w8.job) && /Tủ áo cánh lùa/.test(w8.job) && /2000 × 1500 mm|2\.000 × 1\.500 mm/.test(w8.job), 'phiếu công việc có hạng mục, kích thước, không có giá');
-    ok(!/9\.000\.000|3\.000\.000/.test(w8.text) && /Việc của tôi/.test(w8.text), 'màn hình thợ không hiện số tiền');
+    ok(!/9\.000\.000|3\.000\.000|\d\.\d{3}\.\d{3}/.test(w8.text) && /Tủ áo cánh lùa/.test(w8.text) && /Hà Đông/.test(w8.text), 'màn hình thợ không hiện số tiền');
     await shot(worker, '08-tho');
 
     /* 9. Ảnh hiện trường lên máy chủ chung, người khác mở được */
