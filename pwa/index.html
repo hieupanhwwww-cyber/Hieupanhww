@@ -3254,6 +3254,7 @@ const Team = {
     this.unsubs.push(this.col('members').doc(u.uid).onSnapshot(s => {
       const m = s.exists ? s.data() : null;
       if (!m && s.metadata.fromCache) return; /* chờ máy chủ trả lời */
+      if (s.metadata.hasPendingWrites) return; /* chờ máy chủ xác nhận việc tạo xưởng / vào xưởng */
       gotServer = true; clearTimeout(timer);
       tlog('member', JSON.stringify(m), this.state, s.metadata.fromCache, s.metadata.hasPendingWrites);
       if (this.state === 'ready') { if (!m || !m.active || m.role !== this.role) hardReload('member ' + J(m) + ' role ' + this.role); else this.member = m; return; }

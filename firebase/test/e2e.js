@@ -34,6 +34,9 @@ const idle = u => u.page.evaluate(() => Store.idle(25000));
 const shot = (u, n) => u.page.screenshot({ path: `${OUT}/${n}.png` });
 
 (async () => {
+  /* máy chủ giả lập sạch trước khi chạy */
+  await fetch('http://127.0.0.1:8080/emulator/v1/projects/demo-snt/databases/(default)/documents', { method: 'DELETE' });
+  await fetch('http://127.0.0.1:9099/emulator/v1/projects/demo-snt/accounts', { method: 'DELETE' });
   const browser = await chromium.launch();
   try {
     /* 1. Chủ tạo xưởng */
