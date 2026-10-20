@@ -1,0 +1,120 @@
+rules_version = '2';
+// Sổ Nội Thất – luật bảo mật máy chủ chung.
+// Mọi dữ liệu nằm dưới /w/{xưởng}/…; ai không phải thành viên đang hoạt động thì không đọc, không ghi được gì.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null; }
+    function mPath(w) { return /databases/$(database)/documents/w/$(w)/members/$(request.auth.uid); }
+    function isMember(w) { return signedIn() && exists(mPath(w)) && get(mPath(w)).data.active == true; }
+    function hasRole(w, rs) { return isMember(w) && get(mPath(w)).data.role in rs; }
+    function isOwner(w) { return hasRole(w, ['owner']); }
+    function boss(w) { return hasRole(w, ['owner', 'manager']); }
+    function isSale(w) { return hasRole(w, ['sale']); }
+    function staff(w) { return hasRole(w, ['owner', 'manager', 'sale']); }
+    function mineNew() { return request.resource.data.owner == request.auth.uid; }
+    function mineOld() { return resource.data.owner == request.auth.uid; }
+    // đọc tài liệu chưa có (bước đầu của giao dịch tạo mới) thì không lộ gì
+    function mineOrNew() { return resource == null || resource.data.owner == request.auth.uid; }
+    function pays(d) { return d.get('payments', []); }
+
+    match /w/{w} {
+      allow get: if isMember(w);
+      // tạo xưởng lần đầu: người tạo đồng thời thành Chủ (cùng một lần ghi)
+      allow create: if signedIn() && request.resource.data.createdBy == request.auth.uid
+        && existsAfter(mPath(w)) && getAfter(mPath(w)).data.role == 'owner';
+      allow update: if isOwner(w) && request.resource.data.createdBy == resource.data.createdBy;
+
+      match /members/{uid} {
+        allow get: if signedIn() && (uid == request.auth.uid || isMember(w));
+        allow list: if isMember(w);
+        allow create: if signedIn() && uid == request.auth.uid
+          && request.resource.data.active == true
+          && request.resource.data.keys().hasOnly(['role', 'name', 'email', 'active', 'joinedAt', 'invite'])
+          && (
+            // vào bằng mã mời: đúng vai trò trong mã, mã chưa dùng, chưa hết hạn, và đánh dấu đã dùng trong cùng lần ghi
+            (request.resource.data.get('invite', null) is string
+              && exists(/databases/$(database)/documents/w/$(w)/invites/$(request.resource.data.invite))
+              && get(/databases/$(database)/documents/w/$(w)/invites/$(request.resource.data.invite)).data.used == false
+              && request.time < get(/databases/$(database)/documents/w/$(w)/invites/$(request.resource.data.invite)).data.exp
+              && request.resource.data.role == get(/databases/$(database)/documents/w/$(w)/invites/$(request.resource.data.invite)).data.role
+              && getAfter(/databases/$(database)/documents/w/$(w)/invites/$(request.resource.data.invite)).data.usedBy == request.auth.uid)
+            ||
+            // chủ tạo xưởng: chỉ khi xưởng chưa tồn tại
+            (request.resource.data.role == 'owner' && !('invite' in request.resource.data)
+              && !exists(/databases/$(database)/documents/w/$(w))
+              && getAfter(/databases/$(database)/documents/w/$(w)).data.createdBy == request.auth.uid)
+          );
+        // chủ đổi vai trò / khóa người khác; không tự hạ quyền mình, không phong thêm chủ
+        allow update: if isOwner(w) && uid != request.auth.uid
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['role', 'active'])
+          && request.resource.data.role in ['manager', 'sale', 'worker'];
+        allow delete: if false;
+      }
+
+      match /invites/{code} {
+        allow get: if signedIn();
+        allow list: if isOwner(w);
+        allow create: if isOwner(w) && request.resource.data.role in ['manager', 'sale', 'worker']
+          && request.resource.data.used == false && request.resource.data.createdBy == request.auth.uid
+          && request.resource.data.exp is timestamp && request.resource.data.exp < request.time + duration.value(31, 'd');
+        allow update: if signedIn() && resource.data.used == false && request.time < resource.data.exp
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['used', 'usedBy', 'usedAt'])
+          && request.resource.data.used == true && request.resource.data.usedBy == request.auth.uid
+          && existsAfter(mPath(w)) && getAfter(mPath(w)).data.invite == code;
+        allow delete: if isOwner(w);
+      }
+
+      // đơn hàng (có giá): Chủ, Kế toán thấy hết; Sale chỉ thấy đơn mình phụ trách; Thợ không thấy
+      match /orders/{id} {
+        allow read: if boss(w) || (isSale(w) && mineOrNew());
+        allow create: if boss(w) || (isSale(w) && mineNew() && pays(request.resource.data).size() == 0);
+        allow update: if isOwner(w)
+          || (hasRole(w, ['manager']) && pays(request.resource.data).size() >= pays(resource.data).size())
+          || (isSale(w) && mineOld() && mineNew() && pays(request.resource.data) == pays(resource.data));
+        allow delete: if isOwner(w);
+      }
+      match /customers/{id} {
+        allow read: if boss(w) || (isSale(w) && mineOrNew());
+        allow create: if boss(w) || (isSale(w) && mineNew());
+        allow update: if boss(w) || (isSale(w) && mineOld() && mineNew());
+        allow delete: if boss(w);
+      }
+      match /catalog/{id} {
+        allow read: if staff(w);
+        allow write: if boss(w);
+      }
+      match /app/{id} {
+        allow read: if staff(w);
+        allow write: if isOwner(w);
+      }
+      // phiếu công việc: không có giá, thợ được giao mới đọc được
+      match /jobs/{id} {
+        allow read: if boss(w) || (isSale(w) && mineOld()) || (hasRole(w, ['worker']) && request.auth.uid in resource.data.assignees);
+        allow create: if boss(w) || (isSale(w) && mineNew());
+        allow update: if boss(w) || (isSale(w) && mineOld() && mineNew());
+        allow delete: if boss(w);
+      }
+      // ảnh, bản vẽ (chia nhỏ)
+      match /files/{id} {
+        allow read: if boss(w) || (isSale(w) && mineOld());
+        allow create: if boss(w) || (isSale(w) && mineNew());
+        allow update: if false;
+        allow delete: if boss(w) || (isSale(w) && mineOld());
+      }
+      // số báo giá do máy chủ cấp: chỉ được tăng 1
+      match /counters/{id} {
+        allow read: if staff(w);
+        allow create: if staff(w) && request.resource.data.n is int && request.resource.data.n > 0;
+        allow update: if staff(w) && request.resource.data.n == resource.data.n + 1;
+        allow delete: if false;
+      }
+      // bản cất riêng khi hai người sửa cùng chỗ
+      match /conflicts/{id} {
+        allow read: if boss(w) || (isSale(w) && resource.data.by == request.auth.uid);
+        allow create: if staff(w) && request.resource.data.by == request.auth.uid;
+        allow delete: if boss(w) || (isSale(w) && resource.data.by == request.auth.uid);
+        allow update: if false;
+      }
+    }
+  }
+}
