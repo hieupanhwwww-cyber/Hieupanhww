@@ -1236,7 +1236,7 @@ function orderQR(o, amount, n) {
 const PG = { W: 210, H: 297, ML: 14, MR: 14, MT: 14, BOTTOM: 274, FOOT: 287 };
 const PXW = 1654, PX = PXW / 210, PXH = Math.round(297 * PX);
 const PFONT = '"Be Vietnam Pro","Helvetica Neue",Arial,sans-serif';
-const PC = { ink: '#2A2119', muted: '#6F6255', brown: '#7A4E2D', soft: '#F3EADF', line: '#E2D7C9', line2: '#C9B9A6' };
+const PC = { ok: '#2E7D4F', ink: '#2A2119', muted: '#6F6255', brown: '#7A4E2D', soft: '#F3EADF', line: '#E2D7C9', line2: '#C9B9A6' };
 const pfont = (w, pt) => `${w} ${(pt * 0.3528 * PX).toFixed(2)}px ${PFONT}`;
 const lhmm = pt => pt * 0.3528 * 1.42;
 const asc = pt => pt * 0.3528 * 1.02;
@@ -1279,7 +1279,7 @@ function loadImg(src) {
 }
 
 function layoutQuote(d) {
-  const { q, st, code, label, logo, sign, signImg, qr } = d;
+  const { q, st, code, label, logo, sign, signImg, qr, pay } = d;
   const t = quoteTotals(q);
   const R = PG.W - PG.MR, CW = PG.W - PG.ML - PG.MR;
   const pages = []; let ops, y;
@@ -1381,8 +1381,18 @@ function layoutQuote(d) {
   /* --- tổng tiền --- */
   const tl = [['Tạm tính', money(t.sub) + ' đ', 400, 10]];
   if (t.disc) tl.push([q.discount?.type === 'percent' ? `Giảm giá (${QF.format(q.discount.value)}%)` : 'Giảm giá', '−' + money(t.disc) + ' đ', 400, 10]);
+  /* đã đặt cọc / đã thanh toán: trừ ra để khách thấy số còn phải trả */
+  const after = [];
+  if (pay && (pay.paid > 0 || pay.chg)) {
+    if (pay.chg) after.push([pay.chg > 0 ? 'Phát sinh đã xác nhận' : 'Giảm trừ phát sinh', (pay.chg > 0 ? '+' : '−') + money(Math.abs(pay.chg)) + ' đ', 400, 10, PC.ink]);
+    const ps = pay.pays;
+    if (ps.length <= 4) for (const x of ps) after.push([(/cọc/i.test(x.note || '') || (ps.length === 1 && x === ps[0]) ? 'Đã đặt cọc' : 'Đã thanh toán') + ' ngày ' + fmtDate(x.date), '−' + money(x.amount) + ' đ', 400, 10, PC.ok]);
+    else after.push([`Đã thanh toán (${ps.length} lần)`, '−' + money(pay.paid) + ' đ', 400, 10, PC.ok]);
+  }
+  const showDue = after.length > 0 && pay.paid > 0;
   const wordsL = wrapMM('Bằng chữ: ' + moneyWords(t.total), 400, 9.5, CW);
-  const totH = 4 + tl.length * 7 + 11 + wordsL.length * lhmm(9.5) + 3;
+  const dueWordsL = showDue ? wrapMM('Còn phải thanh toán bằng chữ: ' + moneyWords(pay.due), 400, 9.5, CW) : [];
+  const totH = 4 + tl.length * 7 + 11 + after.length * 7 + (after.length ? 13.5 : 0) + (wordsL.length + dueWordsL.length) * lhmm(9.5) + 3;
   if (y + totH > PG.BOTTOM) newPage(false);
   y += 4;
   const tx = PG.ML + CW - 86;
@@ -1391,7 +1401,15 @@ function layoutQuote(d) {
   text(tx, y + 7.6, 'TỔNG CỘNG', 700, 11, PC.brown);
   text(R - 1.8, y + 7.8, money(t.total) + ' đ', 700, 14, PC.brown, 'right');
   y += 13.5;
+  if (after.length) {
+    for (const [a, b, w, pt, col] of after) { text(tx, y + 4.6, a, w, pt, PC.muted); text(R - 1.8, y + 4.6, b, 600, pt, col, 'right'); y += 7; }
+    rect(tx - 2, y + 0.8, R - tx + 2, 10, PC.soft);
+    text(tx, y + 7.6, pay.over ? 'KHÁCH TRẢ THỪA' : 'CÒN PHẢI THANH TOÁN', 700, 10.5, PC.brown);
+    text(R - 1.8, y + 7.8, money(pay.over || pay.due) + ' đ', 700, 14, PC.brown, 'right');
+    y += 13.5;
+  }
   for (const l of wordsL) { text(PG.ML, y + asc(9.5), l, 500, 9.5, PC.ink); y += lhmm(9.5); }
+  for (const l of dueWordsL) { text(PG.ML, y + asc(9.5), l, 500, 9.5, PC.ink); y += lhmm(9.5); }
   y += 3;
 
   /* --- ghi chú, điều khoản, chuyển khoản --- */
@@ -1405,7 +1423,7 @@ function layoutQuote(d) {
     y += 1.5;
   };
   /* --- lịch thanh toán + mã QR đợt 1 --- */
-  const plan = planAmounts(q.plan, t.total);
+  const plan = pay && pay.plan ? pay.plan : planAmounts(q.plan, t.total);
   if (plan.length) {
     const qrW = qr ? 34 : 0, tw = CW - (qr ? qrW + 6 : 0);
     const planH = 6 + 7 + plan.length * 6.4 + 2;
@@ -1424,16 +1442,17 @@ function layoutQuote(d) {
       text(cx2(pc[0]), y + 4.4, 'Đợt ' + r.n, 600, 9, PC.ink);
       const lab = wrapMM(r.label || '', 400, 9, pc[1].w - 3.6)[0] || '';
       text(cx2(pc[1]), y + 4.4, lab, 400, 9, PC.ink);
-      const pct = r.last ? 'Còn lại' : QF.format(Number(r.pct) || 0) + '%';
-      text(cx2(pc[2]), y + 4.4, pct, 400, 9, PC.muted, 'right');
-      text(cx2(pc[3]), y + 4.4, money(r.amount) + ' đ', 600, 9, PC.ink, 'right');
+      const done = r.paid > 0 && r.left <= 0, part = r.paid > 0 && r.left > 0;
+      const pct = done ? 'Đã thu' : part ? 'Còn ' + money(r.left) : r.last ? 'Còn lại' : QF.format(Number(r.pct) || 0) + '%';
+      text(cx2(pc[2]), y + 4.4, pct, done ? 600 : 400, part ? 8 : 9, done ? PC.ok : PC.muted, 'right');
+      text(cx2(pc[3]), y + 4.4, money(r.amount) + ' đ', 600, 9, done ? PC.muted : PC.ink, 'right');
       y += 6.4; line(PG.ML, y, PG.ML + tw, y, PC.line, 0.25);
     }
     if (qr) {
       const qx = R - qrW;
       ops.push({ t: 'qr', m: qr.matrix, x: qx, y: top0, w: qrW });
       let qy = top0 + qrW + 3.4;
-      text(qx + qrW / 2, qy, 'Quét để chuyển khoản đợt 1', 600, 7.5, PC.ink, 'center'); qy += 3.4;
+      text(qx + qrW / 2, qy, 'Quét để chuyển khoản đợt ' + (qr.n || 1), 600, 7.5, PC.ink, 'center'); qy += 3.4;
       text(qx + qrW / 2, qy, money(qr.amount) + ' đ', 600, 7.5, PC.ink, 'center'); qy += 3.2;
       text(qx + qrW / 2, qy, 'ND: ' + qr.memo, 400, 7, PC.muted, 'center');
       y = Math.max(y, qy + 1);
@@ -1563,9 +1582,24 @@ async function renderQuotePages(o, src) {
   if (src === 'draft') { q = o.draft; if (o.versions.length) label = `Bản ${o.versions.length + 1}`; }
   else { const v = o.versions.find(v => String(v.no) === String(src)) || lastVersion(o); q = v.quote; sign = v.sign || null; if (o.versions.length > 1) label = `Bản ${v.no}`; }
   const [logo, signImg] = await Promise.all([loadImg(st.logo), loadImg(sign?.img)]);
-  const plan = planAmounts(q.plan, quoteTotals(q).total);
-  const qr = plan.length ? orderQR(o, plan[0].amount, 1) : null;
-  const pages = layoutQuote({ q, st, code: o.code, label, logo, sign, signImg, qr });
+  /* bản đang dùng (bản chốt mới nhất hoặc bản đang sửa): trừ tiền khách đã trả */
+  const cur = src === 'draft' || !o.versions.length || String(src) === String(lastVersion(o).no) || !o.versions.some(v => String(v.no) === String(src));
+  const total = quoteTotals(q).total;
+  let pay = null, plan = planAmounts(q.plan, total);
+  if (cur && ((o.payments || []).length || confirmedChanges(o))) {
+    const pays = [...(o.payments || [])].sort((a, b) => String(a.date).localeCompare(String(b.date)));
+    const paid = pays.reduce((sum, x) => sum + (Number(x.amount) || 0), 0), chg = confirmedChanges(o);
+    plan = plan.map(r => ({ ...r }));
+    if (plan.length && chg) { const L = plan[plan.length - 1]; L.amount = Math.max(0, L.amount + chg); }
+    let rest = paid;
+    for (const r of plan) { r.paid = Math.min(r.amount, Math.max(0, rest)); r.left = r.amount - r.paid; rest -= r.paid; }
+    const grand = total + chg;
+    pay = { pays, paid, chg, due: Math.max(0, grand - paid), over: Math.max(0, paid - grand), plan };
+  }
+  const nx = plan.find(r => (r.left ?? r.amount) > 0);
+  const qr = nx ? orderQR(o, nx.left ?? nx.amount, nx.n) : null;
+  if (qr) qr.n = nx.n;
+  const pages = layoutQuote({ q, st, code: o.code, label, logo, sign, signImg, qr, pay });
   const out = await rasterize(pages, { w: PG.W, h: PG.H }, [st.shopName, st.phone].filter(Boolean).join(' · '));
   return { pages: out, q, label, size: { w: PG.W, h: PG.H }, title: `Báo giá ${o.code}${label ? ' - ' + label : ''} - ${q.customer?.name || ''}` };
 }
