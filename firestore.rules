@@ -83,6 +83,10 @@ service cloud.firestore {
         allow read: if staff(w);
         allow write: if boss(w);
       }
+      // giá nhập, vận chuyển, lãi: chỉ Chủ và Kế toán
+      match /costs/{id} {
+        allow read, write: if boss(w);
+      }
       match /app/{id} {
         allow read: if staff(w);
         allow write: if isOwner(w);
