@@ -63,6 +63,10 @@ async function t(name, fn) {
   await t('chủ: xóa được phiếu thu ghi nhầm', () => assertSucceeds(as('O').collection('orders').doc('o2').set({ owner: 'O', payments: [{ id: 'p1', amount: 10 }] })));
   await t('sale: không sửa danh mục giá', () => assertFails(as('S1').collection('catalog').doc('k1').set({ name: 'Tủ', price: 0 })));
   await t('kế toán: sửa danh mục giá', () => assertSucceeds(as('M').collection('catalog').doc('k1').set({ name: 'Tủ', price: 2 })));
+  await t('sale: không đọc được giá nhập', () => assertFails(as('S1').collection('costs').doc('o_o1').get()));
+  await t('thợ: không đọc được giá nhập', () => assertFails(as('K').collection('costs').doc('o_o1').get()));
+  await t('kế toán: ghi giá nhập', () => assertSucceeds(as('M').collection('costs').doc('o_o1').set({ rows: { r1: 100 }, ship: 50 })));
+  await t('chủ: đọc giá nhập', () => assertSucceeds(as('O').collection('costs').doc('o_o1').get()));
   await t('kế toán: không sửa cài đặt cửa hàng', () => assertFails(as('M').collection('app').doc('settings').set({ shopName: 'X' })));
   await t('sale: đọc cài đặt để in báo giá', () => assertSucceeds(as('S1').collection('app').doc('settings').get()));
   await t('số báo giá: tăng 1 được', () => assertSucceeds(as('S1').collection('counters').doc('BG2610').set({ n: 3 })));
