@@ -597,6 +597,19 @@ textarea.in{min-height:76px}
 :root[data-theme="dark"]{--seg-on:#4C443C}
 .seg button[aria-pressed="true"]{background:var(--seg-on)}
 .cost-ship{max-width:320px}
+/* nhóm hạng mục, bộ chuẩn, đổi giá */
+.grp-h{font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--accent);padding:16px 2px 6px;border-bottom:.5px solid var(--line-2);position:sticky;top:0;background:var(--surface);z-index:1}
+.grp-h small{font-weight:500;color:var(--muted);margin-left:4px}
+.pick-list .grp-h{padding-top:12px}
+.libgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:6px 14px}
+.libg span{display:flex;flex-direction:column;line-height:1.25}
+.libg small{font-size:12.5px;color:var(--muted)}
+.cost-row.rp{grid-template-columns:28px minmax(0,1.6fr) 110px 120px 120px;cursor:pointer}
+.cost-row.rp input{width:20px;height:20px;accent-color:var(--accent)}
+@media (max-width:999px){
+  .cost-row.rp{grid-template-columns:28px 1fr 1fr;grid-template-areas:"c n n" "c o w" "c d d"}
+  .cost-row.rp>:nth-child(1){grid-area:c}.cost-row.rp>:nth-child(2){grid-area:n}.cost-row.rp>:nth-child(3){grid-area:o;text-align:left}.cost-row.rp>:nth-child(4){grid-area:w}.cost-row.rp>:nth-child(5){grid-area:d}
+}
 
 .wide .rail{padding-bottom:max(14px,env(safe-area-inset-bottom,0px))}
 </style>
@@ -692,8 +705,8 @@ function moneyWords(n) {
 /* =========================================================
    NGHIỆP VỤ
    ========================================================= */
-const UNITS = ['m²', 'md', 'bộ', 'cái', 'gói'];
-const UNIT_NAMES = { 'm²': 'm² (mét vuông)', 'md': 'md (mét dài)', 'bộ': 'bộ', 'cái': 'cái', 'gói': 'gói' };
+const UNITS = ['m²', 'md', 'bộ', 'cái', 'gói', 'cánh', 'điểm', 'công'];
+const UNIT_NAMES = { 'm²': 'm² (mét vuông)', 'md': 'md (mét dài)', 'bộ': 'bộ', 'cái': 'cái', 'gói': 'gói', 'cánh': 'cánh', 'điểm': 'điểm', 'công': 'công' };
 const STATUS = {
   quote: { label: 'Đang báo giá', cls: 's-quote' },
   closed: { label: 'Đã chốt', cls: 's-closed' },
@@ -2257,6 +2270,7 @@ function renderEditor(o) {
       </div>
     </header>
     <div class="pane ed-scroll" data-pane="editor-${o.id}"><div class="pane-in">
+      ${staleNotice(o)}
       ${isRev ? `<div class="notice warn" style="margin-bottom:14px">${ic('info')}<div>Đây là <b>bản ${nv} (nháp)</b>. Bản ${nv - 1} đã chốt vẫn giữ nguyên và có hiệu lực cho đến khi bạn bấm “${closeLabel}”.</div></div>` : ''}
       <section class="card">
         <h3>Thông tin khách hàng</h3>
@@ -2385,7 +2399,7 @@ function onEditorInput(e) {
     r.name = el.value;
     const hit = Store.list('catalog').find(c => c.name.trim().toLowerCase() === el.value.trim().toLowerCase());
     if (hit && !r.price && !r.material) {
-      r.material = hit.material || ''; r.unit = hit.unit || r.unit; r.price = hit.price || 0;
+      r.material = hit.material || ''; r.unit = hit.unit || r.unit; r.price = hit.price || 0; r.kid = hit.id; r.kp = hit.price || 0;
       rowEl.querySelector('[data-rf=material]').value = r.material;
       rowEl.querySelector('[data-rf=unit]').value = r.unit;
       rowEl.querySelector('[data-rf=price]').value = r.price ? money(r.price) : '';
@@ -2439,9 +2453,9 @@ function catalogPicker(o) {
   let added = 0;
   const listHtml = filter => {
     const f = fold(filter);
-    const items = Store.list('catalog').filter(c => !f || fold(c.name + ' ' + c.material).includes(f)).sort((a, b) => a.name.localeCompare(b.name, 'vi'));
-    if (!items.length) return `<div class="empty">${Store.list('catalog').length ? 'Không tìm thấy hạng mục.' : 'Danh mục mẫu đang trống. Thêm trong mục “Danh mục”.'}</div>`;
-    return items.map(c => `<button class="pick" data-sa="add" data-id="${c.id}"><div class="pm"><b>${esc(c.name)}</b><span>${esc(c.material || '')}</span></div><div class="pp">${money(c.price)} đ/${esc(c.unit)}</div><span class="added" hidden>${ic('check')}</span></button>`).join('');
+    const items = Store.list('catalog').filter(c => c.name && (!f || fold(c.name + ' ' + c.material + ' ' + catGroup(c)).includes(f)));
+    if (!items.length) return `<div class="empty">${Store.list('catalog').length ? 'Không tìm thấy hạng mục.' : 'Danh mục mẫu đang trống. Vào “Danh mục” → “Bộ hạng mục chuẩn” để nạp sẵn.'}</div>`;
+    return GROUPS.map(g => { const its = items.filter(c => catGroup(c) === g).sort((a, b) => a.name.localeCompare(b.name, 'vi')); return its.length ? `<div class="grp-h">${esc(g)}</div>` + its.map(c => `<button class="pick" data-sa="add" data-id="${c.id}"><div class="pm"><b>${esc(c.name)}</b><span>${esc(c.material || '')}</span></div><div class="pp">${c.price ? money(c.price) + ' đ' : '<span class="muted">Chưa có giá</span>'}/${esc(c.unit)}</div><span class="added" hidden>${ic('check')}</span></button>`).join('') : ''; }).join('');
   };
   const el = openSheet({
     title: 'Thêm từ danh mục mẫu', cls: 'wide',
@@ -2451,9 +2465,9 @@ function catalogPicker(o) {
     onClick: (a, b, el) => {
       if (a !== 'add') return;
       const c = Store.get('catalog', b.dataset.id); if (!c) return;
-      const nr = newRow({ name: c.name, material: c.material || '', unit: c.unit || 'm²', price: c.price || 0, qty: c.unit === 'gói' || c.unit === 'bộ' || c.unit === 'cái' ? 1 : 0 });
+      const nr = newRow({ name: c.name, material: c.material || '', unit: c.unit || 'm²', price: c.price || 0, qty: ['gói', 'bộ', 'cái', 'cánh', 'điểm', 'công'].includes(c.unit) ? 1 : 0, kid: c.id, kp: c.price || 0 });
       o.draft.rows.push(nr);
-      if (catCost(c.id)) saveCostDoc(o.id, { rows: { [nr.id]: catCost(c.id) } });
+      if (catCost(c.id)) saveCostDoc(o.id, { rows: { [nr.id]: catCost(c.id) }, kc: { [nr.id]: catCost(c.id) } });
       added++; b.querySelector('.added').hidden = false;
       el.querySelector('#cat-added').textContent = `Đã thêm ${added} hạng mục`;
       refreshRows(o); touchOrder(o);
@@ -2543,8 +2557,8 @@ async function doClose(o, date, dep, method = 'transfer', sig = null, signer = '
   if (sig) v.sign = await makeSignRecord(sig, signer, { code: o.code, no: v.no, quote: v.quote, total: v.total });
   /* chốt giá nhập theo danh mục tại thời điểm chốt: đổi danh mục sau này không làm đổi lãi đơn cũ */
   const cd = costDoc(o.id), frz = {};
-  for (const r of q.rows) if (cd.rows?.[r.id] == null) { const k = catByName(r.name); if (k && catCost(k.id)) frz[r.id] = catCost(k.id); }
-  if (Object.keys(frz).length) saveCostDoc(o.id, { rows: frz }, 0);
+  for (const r of q.rows) if (cd.rows?.[r.id] == null) { const k = rowCat(r); if (k && catCost(k.id)) frz[r.id] = catCost(k.id); }
+  if (Object.keys(frz).length) saveCostDoc(o.id, { rows: frz, kc: frz }, 0);
   o.versions.push(v); o.draft = null;
   o.plan = mergePlan(o.plan, v.quote.plan || []);
   if (first) { o.status = 'closed'; o.closedAt = date; addLog(o, `Chốt đơn ngày ${fmtDate(date)}: ${moneyD(t.total)}`); }
@@ -2648,6 +2662,7 @@ function renderDetail(o) {
     </div>
     ${over ? `<div class="notice" style="margin-bottom:14px;background:var(--info-soft)">${ic('info')}<div>Khách đã trả <b>thừa ${moneyD(over)}</b> so với tổng giá trị đơn. Cần hoàn lại hoặc trừ vào phát sinh sau.</div></div>` : ''}
     ${teamDetailCards(o)}
+    ${o.draft || o.status === 'done' ? '' : staleNotice(o)}
     <div class="d-actions">
       <button class="btn primary" data-act="add-pay">${ic('money')}${can('pay') ? 'Ghi nhận thanh toán' : 'Báo đã thu tiền'}</button>
       <button class="btn" data-act="add-change">${ic('pm')}Thêm phát sinh</button>
@@ -3123,18 +3138,27 @@ function renderCatalog() {
   const tabs = `<div class="seg" role="group" aria-label="Loại danh mục"><button data-act="cat-tab" data-t="items" aria-pressed="${S.catTab === 'items'}">Hạng mục mẫu</button><button data-act="cat-tab" data-t="customers" aria-pressed="${S.catTab === 'customers'}">Khách hàng</button></div>`;
   const f = fold(S.catQ);
   if (S.catTab === 'items') {
-    const items = Store.list('catalog').filter(c => !f || fold(c.name + ' ' + c.material).includes(f)).sort((a, b) => (b.new || 0) - (a.new || 0) || a.name.localeCompare(b.name, 'vi'));
+    const all = Store.list('catalog'), G = S.catGroup || '';
+    const items = all.filter(c => (!G || catGroup(c) === G) && (!f || fold(c.name + ' ' + c.material).includes(f))).sort((a, b) => (b.new || 0) - (a.new || 0) || GROUPS.indexOf(catGroup(a)) - GROUPS.indexOf(catGroup(b)) || a.name.localeCompare(b.name, 'vi'));
+    const gs = GROUPS.filter(g => all.some(c => catGroup(c) === g));
+    const noPrice = all.filter(c => c.name && !c.price).length, stale = staleOrders().length;
+    let lastG = null;
+    const head = c => { const g = catGroup(c); if (c.new || g === lastG) return ''; lastG = g; return `<div class="grp-h">${esc(g)} <small>${all.filter(x => catGroup(x) === g).length}</small></div>`; };
     return `<div class="pane-in"><div class="list-head"><h1>Danh mục</h1>${tabs}</div>
-      <section class="card"><div class="card-h"><div class="search" style="margin:0;flex:1;min-width:220px">${ic('search')}<input class="in" id="cat-search" type="search" placeholder="Tìm hạng mục" value="${esc(S.catQ)}" autocomplete="off"></div><button class="btn primary" data-act="cat-add">${ic('plus')}Thêm hạng mục</button></div>
+      ${stale ? `<button class="notice warn banner nbtn" data-act="stale-list">${ic('info')}<div><b>${stale} báo giá / đơn đang dùng giá cũ</b> so với danh mục. Chạm để xem và chọn cập nhật.</div></button>` : ''}
+      ${noPrice ? `<div class="notice banner">${ic('info')}<div><b>${noPrice} hạng mục chưa có giá.</b> Nhập ở cột Giá bán${canCost() ? ' (và Giá nhập)' : ''}. Hạng mục chưa có giá vẫn chọn được vào báo giá, bạn nhập giá ngay trong báo giá.</div></div>` : ''}
+      <section class="card"><div class="card-h"><div class="search" style="margin:0;flex:1;min-width:220px">${ic('search')}<input class="in" id="cat-search" type="search" placeholder="Tìm hạng mục" value="${esc(S.catQ)}" autocomplete="off"></div>
+        <div class="addbar" style="margin:0"><button class="btn" data-act="lib-open">${ic('book')}Bộ hạng mục chuẩn</button>${all.length ? `<button class="btn" data-act="bulk-price">${ic('stats')}Đổi giá hàng loạt</button>` : ''}<button class="btn primary" data-act="cat-add">${ic('plus')}Thêm hạng mục</button></div></div>
+      ${gs.length > 1 ? `<div class="chips" role="group" aria-label="Nhóm hạng mục"><button class="chip" data-act="cat-group" data-g="" aria-pressed="${!G}">Tất cả<small>${all.length}</small></button>${gs.map(g => `<button class="chip" data-act="cat-group" data-g="${esc(g)}" aria-pressed="${G === g}">${esc(g)}<small>${all.filter(c => catGroup(c) === g).length}</small></button>`).join('')}</div>` : ''}
       <p class="muted" style="font-size:14px;margin-bottom:10px">Sửa trực tiếp trên bảng, tự lưu. Đổi giá ở đây <b>không làm thay đổi</b> các báo giá đã lập.${canCost() ? ' Giá nhập chỉ dùng để tính lãi, không in ra báo giá.' : ''}</p>
       <div class="cat-row cat-head ${canCost() ? 'wcost' : ''}"><div>Tên hạng mục</div><div>Vật liệu / quy cách</div><div>ĐV</div><div style="text-align:right">Giá bán</div>${canCost() ? '<div style="text-align:right">Giá nhập</div>' : ''}<div></div></div>
-      ${items.map(c => `<div class="cat-row ${canCost() ? 'wcost' : ''}" data-cat="${c.id}">
+      ${items.map(c => `${head(c)}<div class="cat-row ${canCost() ? 'wcost' : ''}" data-cat="${c.id}">
         <div class="cn"><input class="in" id="cn-${c.id}" data-cf="name" value="${esc(c.name)}" placeholder="Tên hạng mục" aria-label="Tên hạng mục" autocomplete="off"></div>
         <div class="cm"><input class="in" id="cm-${c.id}" data-cf="material" value="${esc(c.material || '')}" placeholder="Vật liệu / quy cách" aria-label="Vật liệu" autocomplete="off"></div>
         <div class="cu"><select class="in" id="cu-${c.id}" data-cf="unit" aria-label="Đơn vị">${UNITS.map(u => `<option ${u === c.unit ? 'selected' : ''}>${u}</option>`).join('')}</select></div>
-        <div class="cp"><input class="in num" id="cp-${c.id}" data-cf="price" data-money inputmode="numeric" value="${c.price ? money(c.price) : ''}" placeholder="Giá bán" aria-label="Giá bán" autocomplete="off"></div>
+        <div class="cp"><input class="in num" id="cp-${c.id}" data-cf="price" data-money inputmode="numeric" value="${c.price ? money(c.price) : ''}" placeholder="Chưa có giá" aria-label="Giá bán" autocomplete="off"></div>
         ${canCost() ? `<div class="cc"><input class="in num" id="cc-${c.id}" data-kc="${c.id}" data-money inputmode="numeric" value="${catCost(c.id) ? money(catCost(c.id)) : ''}" placeholder="Giá nhập" aria-label="Giá nhập" autocomplete="off">${c.price && catCost(c.id) ? `<span class="cmargin">lãi ${pctTxt((c.price - catCost(c.id)) / c.price * 100)}</span>` : ''}</div>` : ''}
-        <div class="cx"><button class="iconbtn" data-act="cat-del" data-id="${c.id}" aria-label="Xóa">${ic('trash')}</button></div></div>`).join('') || `<div class="empty">Chưa có hạng mục mẫu.</div>`}
+        <div class="cx"><button class="iconbtn" data-act="cat-del" data-id="${c.id}" aria-label="Xóa">${ic('trash')}</button></div></div>`).join('') || `<div class="empty"><h3>Chưa có hạng mục mẫu</h3><p>Nạp sẵn ${LIBRARY.length} hạng mục thường gặp của nghề nội thất, rồi nhập giá sau.</p><p style="margin-top:12px"><button class="btn primary" data-act="lib-open">${ic('book')}Bộ hạng mục chuẩn</button></p></div>`}
       </section></div>`;
   }
   const orders = Store.list('orders');
@@ -3308,6 +3332,12 @@ async function clearDemo() {
   render(); toast('Đã xóa dữ liệu mẫu');
 }
 
+function staleNotice(o) {
+  if (!can('quote')) return '';
+  const n = staleRows(o).length; if (!n) return '';
+  return `<div class="notice warn" style="margin-bottom:14px">${ic('info')}<div><b>${n} dòng đang theo giá cũ</b>: giá trong danh mục đã đổi sau khi lập báo giá này. <button class="btn sm" data-act="reprice">Xem và cập nhật giá mới</button></div></div>`;
+}
+
 /* =========================================================
    LÃI: giá nhập + vận chuyển → lãi của từng đơn
    Lưu riêng ở nhóm "costs" (không nằm trong đơn), nên không bao giờ
@@ -3319,9 +3349,9 @@ const catCost = kid => Number(Store.get('costs', 'k_' + kid)?.cost) || 0;
 const catByName = name => { const n = String(name || '').trim().toLowerCase(); return n ? Store.list('catalog').find(c => c.name.trim().toLowerCase() === n) : null; };
 function saveCostDoc(oid, patch, delay = 600) {
   const cur = costDoc(oid);
-  Store.put('costs', { ...cur, ...patch, rows: { ...(cur.rows || {}), ...(patch.rows || {}) }, chg: { ...(cur.chg || {}), ...(patch.chg || {}) }, id: 'o_' + oid }, delay);
+  Store.put('costs', { ...cur, ...patch, rows: { ...(cur.rows || {}), ...(patch.rows || {}) }, chg: { ...(cur.chg || {}), ...(patch.chg || {}) }, kc: { ...(cur.kc || {}), ...(patch.kc || {}) }, id: 'o_' + oid }, delay);
 }
-function setCatCost(kid, cost, delay = 600) { Store.put('costs', { id: 'k_' + kid, cost: Math.max(0, Math.round(Number(cost) || 0)) }, delay); }
+function setCatCost(kid, cost, delay = 600) { Store.put('costs', { id: 'k_' + kid, cost: Math.max(0, Math.round(Number(cost) || 0)), at: new Date().toISOString() }, delay); }
 /* giá nhập của 1 dòng: đã nhập cho đơn > giá nhập trong danh mục (theo tên) */
 function rowCost(c, r) {
   const v = c.rows && c.rows[r.id];
@@ -3417,8 +3447,8 @@ function profitSheet(o) {
 /* khi dòng báo giá đổi mã (sửa bản mới, sao chép): mang giá nhập theo */
 function carryRowCosts(fromOid, toOid, idMap) {
   const c = Store.get('costs', 'o_' + fromOid); if (!c || !c.rows) return;
-  const rows = {}; for (const [a, b] of Object.entries(idMap)) if (c.rows[a] != null) rows[b] = c.rows[a];
-  if (Object.keys(rows).length || (fromOid !== toOid && c.ship)) saveCostDoc(toOid, { rows, ...(fromOid !== toOid ? { ship: 0 } : {}) }, 0);
+  const rows = {}, kc = {}; for (const [a, b] of Object.entries(idMap)) { if (c.rows[a] != null) rows[b] = c.rows[a]; if (c.kc && c.kc[a] != null) kc[b] = c.kc[a]; }
+  if (Object.keys(rows).length) saveCostDoc(toOid, { rows, kc }, 0);
 }
 
 /* thống kê lãi theo ngày chốt */
@@ -3426,6 +3456,252 @@ function profitStats(closed) {
   let rev = 0, cost = 0, missing = 0;
   const list = closed.map(o => { const p = profitOf(o, headQuote(o)); rev += p.rev; cost += p.cost; if (p.missing) missing++; return { o, p }; });
   return { rev, cost, profit: rev - cost, pct: rev ? (rev - cost) / rev * 100 : 0, missing, list };
+}
+
+/* =========================================================
+   BỘ HẠNG MỤC CHUẨN NGHỀ NỘI THẤT (để trống giá, chủ tự nhập)
+   + ĐỔI GIÁ HÀNG LOẠT khi giá vật liệu thay đổi
+   + CẬP NHẬT BÁO GIÁ CŨ theo giá mới (bản đã ký giữ nguyên)
+   ========================================================= */
+const GROUPS = ['Phòng ngủ', 'Tủ quần áo', 'Bếp', 'Thiết bị bếp', 'Phòng khách', 'Phòng làm việc, trẻ em', 'Phòng thờ', 'Phòng tắm', 'Trần, vách, sàn', 'Cửa', 'Điện, đèn', 'Phụ kiện, kính', 'Rèm, trang trí', 'Thiết kế, thi công', 'Khác'];
+const M = { mdf: 'MDF chống ẩm phủ Melamine', acr: 'MDF chống ẩm phủ Acrylic', lam: 'MDF chống ẩm phủ Laminate', ply: 'Plywood phủ Melamine', go: 'Gỗ tự nhiên', tc: 'Khung xương + tấm thạch cao', da: 'Đá', kinh: 'Kính cường lực', nhom: 'Nhôm kính', bao: 'Theo mẫu chọn' };
+/* [nhóm, tên, vật liệu mặc định, đơn vị] */
+const LIBRARY = [
+  ['Tủ quần áo', 'Tủ áo cánh mở', M.mdf, 'm²'], ['Tủ quần áo', 'Tủ áo cánh lùa', M.mdf, 'm²'], ['Tủ quần áo', 'Tủ áo kịch trần', M.mdf, 'm²'],
+  ['Tủ quần áo', 'Tủ áo góc chữ L', M.mdf, 'm²'], ['Tủ quần áo', 'Tủ áo cánh kính khung nhôm', 'Thùng MDF chống ẩm, cánh kính khung nhôm', 'm²'],
+  ['Tủ quần áo', 'Tủ áo cánh Acrylic', M.acr, 'm²'], ['Tủ quần áo', 'Tủ áo cánh Laminate', M.lam, 'm²'], ['Tủ quần áo', 'Tủ áo trẻ em', M.mdf, 'm²'],
+  ['Tủ quần áo', 'Tủ áo mở không cánh (walk-in)', M.mdf, 'm²'], ['Tủ quần áo', 'Hộp kệ nóc tủ', M.mdf, 'm²'], ['Tủ quần áo', 'Tủ ngăn kéo', M.mdf, 'cái'],
+  ['Phòng ngủ', 'Giường ngủ 1m2', M.mdf, 'bộ'], ['Phòng ngủ', 'Giường ngủ 1m4', M.mdf, 'bộ'], ['Phòng ngủ', 'Giường ngủ 1m6', M.mdf, 'bộ'],
+  ['Phòng ngủ', 'Giường ngủ 1m8', M.mdf, 'bộ'], ['Phòng ngủ', 'Giường ngủ 2m2', M.mdf, 'bộ'], ['Phòng ngủ', 'Giường có ngăn kéo', M.mdf, 'bộ'],
+  ['Phòng ngủ', 'Giường đầu bọc nỉ / da', 'Khung MDF chống ẩm, đầu giường bọc nỉ', 'bộ'], ['Phòng ngủ', 'Giường tầng trẻ em', M.mdf, 'bộ'],
+  ['Phòng ngủ', 'Giường bệt (sàn gỗ)', M.mdf, 'm²'], ['Phòng ngủ', 'Táp đầu giường', M.mdf, 'cái'], ['Phòng ngủ', 'Bàn trang điểm', M.mdf, 'bộ'],
+  ['Phòng ngủ', 'Gương trang điểm', 'Gương bỉ, khung theo mẫu', 'cái'], ['Phòng ngủ', 'Ghế đôn trang điểm', M.bao, 'cái'],
+  ['Phòng ngủ', 'Vách ốp đầu giường', M.mdf, 'm²'], ['Phòng ngủ', 'Vách ốp đầu giường bọc nỉ / da', 'Cốt MDF, bọc nỉ', 'm²'],
+  ['Phòng ngủ', 'Kệ tivi phòng ngủ', M.mdf, 'md'], ['Phòng ngủ', 'Kệ treo tường', M.mdf, 'md'], ['Phòng ngủ', 'Đệm', M.bao, 'cái'],
+  ['Bếp', 'Tủ bếp dưới', M.acr, 'md'], ['Bếp', 'Tủ bếp trên', M.acr, 'md'], ['Bếp', 'Tủ bếp trên kịch trần', M.acr, 'md'],
+  ['Bếp', 'Tủ bếp chữ L (trên + dưới)', M.acr, 'md'], ['Bếp', 'Tủ đồ khô / tủ cao', M.acr, 'bộ'], ['Bếp', 'Tủ lạnh âm tủ (hộp tủ)', M.acr, 'bộ'],
+  ['Bếp', 'Đảo bếp', M.acr, 'md'], ['Bếp', 'Quầy bar', M.acr, 'md'], ['Bếp', 'Mặt đá bếp', 'Đá nhân tạo / đá tự nhiên', 'md'],
+  ['Bếp', 'Mặt đá đảo bếp', 'Đá nhân tạo / đá tự nhiên', 'md'], ['Bếp', 'Kính ốp tường bếp', 'Kính cường lực sơn màu', 'md'],
+  ['Bếp', 'Gạch ốp tường bếp', M.bao, 'm²'], ['Bếp', 'Tủ bếp nhựa (chống nước)', 'Nhựa Picomat / nhựa PVC', 'md'],
+  ['Bếp', 'Giá bát đĩa nâng hạ', 'Inox, ray giảm chấn', 'bộ'], ['Bếp', 'Giá bát đĩa cố định', 'Inox', 'bộ'], ['Bếp', 'Kệ gia vị', 'Inox, ray giảm chấn', 'bộ'],
+  ['Bếp', 'Giá xoong nồi', 'Inox, ray giảm chấn', 'bộ'], ['Bếp', 'Thùng gạo âm tủ', M.bao, 'cái'], ['Bếp', 'Thùng rác âm tủ', M.bao, 'cái'],
+  ['Bếp', 'Kệ góc liên hoàn', M.bao, 'bộ'], ['Bếp', 'Tủ đồ khô cánh kéo', M.bao, 'bộ'],
+  ['Thiết bị bếp', 'Bếp từ', M.bao, 'cái'], ['Thiết bị bếp', 'Máy hút mùi', M.bao, 'cái'], ['Thiết bị bếp', 'Chậu rửa', M.bao, 'cái'],
+  ['Thiết bị bếp', 'Vòi rửa', M.bao, 'cái'], ['Thiết bị bếp', 'Lò nướng âm tủ', M.bao, 'cái'], ['Thiết bị bếp', 'Lò vi sóng âm tủ', M.bao, 'cái'],
+  ['Thiết bị bếp', 'Máy rửa bát', M.bao, 'cái'], ['Thiết bị bếp', 'Máy lọc nước', M.bao, 'cái'],
+  ['Phòng khách', 'Kệ tivi', M.mdf, 'md'], ['Phòng khách', 'Vách tivi ốp', M.mdf, 'm²'], ['Phòng khách', 'Vách tivi ốp đá / tấm nhựa vân đá', M.bao, 'm²'],
+  ['Phòng khách', 'Tủ giày', M.mdf, 'm²'], ['Phòng khách', 'Tủ giày kịch trần', M.mdf, 'm²'], ['Phòng khách', 'Tủ rượu', M.mdf, 'm²'],
+  ['Phòng khách', 'Tủ trang trí', M.mdf, 'm²'], ['Phòng khách', 'Kệ trang trí', M.mdf, 'md'], ['Phòng khách', 'Vách ngăn CNC', M.mdf, 'm²'],
+  ['Phòng khách', 'Vách ngăn lam gỗ', M.mdf, 'm²'], ['Phòng khách', 'Bàn trà', M.bao, 'cái'], ['Phòng khách', 'Sofa', M.bao, 'bộ'],
+  ['Phòng khách', 'Bàn ăn', M.bao, 'bộ'], ['Phòng khách', 'Ghế ăn', M.bao, 'cái'], ['Phòng khách', 'Tủ để đồ dưới gầm cầu thang', M.mdf, 'm²'],
+  ['Phòng làm việc, trẻ em', 'Bàn làm việc', M.mdf, 'bộ'], ['Phòng làm việc, trẻ em', 'Bàn học kèm giá sách', M.mdf, 'bộ'],
+  ['Phòng làm việc, trẻ em', 'Giá sách', M.mdf, 'm²'], ['Phòng làm việc, trẻ em', 'Tủ hồ sơ', M.mdf, 'm²'],
+  ['Phòng làm việc, trẻ em', 'Bàn học gấp gọn treo tường', M.mdf, 'bộ'], ['Phòng làm việc, trẻ em', 'Ghế làm việc', M.bao, 'cái'],
+  ['Phòng làm việc, trẻ em', 'Kệ đồ chơi', M.mdf, 'md'],
+  ['Phòng thờ', 'Bàn thờ', M.go, 'bộ'], ['Phòng thờ', 'Tủ thờ', M.go, 'bộ'], ['Phòng thờ', 'Vách ốp phòng thờ', M.mdf, 'm²'],
+  ['Phòng thờ', 'Án gian', M.go, 'bộ'], ['Phòng thờ', 'Vách CNC phòng thờ', M.mdf, 'm²'],
+  ['Phòng tắm', 'Tủ lavabo', 'Nhựa Picomat / nhựa PVC', 'bộ'], ['Phòng tắm', 'Gương phòng tắm', 'Gương bỉ chống ẩm', 'cái'],
+  ['Phòng tắm', 'Gương đèn LED cảm ứng', M.bao, 'cái'], ['Phòng tắm', 'Kệ phòng tắm', 'Nhựa / inox', 'cái'], ['Phòng tắm', 'Vách kính tắm', M.kinh, 'm²'],
+  ['Phòng tắm', 'Tủ treo phòng tắm', 'Nhựa Picomat / nhựa PVC', 'bộ'],
+  ['Trần, vách, sàn', 'Trần thạch cao phẳng', M.tc, 'm²'], ['Trần, vách, sàn', 'Trần thạch cao giật cấp', M.tc, 'm²'],
+  ['Trần, vách, sàn', 'Trần thạch cao chống ẩm', 'Khung xương + tấm thạch cao chống ẩm', 'm²'], ['Trần, vách, sàn', 'Trần thả 60×60', M.bao, 'm²'],
+  ['Trần, vách, sàn', 'Trần nhựa nano / PVC', M.bao, 'm²'], ['Trần, vách, sàn', 'Trần ốp lam gỗ', M.mdf, 'm²'],
+  ['Trần, vách, sàn', 'Vách thạch cao', M.tc, 'm²'], ['Trần, vách, sàn', 'Sơn bả trần tường', 'Bả + sơn lót + 2 nước sơn phủ', 'm²'],
+  ['Trần, vách, sàn', 'Giấy dán tường', M.bao, 'm²'], ['Trần, vách, sàn', 'Ốp tường lam sóng', M.bao, 'm²'],
+  ['Trần, vách, sàn', 'Ốp tường tấm nhựa nano / vân đá', M.bao, 'm²'], ['Trần, vách, sàn', 'Ốp tường gỗ', M.mdf, 'm²'],
+  ['Trần, vách, sàn', 'Sàn gỗ công nghiệp', 'Ván sàn 8–12 mm + xốp lót', 'm²'], ['Trần, vách, sàn', 'Sàn nhựa SPC', 'Ván SPC + đế lót', 'm²'],
+  ['Trần, vách, sàn', 'Sàn gỗ tự nhiên', M.go, 'm²'], ['Trần, vách, sàn', 'Len chân tường', M.bao, 'md'], ['Trần, vách, sàn', 'Phào chỉ', M.bao, 'md'],
+  ['Trần, vách, sàn', 'Nẹp kết thúc / nẹp chuyển sàn', M.bao, 'md'], ['Trần, vách, sàn', 'Lát gạch', M.bao, 'm²'],
+  ['Cửa', 'Cửa gỗ công nghiệp phòng ngủ', 'MDF chống ẩm phủ Melamine / Laminate', 'bộ'], ['Cửa', 'Cửa nhựa composite', M.bao, 'bộ'],
+  ['Cửa', 'Cửa gỗ tự nhiên', M.go, 'bộ'], ['Cửa', 'Cửa nhôm kính', M.nhom, 'm²'], ['Cửa', 'Cửa kính lùa', M.kinh, 'm²'],
+  ['Cửa', 'Cửa lùa âm tường', M.bao, 'bộ'], ['Cửa', 'Khung bao, nẹp cửa', M.bao, 'bộ'], ['Cửa', 'Khóa cửa', M.bao, 'bộ'], ['Cửa', 'Bản lề, chặn cửa', M.bao, 'bộ'],
+  ['Điện, đèn', 'Đèn LED hắt tủ', 'LED dây 12V kèm nguồn, nẹp nhôm', 'md'], ['Điện, đèn', 'Đèn LED hắt trần', 'LED dây kèm nguồn', 'md'],
+  ['Điện, đèn', 'Đèn âm trần (downlight)', M.bao, 'cái'], ['Điện, đèn', 'Đèn rọi ray', M.bao, 'cái'], ['Điện, đèn', 'Đèn thả trang trí', M.bao, 'cái'],
+  ['Điện, đèn', 'Đèn ngủ / đèn đầu giường', M.bao, 'cái'], ['Điện, đèn', 'Cảm biến đèn tủ', M.bao, 'cái'], ['Điện, đèn', 'Đi dây điện, điểm điện mới', 'Dây, ống luồn', 'điểm'],
+  ['Điện, đèn', 'Công tắc, ổ cắm', M.bao, 'điểm'],
+  ['Phụ kiện, kính', 'Bản lề giảm chấn', M.bao, 'cái'], ['Phụ kiện, kính', 'Ray ngăn kéo giảm chấn', M.bao, 'bộ'], ['Phụ kiện, kính', 'Ray lùa giảm chấn', M.bao, 'bộ'],
+  ['Phụ kiện, kính', 'Tay nắm', M.bao, 'cái'], ['Phụ kiện, kính', 'Tay nắm âm / tay nắm nhôm chạy dài', M.bao, 'md'], ['Phụ kiện, kính', 'Ngăn kéo', M.mdf, 'cái'],
+  ['Phụ kiện, kính', 'Giá treo quần áo nâng hạ', M.bao, 'bộ'], ['Phụ kiện, kính', 'Thanh treo quần áo', 'Ống nhôm / inox', 'md'],
+  ['Phụ kiện, kính', 'Khay chia ngăn kéo', M.bao, 'cái'], ['Phụ kiện, kính', 'Gương soi toàn thân', 'Gương bỉ', 'm²'],
+  ['Phụ kiện, kính', 'Kính cường lực', M.kinh, 'm²'], ['Phụ kiện, kính', 'Kính trang trí sơn màu', 'Kính cường lực sơn màu', 'm²'],
+  ['Rèm, trang trí', 'Rèm vải', M.bao, 'm²'], ['Rèm, trang trí', 'Rèm cầu vồng', M.bao, 'm²'], ['Rèm, trang trí', 'Rèm cuốn', M.bao, 'm²'],
+  ['Rèm, trang trí', 'Ray rèm', M.bao, 'md'], ['Rèm, trang trí', 'Tranh treo tường', M.bao, 'bộ'], ['Rèm, trang trí', 'Thảm', M.bao, 'cái'],
+  ['Rèm, trang trí', 'Cây cảnh, đồ trang trí', M.bao, 'gói'],
+  ['Thiết kế, thi công', 'Thiết kế 3D nội thất', 'Bản vẽ phối cảnh 3D', 'm²'], ['Thiết kế, thi công', 'Bản vẽ kỹ thuật thi công', M.bao, 'm²'],
+  ['Thiết kế, thi công', 'Khảo sát, đo đạc', M.bao, 'gói'], ['Thiết kế, thi công', 'Vận chuyển', M.bao, 'gói'], ['Thiết kế, thi công', 'Lắp đặt', M.bao, 'gói'],
+  ['Thiết kế, thi công', 'Tháo dỡ đồ cũ', M.bao, 'gói'], ['Thiết kế, thi công', 'Vệ sinh công nghiệp sau thi công', M.bao, 'gói'],
+  ['Thiết kế, thi công', 'Nhân công phát sinh', M.bao, 'công'], ['Thiết kế, thi công', 'Vận chuyển lên tầng (không thang máy)', M.bao, 'gói'],
+];
+const catGroup = c => (c.group && GROUPS.includes(c.group) ? c.group : 'Khác');
+function addLibrary(only) {
+  const have = new Set(Store.list('catalog').map(c => c.name.trim().toLowerCase()));
+  let n = 0, i = 0;
+  for (const [group, name, material, unit] of LIBRARY) {
+    if (only && !only.includes(group)) continue;
+    if (have.has(name.toLowerCase())) continue;
+    Store.put('catalog', { id: uid('k'), name, material, unit, price: 0, group, lib: true }, 40 + (i++) * 60);
+    n++;
+  }
+  return n;
+}
+function librarySheet() {
+  const have = new Set(Store.list('catalog').map(c => c.name.trim().toLowerCase()));
+  const per = g => LIBRARY.filter(x => x[0] === g && !have.has(x[1].toLowerCase())).length;
+  const groups = GROUPS.filter(g => LIBRARY.some(x => x[0] === g));
+  const total = groups.reduce((s, g) => s + per(g), 0);
+  const el = openSheet({
+    title: 'Bộ hạng mục chuẩn nghề nội thất', cls: 'wide',
+    html: `<p>${LIBRARY.length} hạng mục thường gặp, chia theo nhóm, có sẵn vật liệu và đơn vị tính. <b>Giá để trống</b> để bạn tự nhập. Hạng mục đã có (trùng tên) sẽ không thêm lại.</p>
+      <div class="libgrid">${groups.map(g => `<label class="check libg"><input type="checkbox" data-lib="${esc(g)}" ${per(g) ? 'checked' : 'disabled'}> <span><b>${esc(g)}</b><small>${per(g) ? per(g) + ' mục mới' : 'đã có đủ'}</small></span></label>`).join('')}</div>`,
+    foot: `<button class="btn" data-sa="close">Hủy</button><button class="btn primary" data-sa="ok" ${total ? '' : 'disabled'}>${ic('plus')}Thêm vào danh mục</button>`,
+    onClick: (a, b, el2) => {
+      if (a !== 'ok') return;
+      const only = $$('[data-lib]', el2).filter(x => x.checked).map(x => x.dataset.lib);
+      if (!only.length) { toast('Chọn ít nhất một nhóm.', 'bad'); return; }
+      const n = addLibrary(only); closeSheet(el2); S.catTab = 'items'; S.catGroup = ''; render();
+      toast(`Đã thêm ${n} hạng mục. Nhập giá bán (và giá nhập) ở cột bên phải.`);
+    },
+  });
+  return el;
+}
+
+/* ---------- đổi giá hàng loạt ---------- */
+const roundK = v => Math.max(0, Math.round(v / 1000) * 1000);
+function bulkPriceSheet() {
+  const groups = GROUPS.filter(g => Store.list('catalog').some(c => catGroup(c) === g));
+  const pick = el => {
+    const g = el.querySelector('#bp-group').value, kw = fold(el.querySelector('#bp-kw').value.trim());
+    return Store.list('catalog').filter(c => (!g || catGroup(c) === g) && (!kw || fold(c.name + ' ' + c.material).includes(kw)));
+  };
+  const el = openSheet({
+    title: 'Đổi giá hàng loạt',
+    html: `<p class="muted">Dùng khi giá vật liệu thay đổi. VD: ván MDF tăng 5% → chọn “Vật liệu có chữ: MDF”, nhập 5.</p>
+      <div class="fgrid">
+        <div class="field"><label for="bp-group">Nhóm hạng mục</label><select class="in" id="bp-group"><option value="">Tất cả nhóm</option>${groups.map(g => `<option>${esc(g)}</option>`).join('')}</select></div>
+        <div class="field"><label for="bp-kw">Tên / vật liệu có chữ</label><input class="in" id="bp-kw" placeholder="VD: MDF, Acrylic, tủ bếp" autocomplete="off"></div>
+        <div class="field"><label for="bp-pct">Tăng (+) / giảm (−) bao nhiêu %</label><input class="in num" id="bp-pct" inputmode="decimal" placeholder="VD: 5 hoặc -3" autocomplete="off"></div>
+      </div>
+      <div class="field"><span class="lbl">Áp dụng cho</span><div class="seg" id="bp-what"><button data-sa="w" data-v="both" aria-pressed="true">Giá bán và giá nhập</button><button data-sa="w" data-v="price" aria-pressed="false">Chỉ giá bán</button><button data-sa="w" data-v="cost" aria-pressed="false">Chỉ giá nhập</button></div></div>
+      <div class="calcline" id="bp-prev"></div>
+      <p class="muted" style="font-size:14px">Làm tròn đến 1.000 đ. Báo giá và đơn cũ <b>không tự đổi</b>; sau khi đổi giá, app sẽ chỉ ra các báo giá đang dùng giá cũ để bạn chọn cập nhật.</p>`,
+    foot: `<button class="btn" data-sa="close">Hủy</button><button class="btn primary" data-sa="ok">Áp dụng</button>`,
+    onMount: el => {
+      const prev = () => {
+        const list = pick(el), pct = parseFloat(String(el.querySelector('#bp-pct').value).replace(',', '.')) || 0;
+        const withPrice = list.filter(c => c.price > 0 || catCost(c.id) > 0).length;
+        el.querySelector('#bp-prev').innerHTML = `${list.length} hạng mục khớp · ${withPrice} mục đã có giá${pct ? ` · <b>${pct > 0 ? '+' : ''}${QF.format(pct)}%</b>` : ''}`;
+      };
+      el._prev = prev; el.addEventListener('input', prev); el.addEventListener('change', prev); prev();
+    },
+    onClick: async (a, b, el2) => {
+      if (a === 'w') { segPick(b); return; }
+      if (a !== 'ok') return;
+      const pct = parseFloat(String(el2.querySelector('#bp-pct').value).replace(',', '.')) || 0;
+      if (!pct || pct <= -100) { toast('Nhập số % tăng hoặc giảm.', 'bad'); return; }
+      const what = el2.querySelector('#bp-what [aria-pressed=true]').dataset.v, list = pick(el2);
+      const doCost = what !== 'price' && canCost(), doPrice = what !== 'cost';
+      let n = 0, i = 0; const k = 1 + pct / 100, at = new Date().toISOString();
+      for (const c of list) {
+        let changed = false;
+        if (doPrice && c.price > 0) { Store.put('catalog', { ...c, price: roundK(c.price * k), priceAt: at }, 40 + (i++) * 60); changed = true; }
+        if (doCost && catCost(c.id) > 0) { setCatCost(c.id, roundK(catCost(c.id) * k), 40 + (i++) * 60); changed = true; }
+        if (changed) n++;
+      }
+      closeSheet(el2); render();
+      const g = el2.querySelector('#bp-group').value, kw = el2.querySelector('#bp-kw').value.trim();
+      saveMeta({ priceLog: [...(meta().priceLog || []).slice(-29), { at, pct, what, scope: [g || 'Tất cả nhóm', kw && `“${kw}”`].filter(Boolean).join(' · '), n }] });
+      toast(`Đã đổi giá ${n} hạng mục (${pct > 0 ? '+' : ''}${QF.format(pct)}%)`);
+      setTimeout(() => { if (staleOrders().length) staleListSheet(); }, 400);
+    },
+  });
+  return el;
+}
+
+/* ---------- báo giá đang dùng giá cũ ---------- */
+const rowCat = r => (r.kid && Store.get('catalog', r.kid)) || catByName(r.name);
+/* các dòng có giá khác danh mục hiện tại */
+function staleRows(o, q) {
+  q = q || (o.draft || lastVersion(o)?.quote); if (!q) return [];
+  const out = [], cd = costDoc(o.id);
+  /* mốc so sánh cho dòng cũ chưa ghi giá danh mục: ngày lập bản nháp / lúc chốt bản */
+  const ref = o.draft && q === o.draft ? (q.date || '') : (lastVersion(o)?.closedTs || q.date || '');
+  for (const r of q.rows || []) {
+    const k = rowCat(r); if (!k) continue;
+    const np = Number(k.price) || 0, nc = catCost(k.id), cur = Number(r.price) || 0;
+    /* chỉ coi là giá cũ khi DANH MỤC đã đổi sau lúc dòng này được báo giá (giá bạn tự sửa riêng cho khách không bị tính) */
+    const priceDiff = np > 0 && np !== cur && (r.kp != null ? np !== Number(r.kp) : !!(k.priceAt && k.priceAt > ref));
+    const oc = Number(cd.rows?.[r.id]) || 0, kc = cd.kc?.[r.id];
+    const costDiff = canCost() && nc > 0 && nc !== oc && kc != null && nc !== Number(kc);
+    if (priceDiff || costDiff) out.push({ r, k, op: Number(r.price) || 0, np: priceDiff ? np : (Number(r.price) || 0), oc, nc: costDiff ? nc : oc, priceDiff, costDiff });
+  }
+  return out;
+}
+/* chỉ xét đơn còn đang chạy: đang báo giá, đã chốt, đang thi công */
+function staleOrders() { return Store.list('orders').filter(o => o.status !== 'done' && staleRows(o).length); }
+function staleListSheet() {
+  const list = staleOrders().sort((a, b) => (a.status === 'quote' ? 0 : 1) - (b.status === 'quote' ? 0 : 1));
+  const el = openSheet({
+    title: 'Báo giá đang dùng giá cũ', cls: 'wide',
+    html: list.length ? `<p class="muted">Giá trong danh mục đã đổi. Chọn đơn để xem chênh lệch và cập nhật. Đơn đã chốt sẽ được tạo <b>bản mới</b>; bản khách đã ký giữ nguyên.</p>
+      <div class="pick-list">${list.map(o => { const s = staleRows(o), q = o.draft || lastVersion(o).quote, d = s.reduce((t, x) => t + Math.round((Number(x.r.qty) || 0) * (x.np - x.op)), 0);
+        return `<button class="pick" data-sa="go" data-id="${o.id}"><div class="pm"><b>${esc(q.customer?.name || o.code)} <span class="muted" style="font-weight:400">· ${esc(o.code)}</span></b><span><span class="pill ${STATUS[o.status].cls}">${STATUS[o.status].label}</span> ${s.length} dòng đổi giá</span></div><div class="pp ${d > 0 ? 'negt' : ''}">${d ? signed(d) + ' đ' : 'đổi giá nhập'}</div></button>`; }).join('')}</div>` : `<div class="empty">Không có báo giá nào đang dùng giá cũ.</div>`,
+    onClick: (a, b, el2) => { if (a !== 'go') return; const o = Store.get('orders', b.dataset.id); closeSheet(el2); if (o) { S.tab = 'orders'; S.orderId = o.id; S.view = !isClosed(o) && can('quote') ? 'edit' : 'detail'; render(); repriceSheet(o); } },
+  });
+  return el;
+}
+function repriceSheet(o) {
+  if (!can('quote')) { toast('Vai trò của bạn không sửa báo giá.', 'bad'); return; }
+  const s = staleRows(o);
+  if (!s.length) { toast('Báo giá này đã theo giá mới nhất trong danh mục.'); return; }
+  const closed = isClosed(o), hasDraft = !!o.draft;
+  const q = o.draft || lastVersion(o).quote;
+  const tot = sel => { const rows = q.rows.map(r => { const x = s.find(y => y.r.id === r.id && sel.has(r.id)); return x ? { ...r, price: x.np } : r; }); return quoteTotals({ ...q, rows }).total; };
+  const el = openSheet({
+    title: 'Cập nhật theo giá mới', cls: 'wide',
+    html: `<p class="muted">${esc(q.customer?.name || '')} · ${esc(o.code)}${closed && !hasDraft ? ` · <b>Đơn đã chốt: sẽ tạo bản ${o.versions.length + 1}</b>, bản ${o.versions.length} khách đã ký giữ nguyên` : hasDraft && closed ? ` · cập nhật vào bản ${o.versions.length + 1} đang sửa` : ''}</p>
+      <div class="cost-list">
+        <div class="cost-row cost-head rp"><div></div><div>Hạng mục</div><div class="r">Giá cũ</div><div class="r">Giá mới</div><div class="r">Chênh lệch</div></div>
+        ${s.map(x => `<label class="cost-row rp"><input type="checkbox" data-rp="${x.r.id}" checked><div><b>${esc(x.r.name)}</b><span class="sub">${fmtQty(x.r.qty)} ${esc(x.r.unit)}${x.costDiff ? ` · giá nhập ${money(x.oc)} → ${money(x.nc)}` : ''}</span></div><div class="r num">${money(x.op)}</div><div class="r num"><b>${money(x.np)}</b></div><div class="r num ${x.np > x.op ? 'negt' : ''}">${x.np !== x.op ? signed(Math.round((Number(x.r.qty) || 0) * (x.np - x.op))) : '–'}</div></label>`).join('')}
+      </div>
+      <div class="calcline" id="rp-tot"></div>`,
+    foot: `<button class="btn" data-sa="close">Để sau</button><button class="btn primary" data-sa="ok">${ic('check')}${closed && !hasDraft ? `Tạo bản ${o.versions.length + 1} với giá mới` : 'Cập nhật giá'}</button>`,
+    onMount: el => {
+      const upd = () => { const sel = new Set($$('[data-rp]', el).filter(x => x.checked).map(x => x.dataset.rp)); const a = quoteTotals(q).total, b2 = tot(sel); el.querySelector('#rp-tot').innerHTML = `Tổng báo giá: ${money(a)} → <b>${money(b2)} đ</b> (${signed(b2 - a)} đ)`; };
+      el.addEventListener('change', upd); upd();
+    },
+    onClick: (a, b, el2) => {
+      if (a !== 'ok') return;
+      const sel = new Set($$('[data-rp]', el2).filter(x => x.checked).map(x => x.dataset.rp));
+      if (!sel.size) { toast('Chọn ít nhất một dòng.', 'bad'); return; }
+      closeSheet(el2); applyReprice(o, s.filter(x => sel.has(x.r.id)));
+    },
+  });
+  return el;
+}
+function applyReprice(o, items) {
+  const before = quoteTotals(o.draft || lastVersion(o).quote).total;
+  let created = false;
+  if (!o.draft) {
+    /* đơn đã chốt: tạo bản mới, mang theo giá nhập */
+    const q = clone(lastVersion(o).quote), idMap = {};
+    q.date = today(); q.rows = q.rows.map(r => { const id = uid('r'); idMap[r.id] = id; return { ...r, id }; });
+    if (!Array.isArray(q.plan) || !q.plan.length) q.plan = o.plan && o.plan.length ? o.plan.map(({ id, label, pct, trigger }) => ({ id, label, pct, trigger })) : newPlan();
+    carryRowCosts(o.id, o.id, idMap);
+    o.draft = q; created = true;
+    items = items.map(x => ({ ...x, r: { ...x.r, id: idMap[x.r.id] } }));
+  }
+  const costRows = {};
+  for (const x of items) {
+    const r = o.draft.rows.find(y => y.id === x.r.id); if (!r) continue;
+    r.price = x.np; r.kid = x.k.id; r.kp = Number(x.k.price) || x.np;
+    if (x.costDiff) costRows[r.id] = x.nc;
+  }
+  if (Object.keys(costRows).length) saveCostDoc(o.id, { rows: costRows, kc: costRows }, 0);
+  const after = quoteTotals(o.draft).total;
+  addLog(o, `${created ? `Tạo bản ${o.versions.length + 1} để c` : 'C'}ập nhật ${items.length} dòng theo giá mới trong danh mục: ${money(before)} → ${money(after)}`);
+  touchOrder(o, 0);
+  S.tab = 'orders'; S.orderId = o.id; S.view = 'edit'; render();
+  toast(created ? `Đã tạo bản ${o.versions.length + 1} với giá mới. Gửi khách xem rồi bấm “Chốt bản ${o.versions.length + 1}”.` : 'Đã cập nhật giá mới vào báo giá');
 }
 
 /* =========================================================
@@ -4184,6 +4460,7 @@ const ACTIONS = {
   'ed-menu': () => {
     const o = curOrder(); if (!o?.draft) return;
     const items = [{ label: 'Sao chép thành báo giá mới', icon: 'copy', run: () => { Store.flushAll(); copyQuoteToNew(o.draft, o.code); } }];
+    if (staleRows(o).length) items.unshift({ label: 'Cập nhật theo giá mới trong danh mục', icon: 'stats', run: () => repriceSheet(o) });
     if (o.versions.length) items.push({ label: `Hủy bản ${o.versions.length + 1} (nháp)`, icon: 'x', danger: true, run: async () => {
       const ok = await confirmBox({ title: 'Hủy bản nháp?', text: `Các thay đổi của bản ${o.versions.length + 1} sẽ bị bỏ. Bản ${o.versions.length} đã chốt giữ nguyên.`, ok: 'Hủy bản nháp', danger: true });
       if (!ok) return; o.draft = null; addLog(o, 'Hủy bản nháp sửa báo giá'); touchOrder(o, 0); S.view = 'detail'; render();
@@ -4219,6 +4496,11 @@ const ACTIONS = {
     addLog(o, `Đổi trạng thái: ${from} → ${STATUS[o.status].label}`); touchOrder(o, 0); render(); toast('Trạng thái: ' + STATUS[o.status].label);
   },
   'add-pay': () => { const o = curOrder(); o && paySheet(o); },
+  'lib-open': () => librarySheet(),
+  'bulk-price': () => bulkPriceSheet(),
+  'stale-list': () => staleListSheet(),
+  'reprice': () => { const o = curOrder(); if (o) { Store.flushAll(); repriceSheet(o); } },
+  'cat-group': b => { S.catGroup = b.dataset.g || ''; render(); },
   'profit-edit': () => { const o = curOrder(); if (o && canCost()) { Store.flushAll(); profitSheet(o); } },
   'del-pay': async b => {
     const o = curOrder(), p = o?.payments.find(x => x.id === b.dataset.id); if (!p) return;
@@ -4250,7 +4532,7 @@ const ACTIONS = {
   bar: b => drillSheet('month', { m: b.dataset.m }),
   'cat-tab': b => { S.catTab = b.dataset.t; S.catQ = ''; render(); },
   'cat-add': () => {
-    const c = { id: uid('k'), name: '', material: '', unit: 'm²', price: 0, new: Date.now() };
+    const c = { id: uid('k'), name: '', material: '', unit: 'm²', price: 0, group: S.catGroup || 'Khác', new: Date.now() };
     Store.put('catalog', c, 0); S.catQ = ''; render(); setTimeout(() => { const el = document.getElementById('cn-' + c.id); el && el.focus(); }, 50);
   },
   'cat-del': async b => {
@@ -4357,7 +4639,7 @@ document.addEventListener('input', e => {
   if (el.id === 'order-search') { S.q = el.value; const c = $('#cards'); if (c) c.innerHTML = renderCards(); return; }
   if (el.id === 'cat-search') { S.catQ = el.value; clearTimeout(window._catT); window._catT = setTimeout(() => { const pos = el.selectionStart; render(); const n = $('#cat-search'); if (n) { n.focus(); try { n.setSelectionRange(pos, pos); } catch (er) { /* */ } } }, 350); return; }
   if (el.dataset.kc) { setCatCost(el.dataset.kc, parseMoney(el.value)); return; }
-  if (el.dataset.cf) { const row = el.closest('[data-cat]'), c = Store.get('catalog', row.dataset.cat); if (!c) return; const v = el.dataset.cf === 'price' ? parseMoney(el.value) : el.value; Store.put('catalog', { ...c, [el.dataset.cf]: v }); return; }
+  if (el.dataset.cf) { const row = el.closest('[data-cat]'), c = Store.get('catalog', row.dataset.cat); if (!c) return; const v = el.dataset.cf === 'price' ? parseMoney(el.value) : el.value; Store.put('catalog', { ...c, [el.dataset.cf]: v, ...(el.dataset.cf === 'price' && c.price ? { priceAt: new Date().toISOString() } : {}) }); return; }
   if (el.dataset.kf) { const row = el.closest('[data-cus]'), c = Store.get('customers', row.dataset.cus); if (!c) return; Store.put('customers', { ...c, [el.dataset.kf]: el.value }); return; }
   if (el.dataset.sf) {
     saveSettings({ [el.dataset.sf]: el.value });
