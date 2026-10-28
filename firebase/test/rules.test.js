@@ -63,6 +63,10 @@ async function t(name, fn) {
   await t('chủ: xóa được phiếu thu ghi nhầm', () => assertSucceeds(as('O').collection('orders').doc('o2').set({ owner: 'O', payments: [{ id: 'p1', amount: 10 }] })));
   await t('sale: không sửa danh mục giá', () => assertFails(as('S1').collection('catalog').doc('k1').set({ name: 'Tủ', price: 0 })));
   await t('kế toán: sửa danh mục giá', () => assertSucceeds(as('M').collection('catalog').doc('k1').set({ name: 'Tủ', price: 2 })));
+  await t('sale: không đọc sổ thu chi', () => assertFails(as('S1').collection('cash').doc('t1').get()));
+  await t('thợ: không ghi sổ thu chi', () => assertFails(as('K').collection('cash').doc('t2').set({ type: 'out', amount: 1 })));
+  await t('kế toán: ghi khoản chi', () => assertSucceeds(as('M').collection('cash').doc('t3').set({ type: 'out', amount: 500000, cat: 'Vận chuyển' })));
+  await t('chủ: đọc sổ thu chi', () => assertSucceeds(as('O').collection('cash').get()));
   await t('sale: không đọc được giá nhập', () => assertFails(as('S1').collection('costs').doc('o_o1').get()));
   await t('thợ: không đọc được giá nhập', () => assertFails(as('K').collection('costs').doc('o_o1').get()));
   await t('kế toán: ghi giá nhập', () => assertSucceeds(as('M').collection('costs').doc('o_o1').set({ rows: { r1: 100 }, ship: 50 })));
