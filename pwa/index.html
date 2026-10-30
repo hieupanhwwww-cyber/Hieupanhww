@@ -831,6 +831,23 @@ details.sect[open]>summary{border-bottom:.5px solid var(--line);border-radius:12
 .lline.okt b{color:var(--ok)}.lline.negt b{color:var(--bad)}
 .sh4{margin:16px 0 6px;font-size:14px}
 .kpi small .linkbtn{font-size:12.5px}
+/* lịch thanh toán tùy chọn, linh hoạt */
+.plan-sw{border-top:0;padding:4px 0 10px}
+.plan-presets{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:0 0 8px}
+.plan-presets .muted{font-size:13.5px;margin-right:2px}
+.prow{grid-template-columns:56px minmax(140px,1.4fr) minmax(150px,1fr) 156px 128px 44px}
+.prow.noamt{grid-template-columns:56px minmax(140px,1.4fr) minmax(150px,1fr) 156px 44px}
+.ppct .unit{flex:none;min-width:40px;height:40px;border-radius:var(--r-sm);border:1px solid var(--line-2);background:var(--surface-2);color:var(--accent);font:inherit;font-weight:700;font-size:15px;cursor:pointer;padding:0 8px}
+.ppct .unit:hover{background:var(--accent-soft)}
+.ppct .unit:focus-visible{outline:3px solid color-mix(in srgb,var(--accent) 45%,transparent);outline-offset:1px}
+@media (max-width:999px){
+  .prow,.prow.noamt{grid-template-columns:56px 1fr 1fr 44px}
+}
+@media (max-width:560px){
+  .prow,.prow.noamt{grid-template-columns:1fr 128px;grid-template-areas:"no x" "lb lb" "tr tr" "pc am";row-gap:6px}
+  .prow.noamt{grid-template-areas:"no x" "lb lb" "tr tr" "pc pc"}
+  .prow>.iconbtn{justify-self:end}
+}
 
 .wide .rail{padding-bottom:max(14px,env(safe-area-inset-bottom,0px))}
 </style>
@@ -946,8 +963,8 @@ const DEFAULT_SETTINGS = {
   defaultNote: '', defaultTerms: '',
   codePrefix: 'BG',
   warrantyMonths: 36,
-  planTemplate: null,
-  features: { today: true, cash: true, profit: true, qrPdf: true },
+  planTemplate: null, planAuto: true,
+  features: { today: true, cash: true, profit: true, qrPdf: true, plan: true },
   followDays: 3,
 };
 const TRIGGERS = { sign: 'Khi chốt đơn', progress: 'Khi bắt đầu thi công', accept: 'Khi nghiệm thu, bàn giao', date: 'Theo ngày hẹn' };
@@ -985,20 +1002,46 @@ function orderTotal(o) {
 }
 /* ---------- lịch thanh toán theo đợt ---------- */
 const planTemplate = () => { const t = settings().planTemplate; return Array.isArray(t) && t.length ? t : DEFAULT_PLAN; };
-const newPlan = (tpl = planTemplate()) => tpl.map(r => ({ id: uid('d'), label: r.label || '', pct: Number(r.pct) || 0, trigger: TRIGGERS[r.trigger] ? r.trigger : 'date' }));
-const planPctSum = plan => (plan || []).slice(0, -1).reduce((s, r) => s + (Number(r.pct) || 0), 0);
+/* mỗi đợt tính theo % (mặc định) hoặc số tiền cố định (fixed + amt); đợt cuối luôn lấy phần còn lại */
+const planRow = r => ({ id: r.id || uid('d'), label: r.label || '', pct: Number(r.pct) || 0, trigger: TRIGGERS[r.trigger] ? r.trigger : 'date', ...(r.fixed ? { fixed: true, amt: Math.max(0, Math.round(Number(r.amt) || 0)) } : {}) });
+const newPlan = (tpl = planTemplate()) => tpl.map(r => planRow({ ...r, id: '' }));
+const planCopy = (plan, keepId = true) => (plan || []).map(r => planRow({ ...r, id: keepId ? r.id : '' }));
+const PLAN_PRESETS = {
+  '2': { label: '2 đợt', rows: [{ label: 'Đặt cọc khi ký hợp đồng', pct: 50, trigger: 'sign' }, { label: 'Sau nghiệm thu, bàn giao', pct: 0, trigger: 'accept' }] },
+  '3': { label: '3 đợt', rows: DEFAULT_PLAN },
+  '4': { label: '4 đợt', rows: [{ label: 'Đặt cọc khi ký hợp đồng', pct: 30, trigger: 'sign' }, { label: 'Khi bắt đầu sản xuất, thi công', pct: 30, trigger: 'progress' }, { label: 'Khi lắp đặt xong', pct: 30, trigger: 'date' }, { label: 'Sau nghiệm thu, bàn giao', pct: 0, trigger: 'accept' }] },
+};
+const planPctSum = plan => (plan || []).slice(0, -1).reduce((s, r) => s + (r.fixed ? 0 : Number(r.pct) || 0), 0);
 function planAmounts(plan, total) {
   const rows = plan || []; let used = 0;
   return rows.map((r, i) => {
     const last = i === rows.length - 1;
     let amount;
     if (last) amount = total - used;
-    else { amount = Math.round(total * (Number(r.pct) || 0) / 100); used += amount; }
+    else { amount = r.fixed ? Math.round(Number(r.amt) || 0) : Math.round(total * (Number(r.pct) || 0) / 100); used += amount; }
     return { ...r, n: i + 1, last, amount: Math.max(0, amount), raw: amount };
   });
 }
+/* các đợt trước đã chiếm hết giá trị đơn → đợt cuối bằng 0 */
+function planOver(plan, total) {
+  if (!plan || plan.length < 2) return false;
+  if (!(total > 0)) return planPctSum(plan) >= 100;
+  return planAmounts(plan, total)[plan.length - 1].raw <= 0;
+}
+function planWarnText(plan, total) {
+  if (!(total > 0)) return `Các đợt trước đã chiếm ${QF.format(planPctSum(plan))}%. Đợt cuối sẽ bằng 0, hãy giảm bớt.`;
+  const used = planAmounts(plan, total).slice(0, -1).reduce((s, r) => s + r.raw, 0);
+  return `Các đợt trước đã chiếm ${money(used)} đ, bằng hoặc hơn giá trị ${money(total)} đ. Đợt cuối sẽ bằng 0, hãy giảm bớt.`;
+}
+/* Không chia đợt (tắt cho đơn này, hoặc tắt cả tính năng): coi như một khoản thu một lần, đến hạn khi nghiệm thu hoặc theo ngày hẹn */
+const usePlan = o => feat('plan') && Array.isArray(o.plan) && o.plan.length > 0;
+const effPlan = o => (usePlan(o) ? o.plan : [{ id: 'all', label: 'Thanh toán phần còn lại', pct: 0, trigger: 'accept', due: o.payDue || '', one: true }]);
+const quotePlan = q => (feat('plan') && Array.isArray(q?.plan) ? q.plan : []);
+const dotLabel = r => (r.one ? 'Thanh toán' : 'Đợt ' + r.n);
+const dotName = r => (r.one ? 'tiền còn lại' : 'đợt ' + r.n);
+const payNote = r => (r.one ? 'Thanh toán phần còn lại' : `Thanh toán đợt ${r.n}: ${r.label || ''}`);
 /* Tỷ lệ % tính trên giá trị báo giá đã chốt; phát sinh đã xác nhận cộng/trừ vào đợt cuối */
-function orderPlanAmounts(o, plan = o.plan) {
+function orderPlanAmounts(o, plan = effPlan(o)) {
   const v = lastVersion(o);
   const rows = planAmounts(plan, v ? v.total : orderTotal(o));
   if (!rows.length) return rows;
@@ -1018,7 +1061,7 @@ function triggerReached(o, r) {
   return false;
 }
 function planStatus(o) {
-  if (!isClosed(o) || !(o.plan && o.plan.length)) return [];
+  if (!isClosed(o)) return [];
   const T = today();
   let pool = orderPaid(o);
   return orderPlanAmounts(o).map(r => {
@@ -1036,7 +1079,7 @@ const nextInstallment = o => planStatus(o).find(r => r.left > 0) || null;
 const overdueAmount = o => planStatus(o).filter(r => r.state === 'overdue').reduce((s, r) => s + r.left, 0);
 const dueNowAmount = o => planStatus(o).filter(r => r.state === 'overdue' || r.state === 'due').reduce((s, r) => s + r.left, 0);
 function mergePlan(oldPlan, newPlanRows) {
-  return (newPlanRows || []).map(r => { const old = (oldPlan || []).find(x => x.id === r.id); return { ...r, due: old?.due || r.due || '', reached: old?.reached || false }; });
+  return (newPlanRows || []).map(r => { const old = (oldPlan || []).find(x => x.id === r.id); return { ...planRow(r), due: old?.due || r.due || '', reached: old?.reached || false }; });
 }
 function normalizeOrder(o) {
   for (const k of ['payments', 'changes', 'attachments', 'notes', 'log', 'versions']) if (!Array.isArray(o[k])) o[k] = [];
@@ -1078,7 +1121,7 @@ function valueEvents(o) {
 }
 function newQuote() {
   const st = settings();
-  return { date: today(), customer: { name: '', phone: '', address: '' }, project: '', rows: [], discount: { type: 'amount', value: 0 }, note: st.defaultNote || '', terms: st.defaultTerms || '', plan: newPlan() };
+  return { date: today(), customer: { name: '', phone: '', address: '' }, project: '', rows: [], discount: { type: 'amount', value: 0 }, note: st.defaultNote || '', terms: st.defaultTerms || '', plan: feat('plan') && st.planAuto !== false ? newPlan() : [] };
 }
 const newRow = (p = {}) => ({ id: uid('r'), name: '', material: '', unit: 'm²', qty: 0, price: 0, dims: null, ...p });
 function nextCode() {
@@ -1696,7 +1739,7 @@ function loadImg(src) {
 }
 
 function layoutQuote(d) {
-  const { q, st, code, label, logo, sign, signImg, qr, pay } = d;
+  const { q, st, code, label, logo, sign, signImg, qr, pay, plan: planIn } = d;
   const t = quoteTotals(q);
   const R = PG.W - PG.MR, CW = PG.W - PG.ML - PG.MR;
   const pages = []; let ops, y;
@@ -1840,7 +1883,7 @@ function layoutQuote(d) {
     y += 1.5;
   };
   /* --- lịch thanh toán + mã QR đợt 1 --- */
-  const plan = pay && pay.plan ? pay.plan : planAmounts(q.plan, t.total);
+  const plan = pay && pay.plan ? pay.plan : planIn || planAmounts(quotePlan(q), t.total);
   if (plan.length) {
     const qrW = qr ? 34 : 0, tw = CW - (qr ? qrW + 6 : 0);
     const planH = 6 + 7 + plan.length * 6.4 + 2;
@@ -1860,7 +1903,7 @@ function layoutQuote(d) {
       const lab = wrapMM(r.label || '', 400, 9, pc[1].w - 3.6)[0] || '';
       text(cx2(pc[1]), y + 4.4, lab, 400, 9, PC.ink);
       const done = r.paid > 0 && r.left <= 0, part = r.paid > 0 && r.left > 0;
-      const pct = done ? 'Đã thu' : part ? 'Còn ' + money(r.left) : r.last ? 'Còn lại' : QF.format(Number(r.pct) || 0) + '%';
+      const pct = done ? 'Đã thu' : part ? 'Còn ' + money(r.left) : r.last ? 'Còn lại' : r.fixed ? '–' : QF.format(Number(r.pct) || 0) + '%';
       text(cx2(pc[2]), y + 4.4, pct, done ? 600 : 400, part ? 8 : 9, done ? PC.ok : PC.muted, 'right');
       text(cx2(pc[3]), y + 4.4, money(r.amount) + ' đ', 600, 9, done ? PC.muted : PC.ink, 'right');
       y += 6.4; line(PG.ML, y, PG.ML + tw, y, PC.line, 0.25);
@@ -1875,6 +1918,20 @@ function layoutQuote(d) {
       y = Math.max(y, qy + 1);
     }
     y += 2;
+  } else if (qr) {
+    /* không chia đợt: một khối mã QR cho số còn phải thanh toán */
+    const qrW = 30;
+    if (y + qrW + 12 > PG.BOTTOM) newPage(false);
+    y += 2;
+    text(PG.ML, y + asc(8), 'CHUYỂN KHOẢN NHANH', 700, 8, PC.brown); y += lhmm(8) + 1;
+    const top0 = y, qx = R - qrW, tw = CW - qrW - 8;
+    ops.push({ t: 'qr', m: qr.matrix, x: qx, y: top0, w: qrW });
+    let ty = top0 + 1;
+    for (const l of wrapMM('Mở app ngân hàng, chọn quét mã QR. Số tiền và nội dung chuyển khoản đã được điền sẵn.', 400, 9.5, tw)) { text(PG.ML, ty + asc(9.5), l, 400, 9.5, PC.ink); ty += lhmm(9.5); }
+    ty += 1.5;
+    text(PG.ML, ty + asc(9), 'Số tiền: ' + money(qr.amount) + ' đ', 700, 9, PC.ink); ty += lhmm(9) + 0.6;
+    text(PG.ML, ty + asc(9), 'Nội dung: ' + qr.memo, 400, 9, PC.muted); ty += lhmm(9);
+    y = Math.max(ty, top0 + qrW) + 3;
   }
   para('Ghi chú', q.note);
   para('Điều khoản thanh toán', q.terms);
@@ -2002,7 +2059,9 @@ async function renderQuotePages(o, src) {
   /* bản đang dùng (bản chốt mới nhất hoặc bản đang sửa): trừ tiền khách đã trả */
   const cur = src === 'draft' || !o.versions.length || String(src) === String(lastVersion(o).no) || !o.versions.some(v => String(v.no) === String(src));
   const total = quoteTotals(q).total;
-  let pay = null, plan = planAmounts(q.plan, total);
+  /* bản đang dùng của đơn đã chốt: theo lịch của đơn (có thể đã sửa hoặc bỏ chia đợt sau khi chốt) */
+  const live = cur && src !== 'draft' && isClosed(o);
+  let pay = null, plan = planAmounts(live ? (usePlan(o) ? o.plan : []) : quotePlan(q), total);
   if (cur && ((o.payments || []).length || confirmedChanges(o))) {
     const pays = [...(o.payments || [])].sort((a, b) => String(a.date).localeCompare(String(b.date)));
     const paid = pays.reduce((sum, x) => sum + (Number(x.amount) || 0), 0), chg = confirmedChanges(o);
@@ -2013,10 +2072,11 @@ async function renderQuotePages(o, src) {
     const grand = total + chg;
     pay = { pays, paid, chg, due: Math.max(0, grand - paid), over: Math.max(0, paid - grand), plan };
   }
-  const nx = plan.find(r => (r.left ?? r.amount) > 0);
+  /* không chia đợt: đơn đã chốt thì in mã QR cho toàn bộ số còn phải thu */
+  const nx = plan.length ? plan.find(r => (r.left ?? r.amount) > 0) : live ? { one: true, n: 0, amount: pay ? pay.due : total + confirmedChanges(o) } : null;
   const qr = nx && feat('qrPdf') ? orderQR(o, nx.left ?? nx.amount, nx.n) : null;
-  if (qr) qr.n = nx.n;
-  const pages = layoutQuote({ q, st, code: o.code, label, logo, sign, signImg, qr, pay });
+  if (qr) { qr.n = nx.n; qr.one = !!nx.one; }
+  const pages = layoutQuote({ q, st, code: o.code, label, logo, sign, signImg, qr, pay, plan });
   const out = await rasterize(pages, { w: PG.W, h: PG.H }, [st.shopName, st.phone].filter(Boolean).join(' · '));
   return { pages: out, q, label, size: { w: PG.W, h: PG.H }, title: `Báo giá ${o.code}${label ? ' - ' + label : ''} - ${q.customer?.name || ''}` };
 }
@@ -2044,7 +2104,7 @@ async function renderReceipt(o, p) {
 }
 async function renderPayRequest(o, r) {
   const st = settings(), logo = await loadImg(st.logo), h = headQuote(o);
-  const qr = orderQR(o, r.left, r.n);
+  const qr = orderQR(o, r.left, r.one ? 0 : r.n);
   const d = makeDoc(A5L);
   docHeader(d, st, logo, 'ĐỀ NGHỊ THANH TOÁN', [['Đơn: ' + o.code, 600], ['Ngày: ' + fmtDate(today())]]);
   const qrW = qr ? 52 : 0, top = d.y, maxW = d.CW - (qr ? qrW + 8 : 0);
@@ -2056,7 +2116,7 @@ async function renderPayRequest(o, r) {
   };
   kv('Kính gửi', h.customer.name, true);
   kv('Công trình', [h.project, h.customer.address].filter(Boolean).join(' – '));
-  kv('Nội dung', `Thanh toán đợt ${r.n}: ${r.label}`);
+  kv('Nội dung', payNote(r));
   kv('Số tiền', moneyD(r.left), true, 13, PC.brown);
   kv('Bằng chữ', moneyWords(r.left));
   if (qr) {
@@ -2071,7 +2131,7 @@ async function renderPayRequest(o, r) {
   d.y = Math.max(d.y, qr ? top + qrW + 8 : 0) + 2;
   d.text(PG.ML, d.y + 3, `Tổng giá trị đơn: ${moneyD(orderTotal(o))} · Đã thu: ${moneyD(orderPaid(o))} · Còn phải thu: ${moneyD(orderDue(o))}`, 400, 8.5, PC.muted);
   const out = await rasterize(d.pages, A5L, [st.shopName, st.phone].filter(Boolean).join(' · '));
-  return { pages: out, size: A5L, title: `Đề nghị thanh toán ${o.code} đợt ${r.n}`, filename: `De-nghi-thanh-toan-${o.code}-dot-${r.n}.pdf` };
+  return { pages: out, size: A5L, title: `Đề nghị thanh toán ${o.code} ${dotName(r)}`, filename: `De-nghi-thanh-toan-${o.code}-${r.one ? 'con-lai' : 'dot-' + r.n}.pdf` };
 }
 async function renderHandover(o) {
   const st = settings(), hv = o.handover, v = lastVersion(o), q = v.quote;
@@ -2382,7 +2442,7 @@ function filteredOrders() {
 function nextLine(o) {
   const nx = nextInstallment(o);
   if (!nx) return '';
-  return `<div class="oc-next st-${nx.state}"><span class="pill ${PLAN_STATE[nx.state].cls}">${PLAN_STATE[nx.state].label}</span><span>Đợt ${nx.n}: ${money(nx.left)}${nx.due ? ' · hạn ' + fmtDate(nx.due) : ''}</span></div>`;
+  return `<div class="oc-next st-${nx.state}"><span class="pill ${PLAN_STATE[nx.state].cls}">${PLAN_STATE[nx.state].label}</span><span>${dotLabel(nx)}: ${money(nx.left)}${nx.due ? ' · hạn ' + fmtDate(nx.due) : ''}</span></div>`;
 }
 function localBanner() {
   if (!Store.backend.persistent) return `<div class="notice bad banner">${ic('info')}<div><b>Trình duyệt đang chặn lưu dữ liệu</b> (có thể do chế độ riêng tư). Dữ liệu sẽ mất khi đóng app.</div></div>`;
@@ -2464,7 +2524,7 @@ function renderEditor(o) {
       </section>
       <div class="ed-bottom">
         <div class="stack">
-          ${sect('qplan', 'Lịch thanh toán', `<span id="qplan-sum">${esc(planSummary(q.plan))}</span>`, `<div id="plan-card" data-plan-scope="quote" data-nohead="1">${planEditor(q.plan, quoteTotals(q).total, 'quote', true)}</div>`)}
+          ${feat('plan') ? sect('qplan', 'Lịch thanh toán', `<span id="qplan-sum">${esc(planSummary(q.plan))}</span>`, `<div id="plan-card" data-plan-scope="quote" data-nohead="1">${planEditor(q.plan, quoteTotals(q).total, 'quote', true)}</div>`) : ''}
           ${sect('qnotes', 'Ghi chú & điều khoản', esc(String(q.note || q.terms || 'Chưa có').slice(0, 60)), `<div class="stack">
             <div class="field"><label for="qf-note">Ghi chú</label><textarea class="in" id="qf-note" data-qf="note" rows="3" placeholder="VD: Báo giá có hiệu lực 15 ngày.">${esc(q.note)}</textarea></div>
             <div class="field"><label for="qf-terms">Điều khoản thanh toán</label><textarea class="in" id="qf-terms" data-qf="terms" rows="3" placeholder="VD: Đặt cọc khi chốt, thanh toán phần còn lại khi bàn giao.">${esc(q.terms)}</textarea></div></div>`)}
@@ -2493,32 +2553,41 @@ function refreshTotals(o) {
 }
 /* ---------- lịch thanh toán: trình soạn dùng chung (báo giá / mẫu / đơn đã chốt) ---------- */
 function planSummary(plan) {
-  if (!plan || !plan.length) return 'Chưa có';
-  return plan.length + ' đợt · ' + plan.map((r, i) => (i === plan.length - 1 ? 'còn lại' : QF.format(Number(r.pct) || 0) + '%')).join(' / ');
+  if (!plan || !plan.length) return 'Không chia đợt';
+  return plan.length + ' đợt · ' + plan.map((r, i) => (i === plan.length - 1 ? 'còn lại' : r.fixed ? shortMoney(r.amt || 0) : QF.format(Number(r.pct) || 0) + '%')).join(' / ');
+}
+function planPresetBar(scope) {
+  const b = (k, l) => `<button class="btn sm" data-act="plan-preset" data-p="${k}">${l}</button>`;
+  return `<div class="plan-presets"><span class="muted">Chọn nhanh</span>${scope === 'tpl' ? '' : b('tpl', 'Mẫu của tôi')}${Object.entries(PLAN_PRESETS).map(([k, p]) => b(k, p.label)).join('')}</div>`;
 }
 function planEditor(plan, total, scope = 'quote', nohead = false) {
-  const tplBtn = scope === 'tpl' ? `<button class="btn sm" data-act="plan-tpl">Khôi phục mặc định</button>` : `<button class="btn sm" data-act="plan-tpl">Dùng mẫu</button>`;
-  const head = nohead ? `<div class="card-h" style="justify-content:flex-end;margin-bottom:6px">${tplBtn}</div>` : `<div class="card-h"><h3>Lịch thanh toán</h3>${tplBtn}</div>`;
-  if (!plan || !plan.length) return head + `<p class="muted">Chưa có lịch thanh toán. <button class="linkbtn" data-act="plan-tpl">Tạo theo mẫu</button></p>`;
+  const on = !!(plan && plan.length), noamt = total == null;
+  const head = nohead ? '' : `<div class="card-h"><h3>Lịch thanh toán</h3></div>`;
+  const sw = scope === 'tpl'
+    ? `<label class="feat plan-sw"><span><b>Báo giá mới tự chia đợt theo mẫu này</b><small>Tắt thì báo giá mới không chia đợt; vẫn bật được riêng trong từng báo giá.</small></span><input type="checkbox" class="switch" data-plan-auto ${settings().planAuto !== false ? 'checked' : ''} aria-label="Báo giá mới tự chia đợt"></label>`
+    : `<label class="feat plan-sw"><span><b>Chia thành nhiều đợt</b><small>${on ? 'Mỗi đợt tính theo % hoặc số tiền cố định. Đợt cuối tự lấy phần còn lại.' : 'Đang tắt: khách trả một lần hoặc trả dần tùy ý, app chỉ theo dõi còn phải thu bao nhiêu.'}</small></span><input type="checkbox" class="switch" data-plan-on ${on ? 'checked' : ''} aria-label="Chia thành nhiều đợt"></label>`;
+  if (!on) return head + sw + (scope === 'tpl' ? planPresetBar(scope) : '');
   const ord = scope === 'order' ? curOrder() : null;
-  const rows = total == null ? plan.map((r, i) => ({ ...r, n: i + 1, last: i === plan.length - 1 })) : ord ? orderPlanAmounts(ord, plan) : planAmounts(plan, total);
-  const sum = planPctSum(plan);
-  return head + `<div class="plan-rows">${rows.map(r => `
-    <div class="prow ${total == null ? 'noamt' : ''}" data-prow="${r.id}">
+  const rows = noamt ? plan.map((r, i) => ({ ...r, n: i + 1, last: i === plan.length - 1 })) : ord ? orderPlanAmounts(ord, plan) : planAmounts(plan, total);
+  const over = planOver(plan, total);
+  return head + sw + planPresetBar(scope) + `<div class="plan-rows">${rows.map(r => `
+    <div class="prow ${noamt ? 'noamt' : ''}" data-prow="${r.id}">
       <span class="pno">Đợt ${r.n}</span>
       <input class="in pl" id="pl-${r.id}" data-pf="label" value="${esc(r.label)}" placeholder="Nội dung đợt" aria-label="Nội dung đợt ${r.n}" autocomplete="off">
       <select class="in pt" id="pt-${r.id}" data-pf="trigger" aria-label="Mốc thu đợt ${r.n}">${Object.entries(TRIGGERS).map(([k, l]) => `<option value="${k}" ${k === r.trigger ? 'selected' : ''}>${l}</option>`).join('')}</select>
-      ${r.last ? `<span class="ppct rest">Còn lại</span>` : `<div class="ppct"><input class="in num" id="pp-${r.id}" data-pf="pct" inputmode="decimal" value="${r.pct ? QF.format(r.pct) : ''}" placeholder="0" aria-label="Tỷ lệ đợt ${r.n}" autocomplete="off"><span>%</span></div>`}
-      ${total == null ? '' : `<b class="pamt" data-pamt>${money(r.amount)}</b>`}
+      ${r.last ? `<span class="ppct rest">Còn lại</span>` : `<div class="ppct">${r.fixed
+        ? `<input class="in num" id="pa-${r.id}" data-pf="amt" data-money inputmode="numeric" value="${r.amt ? money(r.amt) : ''}" placeholder="0" aria-label="Số tiền đợt ${r.n}" autocomplete="off">`
+        : `<input class="in num" id="pp-${r.id}" data-pf="pct" inputmode="decimal" value="${r.pct ? QF.format(r.pct) : ''}" placeholder="0" aria-label="Tỷ lệ đợt ${r.n}" autocomplete="off">`}<button class="unit" data-act="plan-unit" data-id="${r.id}" title="Đổi giữa % và số tiền" aria-label="Đợt ${r.n} đang tính theo ${r.fixed ? 'số tiền' : 'phần trăm'}, bấm để đổi">${r.fixed ? 'đ' : '%'}</button></div>`}
+      ${noamt ? '' : `<b class="pamt" data-pamt>${money(r.amount)}</b>`}
       <button class="iconbtn" data-act="plan-del" data-id="${r.id}" aria-label="Xóa đợt ${r.n}" ${plan.length <= 1 ? 'disabled' : ''}>${ic('trash')}</button>
     </div>`).join('')}</div>
-    <p class="err" data-planwarn ${sum >= 100 ? '' : 'hidden'}>Các đợt trước đã chiếm ${QF.format(sum)}%. Đợt cuối sẽ bằng 0, hãy giảm tỷ lệ.</p>
-    <div class="addbar"><button class="btn sm" data-act="plan-add">${ic('plus')}Thêm đợt</button><span class="muted plan-hint">Đợt cuối tự lấy phần còn lại${scope === 'tpl' ? '' : ', gồm cả phát sinh'}.</span></div>`;
+    <p class="err" data-planwarn ${over ? '' : 'hidden'}>${over ? esc(planWarnText(plan, total)) : ''}</p>
+    <div class="addbar"><button class="btn sm" data-act="plan-add">${ic('plus')}Thêm đợt</button><span class="muted plan-hint">Bấm % / đ để đổi cách tính. Đợt cuối tự lấy phần còn lại${scope === 'tpl' ? '' : ', gồm cả phát sinh'}.</span></div>`;
 }
 function refreshPlanBox(box, plan, total) {
   if (!box || !plan) return;
-  const sum = planPctSum(plan);
-  const w = box.querySelector('[data-planwarn]'); if (w) { w.hidden = sum < 100; w.textContent = `Các đợt trước đã chiếm ${QF.format(sum)}%. Đợt cuối sẽ bằng 0, hãy giảm tỷ lệ.`; }
+  const over = planOver(plan, total);
+  const w = box.querySelector('[data-planwarn]'); if (w) { w.hidden = !over; w.textContent = over ? planWarnText(plan, total) : ''; }
   const sm = document.getElementById(box.dataset.planScope === 'tpl' ? 'tpl-sum' : 'qplan-sum'); if (sm) sm.textContent = planSummary(plan);
   if (total == null) return;
   const ord = box.dataset.planScope === 'order' ? curOrder() : null;
@@ -2541,9 +2610,18 @@ function planInput(el) {
   const row = ctx.plan.find(r => r.id === el.closest('[data-prow]')?.dataset.prow); if (!row) return;
   const f = el.dataset.pf;
   if (f === 'pct') row.pct = Math.min(parseQty(el.value), 100);
+  else if (f === 'amt') row.amt = parseMoney(el.value);
   else row[f] = el.value;
   refreshPlanBox(ctx.box, ctx.plan, ctx.total);
   ctx.save();
+}
+/* bật/tắt chia đợt: tắt thì cất lịch lại, bật lại sẽ lấy về */
+function planToggle(el) {
+  const ctx = planCtx(el); if (!ctx) return;
+  const q = ctx.scope === 'quote' ? curOrder()?.draft : null;
+  if (el.checked) { const bak = q ? q.planBak : S.planBak; ctx.plan = bak && bak.length ? planCopy(bak) : newPlan(); }
+  else { if (q) q.planBak = planCopy(ctx.plan); else S.planBak = planCopy(ctx.plan); ctx.plan = []; }
+  rerenderPlan(ctx);
 }
 function rerenderPlan(ctx) { ctx.box.innerHTML = planEditor(ctx.plan, ctx.total, ctx.scope, ctx.box.dataset.nohead === '1'); const sm = document.getElementById(ctx.scope === 'tpl' ? 'tpl-sum' : 'qplan-sum'); if (sm) sm.textContent = planSummary(ctx.plan); ctx.save(0); }
 function refreshRows(o) {
@@ -2680,7 +2758,7 @@ function validateQuote(q) {
 }
 function closeQuoteSheet(o) {
   const q = o.draft, errs = validateQuote(q), t = quoteTotals(q), isRev = o.versions.length > 0, prev = lastVersion(o);
-  const plan = planAmounts(q.plan, t.total), first = plan[0];
+  const plan = planAmounts(quotePlan(q), t.total), first = plan[0];
   if (errs.length) {
     openSheet({ title: 'Chưa chốt được', html: `<p>Hãy sửa các điểm sau rồi chốt lại:</p><ul class="err">${errs.map(e => `<li>${esc(e)}</li>`).join('')}</ul>`, foot: `<button class="btn primary" data-sa="close">Đã hiểu</button>` });
     return;
@@ -2689,7 +2767,7 @@ function closeQuoteSheet(o) {
     title: isRev ? `Chốt bản ${o.versions.length + 1}` : 'Chốt đơn', cls: 'wide',
     html: `<div><div class="muted">${esc(q.customer.name)}${q.project ? ' · ' + esc(q.project) : ''}</div><div class="big-money">${moneyD(t.total)}</div>
       ${isRev ? `<div class="calcline" style="margin-top:8px">Bản ${prev.no}: ${moneyD(prev.total)} → bản ${o.versions.length + 1}: <b>${moneyD(t.total)}</b><br><span class="muted">Chênh lệch ${signed(t.total - prev.total)} đ, tính vào giá trị đơn từ ngày chốt bản mới.</span></div>` : ''}</div>
-      ${plan.length ? `<div class="plan-mini">${plan.map(r => `<div><span>Đợt ${r.n} · ${esc(r.label)}</span><b>${money(r.amount)}</b></div>`).join('')}</div>` : `<p class="muted">Báo giá chưa có lịch thanh toán theo đợt.</p>`}
+      ${plan.length ? `<div class="plan-mini">${plan.map(r => `<div><span>Đợt ${r.n} · ${esc(r.label)}</span><b>${money(r.amount)}</b></div>`).join('')}</div>` : `<p class="muted">Không chia đợt: khách trả một lần hoặc trả dần tùy ý. Có thể chia đợt sau trong trang đơn.</p>`}
       <div class="fgrid">
         <div class="field"><label for="cl-date">Ngày chốt</label>${dateField('cl-date', today())}</div>
         ${isRev ? '' : `<div class="field"><label for="cl-dep">Khách đặt cọc (nếu có)</label>${moneyInput('cl-dep', 0, 'placeholder="0"')}</div>`}
@@ -2760,7 +2838,7 @@ function copyQuoteToNew(src, fromCode) {
   const q = clone(src), from = curOrder(), idMap = {};
   q.date = today();
   q.rows = q.rows.map(r => { const id = uid('r'); idMap[r.id] = id; return { ...r, id }; });
-  q.plan = Array.isArray(q.plan) && q.plan.length ? q.plan.map(r => ({ id: uid('d'), label: r.label, pct: r.pct, trigger: r.trigger })) : newPlan();
+  q.plan = Array.isArray(q.plan) ? planCopy(q.plan, false) : newPlan(); delete q.planBak;
   const o = createOrderFrom(q);
   if (from) carryRowCosts(from.id, o.id, idMap);
   o.log = [{ id: uid('l'), at: new Date().toISOString(), text: 'Sao chép từ báo giá ' + fromCode }];
@@ -2834,7 +2912,7 @@ function renderDetail(o) {
     <div class="bignums">
       <div class="bignum"><span>Tổng giá trị</span><b>${money(total)}</b><small>${chg ? `Báo giá ${money(v.total)} ${chg > 0 ? '+' : '−'} phát sinh ${money(Math.abs(chg))}` : 'theo báo giá đã chốt'}</small></div>
       <div class="bignum paid"><span>Đã thu</span><b>${money(paid)}</b><small>${o.payments.length} lần thanh toán</small></div>
-      <div class="bignum ${due ? 'due' : ''}"><span>Còn phải thu</span><b>${money(due)}</b><small>${due ? (nx ? `Đợt ${nx.n}: ${money(nx.left)} · ${PLAN_STATE[nx.state].label.toLowerCase()}` : 'tính đến ' + fmtDate(today())) : 'Đã thu đủ'}</small></div>
+      <div class="bignum ${due ? 'due' : ''}"><span>Còn phải thu</span><b>${money(due)}</b><small>${due ? (nx ? `${dotLabel(nx)}: ${money(nx.left)} · ${PLAN_STATE[nx.state].label.toLowerCase()}` : 'tính đến ' + fmtDate(today())) : 'Đã thu đủ'}</small></div>
     </div>
     ${over ? `<div class="notice" style="margin-bottom:14px;background:var(--info-soft)">${ic('info')}<div>Khách đã trả <b>thừa ${moneyD(over)}</b> so với tổng giá trị đơn. Cần hoàn lại hoặc trừ vào phát sinh sau.</div></div>` : ''}
     ${teamDetailCards(o)}
@@ -2886,20 +2964,21 @@ function signedHtml(sg, title) {
   return `<div class="signed"><img src="${esc(sg.img)}" alt="Chữ ký của ${esc(sg.name)}"><div><b>${esc(title)}</b><div class="rsub">${esc(sg.name)} · ${fmtDateTime(new Date(sg.at))} · mã ${esc(sg.hash)}</div></div></div>`;
 }
 function planCardHtml(o) {
-  const rows = planStatus(o);
-  const head = `<div class="card-h"><h3>Lịch thanh toán</h3><button class="btn sm" data-act="plan-edit">${ic('edit')}${rows.length ? 'Sửa lịch' : 'Tạo lịch'}</button></div>`;
-  if (!rows.length) return `<section class="card">${head}<p class="muted">Đơn này chưa có lịch thanh toán theo đợt.</p></section>`;
+  const rows = planStatus(o), one = rows.length === 1 && rows[0].one;
+  const btn = feat('plan') ? `<button class="btn sm" data-act="plan-edit">${ic('edit')}${one ? 'Chia đợt' : 'Sửa lịch'}</button>` : '';
+  const head = `<div class="card-h"><h3>${one ? 'Thanh toán' : 'Lịch thanh toán'}</h3>${btn}</div>`;
+  if (!rows.length) return '';
   return `<section class="card">${head}<div class="rowlist">${rows.map(r => `
     <div class="ritem pd">
-      <div class="rmain"><b>Đợt ${r.n} · ${esc(r.label)}</b>
-        <div class="rsub">${r.last ? 'Phần còn lại' : QF.format(Number(r.pct) || 0) + '%'} · ${TRIGGERS[r.trigger] || ''}${r.paid && r.left ? ` · đã thu ${money(r.paid)}` : ''}</div>
+      <div class="rmain"><b>${r.one ? 'Không chia đợt · thu một lần' : `Đợt ${r.n} · ${esc(r.label)}`}</b>
+        <div class="rsub">${r.one ? 'Đến hạn khi nghiệm thu, bàn giao hoặc theo ngày hẹn' : `${r.last ? 'Phần còn lại' : r.fixed ? 'Số tiền cố định' : QF.format(Number(r.pct) || 0) + '%'} · ${TRIGGERS[r.trigger] || ''}`}${r.paid && r.left ? ` · đã thu ${money(r.paid)}` : ''}</div>
         <div class="pd-meta"><span class="pill ${PLAN_STATE[r.state].cls}">${PLAN_STATE[r.state].label}</span>
           ${r.state !== 'paid' ? `<label class="duechip" for="due-${r.id}">${ic('cal')}<span>${r.due ? 'Hạn ' + fmtDate(r.due) : 'Đặt hạn trả'}</span><input type="date" id="due-${r.id}" data-due="${r.id}" value="${esc(r.due || '')}"></label>` : ''}
         </div></div>
       <div class="ramt">${money(r.amount)}${r.left && r.paid ? `<div class="rsub">còn ${money(r.left)}</div>` : ''}</div>
-      ${r.left > 0 ? `<div class="pd-btns">${bankReady() ? `<button class="iconbtn line" data-act="plan-qr" data-n="${r.n}" aria-label="Mã QR đợt ${r.n}">${ic('qr')}</button>` : ''}<button class="btn sm primary" data-act="plan-pay" data-n="${r.n}">Thu</button></div>` : ''}
+      ${r.left > 0 ? `<div class="pd-btns">${bankReady() ? `<button class="iconbtn line" data-act="plan-qr" data-n="${r.n}" aria-label="Mã QR ${dotName(r)}">${ic('qr')}</button>` : ''}<button class="btn sm primary" data-act="plan-pay" data-n="${r.n}">Thu</button></div>` : ''}
     </div>`).join('')}</div>
-    ${bankReady() ? '' : `<p class="muted" style="font-size:14px;margin-top:8px">Nhập ngân hàng và số tài khoản trong <button class="linkbtn" data-act="tab" data-tab="settings">Cài đặt</button> để tạo mã VietQR cho từng đợt.</p>`}
+    ${bankReady() || !rows.some(r => r.left > 0) ? '' : `<p class="muted" style="font-size:14px;margin-top:8px">Nhập ngân hàng và số tài khoản trong <button class="linkbtn" data-act="tab" data-tab="settings">Cài đặt</button> để tạo mã VietQR.</p>`}
   </section>`;
 }
 function handoverCardHtml(o) {
@@ -2925,12 +3004,12 @@ function paySheet(o, preset = null) {
     title: can('pay') ? 'Ghi nhận thanh toán' : 'Báo đã thu tiền (chờ xác nhận)',
     html: `<p class="muted">${esc(headQuote(o).customer.name)} · còn phải thu <b>${moneyD(due)}</b></p>
       <div class="field"><label for="pay-amt">Số tiền</label>${moneyInput('pay-amt', preset ? preset.left : 0, 'placeholder="0" style="font-size:22px;font-weight:700"')}</div>
-      <div class="addbar" style="margin-top:-4px">${dueRows.map(r => `<button class="btn sm" data-sa="row" data-n="${r.n}">Đợt ${r.n}: ${money(r.left)}</button>`).join('')}${due && !dueRows.length ? `<button class="btn sm" data-sa="full">Thu đủ phần còn lại (${money(due)})</button>` : ''}</div>
+      <div class="addbar" style="margin-top:-4px">${dueRows.map(r => `<button class="btn sm" data-sa="row" data-n="${r.n}">${r.one ? `Thu đủ phần còn lại (${money(r.left)})` : `Đợt ${r.n}: ${money(r.left)}`}</button>`).join('')}${due && !dueRows.length ? `<button class="btn sm" data-sa="full">Thu đủ phần còn lại (${money(due)})</button>` : ''}</div>
       <p class="err" id="pay-warn" hidden></p>
       <div class="field"><span class="lbl">Hình thức</span><div class="seg" id="pay-method">${methodSeg('transfer')}</div></div>
       <div class="fgrid">
         <div class="field"><label for="pay-date">Ngày thanh toán</label>${dateField('pay-date', today())}</div>
-        <div class="field"><label for="pay-note">Nội dung</label><input class="in" id="pay-note" value="${preset ? esc(`Thanh toán đợt ${preset.n}: ${preset.label}`) : ''}" placeholder="VD: Thanh toán đợt 2" autocomplete="off"></div>
+        <div class="field"><label for="pay-note">Nội dung</label><input class="in" id="pay-note" value="${preset ? esc(payNote(preset)) : ''}" placeholder="VD: Thanh toán đợt 2" autocomplete="off"></div>
       </div>`,
     foot: `<button class="btn" data-sa="close">Hủy</button><button class="btn primary" data-sa="save">${ic('check')}Lưu thanh toán</button>`,
     onMount: el => {
@@ -2943,7 +3022,7 @@ function paySheet(o, preset = null) {
       const amt = el.querySelector('#pay-amt');
       if (a === 'm') { segPick(b); return; }
       if (a === 'full') { amt.value = money(due); amt.dispatchEvent(new Event('input', { bubbles: true })); return; }
-      if (a === 'row') { const r = dueRows.find(x => String(x.n) === b.dataset.n); amt.value = money(r.left); el.querySelector('#pay-note').value = `Thanh toán đợt ${r.n}: ${r.label}`; amt.dispatchEvent(new Event('input', { bubbles: true })); return; }
+      if (a === 'row') { const r = dueRows.find(x => String(x.n) === b.dataset.n); amt.value = money(r.left); el.querySelector('#pay-note').value = payNote(r); amt.dispatchEvent(new Event('input', { bubbles: true })); return; }
       if (a !== 'save') return;
       const v = parseMoney(amt.value);
       if (v <= 0) { toast('Hãy nhập số tiền lớn hơn 0.', 'bad'); amt.focus(); return; }
@@ -3137,28 +3216,30 @@ function handoverSheet(o) {
   });
 }
 function planEditSheet(o) {
-  S.planWork = clone(o.plan && o.plan.length ? o.plan : newPlan());
+  S.planWork = o.plan && o.plan.length ? planCopy(o.plan) : newPlan(); S.planBak = null;
   openSheet({
     title: 'Lịch thanh toán của đơn ' + o.code, cls: 'wide',
-    html: `<p class="muted">Tỷ lệ % tính trên báo giá đã chốt <b>${moneyD(lastVersion(o).total)}</b>. Phát sinh đã xác nhận (${signed(confirmedChanges(o))} đ) cộng vào đợt cuối. Đổi lịch nên báo trước cho khách.</p><div data-plan-scope="order" id="plan-edit-box">${planEditor(S.planWork, lastVersion(o).total, 'order')}</div>`,
+    html: `<p class="muted">Tỷ lệ % tính trên báo giá đã chốt <b>${moneyD(lastVersion(o).total)}</b>. Phát sinh đã xác nhận (${signed(confirmedChanges(o))} đ) cộng vào đợt cuối. Số tiền khách đã trả tự trừ dần từ đợt 1. Đổi lịch nên báo trước cho khách.</p><div data-plan-scope="order" id="plan-edit-box">${planEditor(S.planWork, lastVersion(o).total, 'order')}</div>`,
     foot: `<button class="btn" data-sa="close">Hủy</button><button class="btn primary" data-sa="ok">${ic('check')}Lưu lịch</button>`,
     onClick: (a, b, el) => {
       if (a !== 'ok') return;
-      if (planPctSum(S.planWork) >= 100) { toast('Các đợt trước đã chiếm từ 100% trở lên. Hãy giảm tỷ lệ.', 'bad'); return; }
-      o.plan = mergePlan(o.plan, S.planWork.map(r => ({ id: r.id, label: r.label, pct: r.pct, trigger: r.trigger, due: r.due || '' })));
-      addLog(o, 'Cập nhật lịch thanh toán: ' + orderPlanAmounts(o).map(r => `đợt ${r.n} ${money(r.amount)}`).join(', '));
-      touchOrder(o, 0); closeSheet(el); render(); toast('Đã lưu lịch thanh toán');
+      if (planOver(S.planWork, lastVersion(o).total)) { toast('Các đợt trước đã chiếm hết giá trị đơn. Hãy giảm bớt.', 'bad'); return; }
+      const had = usePlan(o);
+      o.plan = mergePlan(o.plan, planCopy(S.planWork));
+      if (!o.plan.length) addLog(o, had ? 'Bỏ chia đợt: khách thanh toán một lần' : 'Giữ thanh toán một lần, không chia đợt');
+      else addLog(o, 'Cập nhật lịch thanh toán: ' + orderPlanAmounts(o).map(r => `đợt ${r.n} ${money(r.amount)}`).join(', '));
+      touchOrder(o, 0); closeSheet(el); render(); toast(o.plan.length ? 'Đã lưu lịch thanh toán' : 'Đã chuyển sang thu một lần');
     },
   });
 }
 function qrSheet(o, r) {
-  const q = orderQR(o, r.left, r.n);
+  const q = orderQR(o, r.left, r.one ? 0 : r.n);
   if (!q) {
     openSheet({ title: 'Chưa tạo được mã QR', html: `<p>Hãy chọn ngân hàng và nhập số tài khoản trong Cài đặt trước.</p>`, foot: `<button class="btn" data-sa="close">Đóng</button><button class="btn primary" data-sa="go">Mở Cài đặt</button>`, onClick: (a, b, el) => { if (a === 'go') { closeSheet(el); while (sheets.length) closeSheet(); S.tab = 'settings'; render(); } } });
     return;
   }
   openSheet({
-    title: `Mã QR thanh toán đợt ${r.n}`,
+    title: `Mã QR thanh toán ${dotName(r)}`,
     html: `<div class="qrbox"><div id="qr-canvas"></div>
       <div class="big-money">${moneyD(r.left)}</div>
       <p>${esc(r.label || '')}</p>
@@ -3316,7 +3397,7 @@ function renderSettings() {
       </div>
       <div class="qrtest" id="qrtest">${qrTestHtml(s)}</div>
       <p class="muted" style="font-size:13px">Mã QR tạo ngay trong app theo chuẩn VietQR. Hãy chuyển thử 10.000 đ để kiểm tra đúng tài khoản trước khi dùng với khách.</p></div>`, { open: !bankReady(s) })}
-    ${sect('st-plan', 'Lịch thanh toán mẫu', `<span id="tpl-sum">${esc(planSummary(S.tplWork))}</span>`, `<div data-plan-scope="tpl" id="tpl-card" data-nohead="1">${planEditor(S.tplWork, null, 'tpl', true)}</div>`)}
+    ${feat('plan') ? sect('st-plan', 'Lịch thanh toán mẫu', `<span id="tpl-sum">${s.planAuto === false ? 'Báo giá mới không chia đợt' : esc(planSummary(S.tplWork))}</span>`, `<div data-plan-scope="tpl" id="tpl-card" data-nohead="1">${planEditor(S.tplWork, null, 'tpl', true)}</div>`) : ''}
     ${sect('st-def', 'Mặc định cho báo giá mới', `Bảo hành ${esc(s.warrantyMonths || 36)} tháng`, `<div class="stack">
       <div class="fgrid">${f('warrantyMonths', 'Bảo hành mặc định (tháng)', '36', 'number')}</div>
       <div class="field"><label for="st-defaultNote">Ghi chú mặc định</label><textarea class="in" id="st-defaultNote" data-sf="defaultNote" placeholder="VD: Báo giá có hiệu lực 15 ngày.">${esc(s.defaultNote)}</textarea></div>
@@ -3467,7 +3548,8 @@ const FEATS = [
   ['today', 'Màn Hôm nay', 'Gom việc cần làm: khoản quá hạn, đến hạn, báo giá cần gọi lại. Tắt thì mở app thẳng vào Đơn hàng.', () => true],
   ['cash', 'Sổ thu chi', 'Ghi khoản chi (vật tư, thợ, vận chuyển, quảng cáo…), thu khác; xem thu − chi và lãi thực tế từng đơn.', () => can('cash')],
   ['profit', 'Tính lãi từ giá nhập', 'Nhập giá nhập và vận chuyển để biết lãi dự kiến khi báo giá. Không in ra báo giá.', () => can('cost')],
-  ['qrPdf', 'Mã QR trên báo giá', 'In mã VietQR của đợt cần thu lên PDF và ảnh báo giá.', () => true],
+  ['plan', 'Lịch thanh toán chia đợt', 'Chia tiền theo đợt (cọc, tiến độ, bàn giao), nhắc khi đến hạn. Tắt thì mọi đơn thu một lần, chỉ theo dõi còn phải thu.', () => true],
+  ['qrPdf', 'Mã QR trên báo giá', 'In mã VietQR số tiền cần thu lên PDF và ảnh báo giá.', () => true],
 ];
 function appPrefsHtml() {
   let theme = 'auto'; try { theme = localStorage.getItem('snt-theme') || 'auto'; } catch (e) { theme = 'auto'; }
@@ -3850,7 +3932,7 @@ function applyReprice(o, items) {
     /* đơn đã chốt: tạo bản mới, mang theo giá nhập */
     const q = clone(lastVersion(o).quote), idMap = {};
     q.date = today(); q.rows = q.rows.map(r => { const id = uid('r'); idMap[r.id] = id; return { ...r, id }; });
-    if (!Array.isArray(q.plan) || !q.plan.length) q.plan = o.plan && o.plan.length ? o.plan.map(({ id, label, pct, trigger }) => ({ id, label, pct, trigger })) : newPlan();
+    q.plan = Array.isArray(o.plan) ? planCopy(o.plan) : Array.isArray(q.plan) ? q.plan : newPlan(); delete q.planBak;
     carryRowCosts(o.id, o.id, idMap);
     o.draft = q; created = true;
     items = items.map(x => ({ ...x, r: { ...x.r, id: idMap[x.r.id] } }));
@@ -3939,9 +4021,9 @@ function todoItemsRaw() {
     if (isClosed(o)) {
       for (const r of planStatus(o)) {
         if (r.left <= 0) continue;
-        if (r.state === 'overdue') items.push({ k: 'overdue', pri: 0, o, r, name, phone, title: `${name} · đợt ${r.n} quá hạn ${daysBetween(r.due, T)} ngày`, sub: `Còn ${money(r.left)} đ · hạn ${fmtDate(r.due)}` });
-        else if (r.state === 'due') items.push({ k: 'due', pri: 1, o, r, name, phone, title: `${name} · đến lúc thu đợt ${r.n}`, sub: `${money(r.left)} đ · ${esc(r.label)}${r.due ? ' · hạn ' + fmtDate(r.due) : ''}` });
-        else if (r.due && daysBetween(T, r.due) <= 3) items.push({ k: 'soon', pri: 2, o, r, name, phone, title: `${name} · đợt ${r.n} sắp đến hạn`, sub: `${money(r.left)} đ · hạn ${fmtDate(r.due)}` });
+        if (r.state === 'overdue') items.push({ k: 'overdue', pri: 0, o, r, name, phone, title: `${name} · ${dotName(r)} quá hạn ${daysBetween(r.due, T)} ngày`, sub: `Còn ${money(r.left)} đ · hạn ${fmtDate(r.due)}` });
+        else if (r.state === 'due') items.push({ k: 'due', pri: 1, o, r, name, phone, title: `${name} · đến lúc thu ${dotName(r)}`, sub: `${money(r.left)} đ · ${r.one ? 'đã nghiệm thu, bàn giao' : esc(r.label)}${r.due ? ' · hạn ' + fmtDate(r.due) : ''}` });
+        else if (r.due && daysBetween(T, r.due) <= 3) items.push({ k: 'soon', pri: 2, o, r, name, phone, title: `${name} · ${dotName(r)} sắp đến hạn`, sub: `${money(r.left)} đ · hạn ${fmtDate(r.due)}` });
       }
       if (o.status !== 'done' && lastVersion(o) && !lastVersion(o).sign && !o.demo) items.push({ k: 'sign', pri: 3, o, name, title: `${name} · khách chưa ký báo giá`, sub: `Bản ${lastVersion(o).no} · ${money(lastVersion(o).total)} đ` });
     } else if (o.draft) {
@@ -3967,7 +4049,7 @@ function contactBtns(phone) {
 }
 function todoRow(t) {
   let acts = '';
-  if (t.k === 'overdue' || t.k === 'due' || t.k === 'soon') acts = `${bankReady() ? `<button class="iconbtn line" data-act="todo-qr" data-id="${t.o.id}" data-n="${t.r.n}" aria-label="Mã QR đợt ${t.r.n}">${ic('qr')}</button>` : ''}${contactBtns(t.phone)}<button class="btn sm primary" data-act="todo-pay" data-id="${t.o.id}" data-n="${t.r.n}">Thu</button>`;
+  if (t.k === 'overdue' || t.k === 'due' || t.k === 'soon') acts = `${bankReady() ? `<button class="iconbtn line" data-act="todo-qr" data-id="${t.o.id}" data-n="${t.r.n}" aria-label="Mã QR ${dotName(t.r)}">${ic('qr')}</button>` : ''}${contactBtns(t.phone)}<button class="btn sm primary" data-act="todo-pay" data-id="${t.o.id}" data-n="${t.r.n}">Thu</button>`;
   else if (t.k === 'follow') acts = contactBtns(t.phone);
   else if (t.k === 'stale') acts = `<button class="btn sm" data-act="stale-list">Xem</button>`;
   else if (t.k === 'backup') acts = `<button class="btn sm" data-act="backup">Sao lưu</button>`;
@@ -4015,7 +4097,7 @@ function orderCard(o) {
   const total = orderTotal(o), due = orderDue(o), over = orderOver(o);
   const nx = isClosed(o) ? nextInstallment(o) : null;
   const right = isClosed(o) ? (over ? `<span class="info">thừa ${money(over)}</span>` : due ? `<span class="due">còn ${money(due)}</span>` : `<span class="zero">đã thu đủ</span>`) : `<span>${(o.draft?.rows || []).length} hạng mục</span>`;
-  const line3 = o.draft && isClosed(o) ? `<span class="oc-note warn">Đang sửa bản ${o.versions.length + 1}</span>` : nx && nx.state !== 'later' ? `<span class="oc-note ${nx.state === 'overdue' ? 'bad' : 'warn'}">Đợt ${nx.n} ${PLAN_STATE[nx.state].label.toLowerCase()}: ${money(nx.left)}${nx.due ? ' · hạn ' + fmtDate(nx.due) : ''}</span>` : '';
+  const line3 = o.draft && isClosed(o) ? `<span class="oc-note warn">Đang sửa bản ${o.versions.length + 1}</span>` : nx && nx.state !== 'later' ? `<span class="oc-note ${nx.state === 'overdue' ? 'bad' : 'warn'}">${dotLabel(nx)} ${PLAN_STATE[nx.state].label.toLowerCase()}: ${money(nx.left)}${nx.due ? ' · hạn ' + fmtDate(nx.due) : ''}</span>` : '';
   return `<button class="ocard" data-act="open-order" data-id="${o.id}" ${S.orderId === o.id ? 'aria-current="true"' : ''}>
     <span class="oc-dot ${st.cls}" title="${st.label}"></span>
     <span class="oc-body">
@@ -5369,7 +5451,7 @@ const ACTIONS = {
     const o = curOrder(); if (!o || o.draft) return;
     const q = clone(lastVersion(o).quote), idMap = {}; q.date = today(); q.rows = q.rows.map(r => { const id = uid('r'); idMap[r.id] = id; return { ...r, id }; });
     carryRowCosts(o.id, o.id, idMap);
-    if (!Array.isArray(q.plan) || !q.plan.length) q.plan = o.plan && o.plan.length ? o.plan.map(({ id, label, pct, trigger }) => ({ id, label, pct, trigger })) : newPlan();
+    q.plan = Array.isArray(o.plan) ? planCopy(o.plan) : Array.isArray(q.plan) ? q.plan : newPlan(); delete q.planBak;
     o.draft = q; addLog(o, `Bắt đầu sửa báo giá (bản ${o.versions.length + 1})`); touchOrder(o, 0);
     S.view = 'edit'; render(); toast(`Đã tạo bản ${o.versions.length + 1} để sửa. Bản cũ giữ nguyên.`);
   },
@@ -5449,13 +5531,25 @@ const ACTIONS = {
     const ok = await confirmBox({ title: 'Xóa đợt thanh toán?', text: `Xóa “${esc(r.label || 'đợt chưa đặt tên')}” khỏi lịch. Đợt cuối sẽ tự nhận phần tiền còn lại.`, ok: 'Xóa đợt', danger: true });
     if (!ok) return; ctx.plan = ctx.plan.filter(x => x.id !== r.id); rerenderPlan(ctx);
   },
-  'plan-tpl': async b => {
+  'plan-preset': async b => {
     const ctx = planCtx(b); if (!ctx) return;
-    if (ctx.plan && ctx.plan.length) {
-      const ok = await confirmBox({ title: ctx.scope === 'tpl' ? 'Khôi phục lịch mặc định?' : 'Thay bằng lịch mẫu?', text: ctx.scope === 'tpl' ? 'Mẫu sẽ về 3 đợt: 50% khi ký, 40% khi bắt đầu lắp đặt, phần còn lại sau nghiệm thu.' : 'Lịch thanh toán hiện tại của báo giá này sẽ được thay bằng lịch mẫu trong Cài đặt.', ok: 'Đồng ý' });
+    const k = b.dataset.p, src = k === 'tpl' ? planTemplate() : PLAN_PRESETS[k]?.rows; if (!src) return;
+    const sig = p => JSON.stringify((p || []).map(r => [r.label || '', r.fixed ? 'f' + (r.amt || 0) : Number(r.pct) || 0, r.trigger]));
+    const known = [planTemplate(), ...Object.values(PLAN_PRESETS).map(x => x.rows)].map(sig);
+    if (ctx.plan && ctx.plan.length && !known.includes(sig(ctx.plan))) {
+      const ok = await confirmBox({ title: 'Thay lịch đang có?', text: `Lịch bạn đã sửa sẽ được thay bằng mẫu “${k === 'tpl' ? 'Mẫu của tôi' : PLAN_PRESETS[k].label}”.`, ok: 'Thay' });
       if (!ok) return;
     }
-    ctx.plan = ctx.scope === 'tpl' ? newPlan(DEFAULT_PLAN) : newPlan(); rerenderPlan(ctx);
+    ctx.plan = newPlan(src); rerenderPlan(ctx);
+  },
+  'plan-unit': b => {
+    const ctx = planCtx(b); if (!ctx) return;
+    const r = ctx.plan.find(x => x.id === b.dataset.id); if (!r) return;
+    const amt = ctx.total > 0 ? planAmounts(ctx.plan, ctx.total).find(x => x.id === r.id)?.amount || 0 : 0;
+    if (r.fixed) { r.fixed = false; delete r.amt; if (ctx.total > 0) r.pct = Math.min(100, Math.round(amt / ctx.total * 1000) / 10); }
+    else { r.fixed = true; r.amt = amt; }
+    rerenderPlan(ctx);
+    setTimeout(() => softFocus(ctx.box.querySelector(`#${r.fixed ? 'pa' : 'pp'}-${r.id}`)), 30);
   },
   'plan-edit': () => { const o = curOrder(); o && planEditSheet(o); },
   'plan-qr': b => { const o = curOrder(), r = planStatus(o).find(x => String(x.n) === b.dataset.n); r && qrSheet(o, r); },
@@ -5537,6 +5631,12 @@ document.addEventListener('change', e => {
   const el = e.target;
   if (teamChange(el)) return;
   if (el.dataset && el.dataset.feat) { saveSettings({ features: { ...(settings().features || {}), [el.dataset.feat]: el.checked } }); render(); toast((el.checked ? 'Đã bật: ' : 'Đã tắt: ') + (FEATS.find(f => f[0] === el.dataset.feat) || [])[1]); return; }
+  if (el.hasAttribute('data-plan-on')) { planToggle(el); return; }
+  if (el.hasAttribute('data-plan-auto')) { saveSettings({ planAuto: el.checked }); render(); toast(el.checked ? 'Báo giá mới sẽ tự chia đợt theo mẫu' : 'Báo giá mới sẽ không chia đợt'); return; }
+  if (el.dataset.due === 'all') {
+    const o = curOrder(); if (!o) return;
+    o.payDue = el.value || ''; addLog(o, o.payDue ? `Hẹn ngày thu tiền còn lại: ${fmtDate(o.payDue)}` : 'Bỏ hạn thu tiền còn lại'); touchOrder(o, 0); render(); return;
+  }
   if (el.dataset.due) {
     const o = curOrder(), r = o?.plan?.find(x => x.id === el.dataset.due); if (!r) return;
     r.due = el.value || ''; const n = o.plan.indexOf(r) + 1;
