@@ -1,0 +1,100 @@
+PASS chưa đăng nhập: không đọc được đơn
+PASS người ngoài: không đọc được đơn
+PASS người ngoài: không xem được danh sách nhân viên
+PASS tài khoản bị khóa: không đọc được
+PASS chủ: đọc mọi đơn
+PASS kế toán: đọc mọi đơn
+PASS sale: đọc đơn mình
+PASS sale: không đọc đơn người khác
+PASS sale: lọc theo đơn mình thì được
+PASS sale: xem cả danh sách đơn thì bị chặn
+PASS sale khác: không đọc đơn của S1
+PASS sale: đọc đơn chưa tồn tại (bước tạo mới) được
+PASS thợ: không đọc được đơn có giá
+PASS thợ: không đọc được danh mục giá
+PASS thợ: không đọc được khách
+PASS thợ: đọc phiếu công việc được giao
+PASS sale khác: không đọc phiếu công việc của S1
+PASS sale: tạo đơn của mình
+[2026-10-30T03:26:35.509Z]  @firebase/firestore: Firestore (10.14.1): GrpcConnection RPC 'Write' stream 0x87a67bb6 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+evaluation error at L70:26 for 'create' @ L70, evaluation error at L71:26 for 'update' @ L71, false for 'create' @ L70
+PASS sale: không tạo đơn đứng tên người khác
+[2026-10-30T03:26:35.542Z]  @firebase/firestore: Firestore (10.14.1): GrpcConnection RPC 'Write' stream 0x87a67bb7 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+evaluation error at L70:26 for 'create' @ L70, evaluation error at L71:26 for 'update' @ L71, false for 'update' @ L71
+PASS sale: không tự ghi phiếu thu
+PASS sale: sửa ghi chú đơn mình
+[2026-10-30T03:26:35.628Z]  @firebase/firestore: Firestore (10.14.1): GrpcConnection RPC 'Write' stream 0x87a67bb9 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+evaluation error at L70:26 for 'create' @ L70, evaluation error at L71:26 for 'update' @ L71, false for 'update' @ L71
+PASS sale: không chuyển đơn cho người khác
+PASS kế toán: ghi thêm phiếu thu
+[2026-10-30T03:26:35.703Z]  @firebase/firestore: Firestore (10.14.1): GrpcConnection RPC 'Write' stream 0x87a67bbb error. Code: 7 Message: 7 PERMISSION_DENIED: 
+evaluation error at L70:26 for 'create' @ L70, evaluation error at L71:26 for 'update' @ L71, false for 'update' @ L71
+PASS kế toán: không xóa phiếu thu
+[2026-10-30T03:26:35.735Z]  @firebase/firestore: Firestore (10.14.1): GrpcConnection RPC 'Write' stream 0x87a67bbc error. Code: 7 Message: 7 PERMISSION_DENIED: 
+evaluation error at L74:26 for 'delete' @ L74, false for 'delete' @ L74
+PASS kế toán: không xóa đơn
+PASS chủ: xóa được phiếu thu ghi nhầm
+[2026-10-30T03:26:35.810Z]  @firebase/firestore: Firestore (10.14.1): GrpcConnection RPC 'Write' stream 0x87a67bbe error. Code: 7 Message: 7 PERMISSION_DENIED: 
+evaluation error at L84:25 for 'create' @ L84, evaluation error at L84:25 for 'update' @ L84, false for 'update' @ L84
+PASS sale: không sửa danh mục giá
+PASS kế toán: sửa danh mục giá
+PASS sale: không đọc sổ thu chi
+[2026-10-30T03:26:35.906Z]  @firebase/firestore: Firestore (10.14.1): GrpcConnection RPC 'Write' stream 0x87a67bc1 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+evaluation error at L88:31 for 'create' @ L88, evaluation error at L88:31 for 'update' @ L88, false for 'create' @ L88
+PASS thợ: không ghi sổ thu chi
+PASS kế toán: ghi khoản chi
+PASS chủ: đọc sổ thu chi
+PASS sale: không đọc được giá nhập
+PASS thợ: không đọc được giá nhập
+PASS kế toán: ghi giá nhập
+PASS chủ: đọc giá nhập
+[2026-10-30T03:26:36.118Z]  @firebase/firestore: Firestore (10.14.1): GrpcConnection RPC 'Write' stream 0x87a67bc8 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+evaluation error at L96:25 for 'create' @ L96, evaluation error at L96:25 for 'update' @ L96, false for 'update' @ L96
+PASS kế toán: không sửa cài đặt cửa hàng
+PASS sale: đọc cài đặt để in báo giá
+PASS số báo giá: tăng 1 được
+[2026-10-30T03:26:36.217Z]  @firebase/firestore: Firestore (10.14.1): GrpcConnection RPC 'Write' stream 0x87a67bcb error. Code: 7 Message: 7 PERMISSION_DENIED: 
+evaluation error at L115:26 for 'create' @ L115, evaluation error at L116:26 for 'update' @ L116, false for 'update' @ L116
+PASS số báo giá: nhảy cóc bị chặn
+[2026-10-30T03:26:36.247Z]  @firebase/firestore: Firestore (10.14.1): GrpcConnection RPC 'Write' stream 0x87a67bcc error. Code: 7 Message: 7 PERMISSION_DENIED: 
+evaluation error at L115:26 for 'create' @ L115, evaluation error at L116:26 for 'update' @ L116, false for 'update' @ L116
+PASS thợ: không lấy số báo giá
+[2026-10-30T03:26:36.308Z]  @firebase/firestore: Firestore (10.14.1): GrpcConnection RPC 'Write' stream 0x87a67bcd error. Code: 7 Message: 7 PERMISSION_DENIED: 
+evaluation error at L30:26 for 'create' @ L30, false for 'update' @ L48, evaluation error at L60:26 for 'update' @ L60, false for 'update' @ L60, false for 'create' @ L30
+PASS mã mời: không tự nâng lên chủ
+[2026-10-30T03:26:36.346Z]  @firebase/firestore: Firestore (10.14.1): GrpcConnection RPC 'Write' stream 0x87a67bce error. Code: 7 Message: 7 PERMISSION_DENIED: 
+evaluation error at L30:26 for 'create' @ L30, false for 'update' @ L48, evaluation error at L60:26 for 'update' @ L60, false for 'update' @ L60, false for 'create' @ L30
+PASS mã mời: không đổi sang vai trò khác mã
+[2026-10-30T03:26:36.388Z]  @firebase/firestore: Firestore (10.14.1): GrpcConnection RPC 'Write' stream 0x87a67bcf error. Code: 7 Message: 7 PERMISSION_DENIED: 
+evaluation error at L30:26 for 'create' @ L30, false for 'update' @ L48, evaluation error at L60:26 for 'update' @ L60, false for 'create' @ L30
+PASS mã mời hết hạn: bị chặn
+PASS mã mời hợp lệ: vào xưởng đúng vai trò
+[2026-10-30T03:26:36.461Z]  @firebase/firestore: Firestore (10.14.1): GrpcConnection RPC 'Write' stream 0x87a67bd1 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+evaluation error at L30:26 for 'create' @ L30, false for 'update' @ L48, evaluation error at L60:26 for 'update' @ L60, false for 'create' @ L30
+PASS mã mời đã dùng: người khác không dùng lại được
+PASS người mới vào: chỉ thấy đơn của mình
+[2026-10-30T03:26:36.511Z]  @firebase/firestore: Firestore (10.14.1): GrpcConnection RPC 'Write' stream 0x87a67bd3 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+false for 'create' @ L30, false for 'update' @ L48
+PASS tự ghi tên mình làm thành viên không có mã: bị chặn
+[2026-10-30T03:26:36.546Z]  @firebase/firestore: Firestore (10.14.1): GrpcConnection RPC 'Write' stream 0x87a67bd4 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+evaluation error at L23:24 for 'create' @ L23, evaluation error at L25:24 for 'update' @ L25, evaluation error at L30:26 for 'create' @ L30, false for 'update' @ L48, false for 'update' @ L25
+PASS chiếm xưởng đã có: bị chặn
+PASS tạo xưởng mới chưa có: được
+PASS chủ: đổi vai trò nhân viên
+[2026-10-30T03:26:36.660Z]  @firebase/firestore: Firestore (10.14.1): GrpcConnection RPC 'Write' stream 0x87a67bd7 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+evaluation error at L48:26 for 'update' @ L48, false for 'update' @ L48
+PASS chủ: không phong thêm chủ
+PASS chủ: khóa nhân viên
+PASS nhân viên bị khóa: mất quyền đọc ngay
+[2026-10-30T03:26:36.747Z]  @firebase/firestore: Firestore (10.14.1): GrpcConnection RPC 'Write' stream 0x87a67bda error. Code: 7 Message: 7 PERMISSION_DENIED: 
+false for 'update' @ L48
+PASS sale: không tự đổi vai trò
+PASS chủ: tạo mã mời
+[2026-10-30T03:26:36.804Z]  @firebase/firestore: Firestore (10.14.1): GrpcConnection RPC 'Write' stream 0x87a67bdc error. Code: 7 Message: 7 PERMISSION_DENIED: 
+evaluation error at L57:26 for 'create' @ L57, false for 'update' @ L60, false for 'create' @ L57
+PASS kế toán: không tạo mã mời
+[2026-10-30T03:26:36.833Z]  @firebase/firestore: Firestore (10.14.1): GrpcConnection RPC 'Write' stream 0x87a67bdd error. Code: 7 Message: 7 PERMISSION_DENIED: 
+false for 'create' @ L57, false for 'update' @ L60
+PASS chủ: không tạo mã mời vai trò chủ
+
+58/58 passed

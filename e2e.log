@@ -1,0 +1,64 @@
+   [chu] nav http://127.0.0.1:5050/
+   [chu] [snt] user null
+   [chu] [snt] user hieu@hungloan.vn
+   [chu] [snt] member null boot false false
+   [chu] [snt] member {"role":"owner","name":"Hiếu","email":"hieu@hungloan.vn","active":true,"joinedAt":"2026-10-30T03:26:38.235Z"} join false false
+PASS chủ tạo xưởng và vào được 
+PASS chủ tạo mã mời NDY5XU3R
+   [sale] nav http://127.0.0.1:5050/
+   [sale] [snt] user null
+   [sale] [snt] user lan@hungloan.vn
+   [sale] [snt] member null boot false false
+   [sale] [snt] member {"role":"sale","name":"Lan sale","email":"lan@hungloan.vn","active":true,"joinedAt":"2026-10-30T03:26:39.318Z","invite":"NDY5XU3R"} join false false
+PASS sale vào xưởng bằng mã mời dài 
+PASS máy chủ cấp số báo giá chính thức BG2610-01
+PASS tiền cọc sale báo nằm ở "chờ xác nhận", chưa tính đã thu 
+PASS chủ thấy đơn sale vừa tạo (không cần tải lại) 
+PASS chủ xác nhận cọc → sale thấy phiếu thu 
+   [sale] [snt] member {"role":"sale","name":"Lan sale","email":"lan@hungloan.vn","active":true,"joinedAt":"2026-10-30T03:26:39.318Z","invite":"NDY5XU3R"} ready true false
+PASS khi mất mạng: thay đổi được giữ trên máy 
+   [sale] [snt] member {"role":"sale","name":"Lan sale","email":"lan@hungloan.vn","active":true,"joinedAt":"2026-10-30T03:26:39.318Z","invite":"NDY5XU3R"} ready false false
+PASS có mạng lại: tự gửi hết thay đổi đang giữ 
+PASS có mạng lại: còn đủ 2 phiếu thu (25 triệu) và ghi chú {"pays":2,"paid":25000000,"notes":1}
+   [sale] [snt] member {"role":"sale","name":"Lan sale","email":"lan@hungloan.vn","active":true,"joinedAt":"2026-10-30T03:26:39.318Z","invite":"NDY5XU3R"} ready true false
+   [sale] [snt] member {"role":"sale","name":"Lan sale","email":"lan@hungloan.vn","active":true,"joinedAt":"2026-10-30T03:26:39.318Z","invite":"NDY5XU3R"} ready false false
+PASS sửa trùng: giữ bản lưu trước, bản sau cất riêng để chọn lại 
+PASS chủ cũng thấy bản cất riêng 
+PASS số báo giá tiếp theo không trùng BG2610-02
+PASS sale không thấy đơn của chủ 
+   [tho] nav http://127.0.0.1:5050/
+   [tho] [snt] user null
+   [tho] [snt] user tho@hungloan.vn
+   [tho] [snt] member null boot false false
+   [tho] [snt] member {"role":"worker","name":"Anh Hùng thợ","email":"tho@hungloan.vn","active":true,"joinedAt":"2026-10-30T03:26:50.217Z","invite":"UAHZDU9D"} join false false
+PASS thợ không tải được đơn có giá hay danh mục giá 
+PASS phiếu công việc có hạng mục, kích thước, không có giá 
+PASS màn hình thợ không hiện số tiền 
+PASS ảnh lưu lên máy chủ chung 
+PASS chủ mở được ảnh sale chụp 1473/1473
+   [sale] [snt] member {"role":"sale","name":"Lan sale","email":"lan@hungloan.vn","joinedAt":"2026-10-30T03:26:39.318Z","invite":"NDY5XU3R","active":false} ready false false
+   [sale] [snt] reload member {"active":false,"email":"lan@hungloan.vn","invite":"NDY5XU3R","joinedAt":"2026-10-30T03:26:39.318Z","name":"Lan sale","role":"sale"} role sale
+   [sale] nav http://127.0.0.1:5050/
+   [sale] [snt] user lan@hungloan.vn
+   [sale] [snt] member {"role":"sale","name":"Lan sale","email":"lan@hungloan.vn","joinedAt":"2026-10-30T03:26:39.318Z","invite":"NDY5XU3R","active":false} boot true false
+PASS sale bị khóa: không mở được dữ liệu nữa 
+   [sale] [snt] member {"role":"sale","name":"Lan sale","email":"lan@hungloan.vn","joinedAt":"2026-10-30T03:26:39.318Z","invite":"NDY5XU3R","active":false} locked false false
+   [ketoan] nav http://127.0.0.1:5050/
+   [ketoan] [snt] user null
+   [ketoan] [snt] user ketoan@hungloan.vn
+   [ketoan] [snt] member null boot false false
+   [ketoan] [snt] member {"role":"manager","name":"Hà kế toán","email":"ketoan@hungloan.vn","active":true,"joinedAt":"2026-10-30T03:26:51.817Z","invite":"A2RLPE5T"} join false false
+PASS kế toán: thấy mọi đơn, ghi thu được, không có nút sửa/lập báo giá {"q":false,"p":true,"rv":false,"nq":false}
+PASS người phụ trách bị khóa: hiện rõ, không tự chọn nhầm người khác 
+PASS chủ thấy mục Nhân viên trong Cài đặt 
+   [ketoan] [snt] user null
+   [ketoan] [snt] reload signout
+   [ketoan] nav http://127.0.0.1:5050/
+   [ketoan] [snt] user null
+PASS đăng xuất: không còn dữ liệu trên máy 
+PASS không có lỗi JS (chu) 
+PASS không có lỗi JS (sale) 
+PASS không có lỗi JS (tho) 
+PASS không có lỗi JS (ketoan) 
+
+28/28 passed
