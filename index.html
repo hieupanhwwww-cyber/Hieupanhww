@@ -301,7 +301,7 @@ select.in{appearance:none;-webkit-appearance:none;padding-right:30px;background-
 .calcline b{color:var(--accent)}
 .err{color:var(--bad);font-weight:600;font-size:15px}
 .preview-pages{display:flex;flex-direction:column;gap:14px;align-items:center;background:#8b7d6e22;padding:14px;border-radius:12px}
-.preview-pages img{width:100%;max-width:760px;box-shadow:0 2px 14px rgba(0,0,0,.18);background:#fff;border-radius:2px}
+.preview-pages img{width:100%;height:auto;max-width:760px;box-shadow:0 2px 14px rgba(0,0,0,.18);background:#fff;border-radius:2px}
 .lightbox img{max-width:100%;max-height:62vh;object-fit:contain;display:block;margin:0 auto;border-radius:10px}
 
 .toasts{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(92px + env(safe-area-inset-bottom,0px));z-index:200;display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none;width:min(560px,calc(100% - 32px))}
@@ -848,6 +848,18 @@ details.sect[open]>summary{border-bottom:.5px solid var(--line);border-radius:12
   .prow.noamt{grid-template-areas:"no x" "lb lb" "tr tr" "pc pc"}
   .prow>.iconbtn{justify-self:end}
 }
+
+/* rà soát giao diện: bàn phím, cuộn, danh sách dài */
+.skip{position:fixed;left:12px;top:-80px;z-index:400;padding:10px 16px;border-radius:10px;border:0;background:var(--fg);color:var(--bg);font:inherit;font-weight:600}
+.skip:focus{top:max(12px,env(safe-area-inset-top,0px))}
+.main:focus,.sheet:focus{outline:none}
+a,input,select,textarea,label,summary{touch-action:manipulation}
+h1,h2,h3{text-wrap:balance}
+.pane{scroll-padding-top:76px;scroll-padding-bottom:96px;overscroll-behavior-y:contain}
+.sheet-b,.pal-list{overscroll-behavior:contain}
+.ocard,.crow,.cat-row{content-visibility:auto;contain-intrinsic-size:auto 64px}
+.linkbtn.rowlink{color:inherit;font-weight:700;padding:0;text-align:left}
+.linkbtn.rowlink:hover{color:var(--accent)}
 
 .wide .rail{padding-bottom:max(14px,env(safe-area-inset-bottom,0px))}
 </style>
@@ -2310,11 +2322,16 @@ const isWide = () => wideMQ.matches;
 const curOrder = () => (S.orderId ? Store.get('orders', S.orderId) : null);
 
 /* ---------- thông báo nhỏ ---------- */
-function toast(msg, kind = '') {
+/* vùng thông báo có sẵn từ đầu để trình đọc màn hình đọc được cả thông báo đầu tiên */
+function toastBox() {
   let box = $('.toasts');
-  if (!box) { box = document.createElement('div'); box.className = 'toasts'; document.body.appendChild(box); }
+  if (!box) { box = document.createElement('div'); box.className = 'toasts'; box.setAttribute('aria-live', 'polite'); box.setAttribute('role', 'status'); document.body.appendChild(box); }
+  return box;
+}
+function toast(msg, kind = '') {
+  const box = toastBox();
   box.classList.toggle('wide', isWide());
-  const t = document.createElement('div'); t.className = 'toast ' + kind; t.textContent = msg; t.setAttribute('role', 'status');
+  const t = document.createElement('div'); t.className = 'toast ' + kind; t.textContent = msg; if (kind === 'bad') t.setAttribute('role', 'alert');
   box.appendChild(t);
   while (box.children.length > 2) box.firstElementChild.remove();
   setTimeout(() => t.remove(), kind === 'bad' ? 5200 : 2600);
@@ -2342,10 +2359,10 @@ const sheets = [];
 function openSheet({ title, html, foot = '', cls = '', onMount, onClick }) {
   const el = document.createElement('div');
   el.className = 'sheet-wrap';
-  el.innerHTML = `<div class="sheet-bg" data-sa="close"></div><div class="sheet ${cls}" role="dialog" aria-modal="true" aria-label="${esc(title)}"><header class="sheet-h"><h3>${esc(title)}</h3><button class="iconbtn" data-sa="close" aria-label="Đóng">${ic('x')}</button></header><div class="sheet-b">${html}</div>${foot ? `<footer class="sheet-f">${foot}</footer>` : ''}</div>`;
+  el.innerHTML = `<div class="sheet-bg" data-sa="close"></div><div class="sheet ${cls}" role="dialog" aria-modal="true" aria-label="${esc(title)}" tabindex="-1"><header class="sheet-h"><h3>${esc(title)}</h3><button class="iconbtn" data-sa="close" aria-label="Đóng">${ic('x')}</button></header><div class="sheet-b">${html}</div>${foot ? `<footer class="sheet-f">${foot}</footer>` : ''}</div>`;
   document.body.appendChild(el);
-  const entry = { el };
-  sheets.push(entry);
+  const entry = { el, ret: document.activeElement };
+  sheets.push(entry); syncInert();
   el.addEventListener('click', e => {
     const b = e.target.closest('[data-sa]');
     if (!b || !el.contains(b)) return;
@@ -2353,14 +2370,30 @@ function openSheet({ title, html, foot = '', cls = '', onMount, onClick }) {
     onClick && onClick(b.dataset.sa, b, el, e);
   });
   onMount && onMount(el);
-  requestAnimationFrame(() => el.classList.add('in'));
+  requestAnimationFrame(() => { el.classList.add('in'); if (!el.contains(document.activeElement)) el.querySelector('.sheet').focus({ preventScroll: true }); });
   return el;
 }
 function closeSheet(el) {
   const i = el ? sheets.findIndex(s => s.el === el) : sheets.length - 1;
   if (i < 0) return;
   const [s] = sheets.splice(i, 1);
-  s.el.remove();
+  s.el.remove(); syncInert();
+  /* trả con trỏ về nút đã mở hộp thoại (bàn phím iPad, máy tính) */
+  if (i === sheets.length && s.ret && s.ret !== document.body && document.contains(s.ret)) { try { s.ret.focus({ preventScroll: true }); } catch (e) { /* bỏ qua */ } }
+}
+/* khi có hộp thoại: phần phía sau không bấm/tab tới được */
+function syncInert() {
+  const app = $('#app'); if (app) app.inert = sheets.length > 0;
+  sheets.forEach((s, i) => { s.el.inert = i < sheets.length - 1; });
+}
+/* Tab chỉ đi vòng trong hộp thoại trên cùng */
+function trapTab(e) {
+  const top = sheets[sheets.length - 1]; if (!top || e.key !== 'Tab') return;
+  const f = [...top.el.querySelectorAll('button:not([disabled]),[href],input:not([disabled]):not([type=hidden]),select:not([disabled]),textarea:not([disabled]),summary,[tabindex]:not([tabindex="-1"])')].filter(x => x.offsetParent !== null || x === document.activeElement);
+  if (!f.length) { e.preventDefault(); return; }
+  const a = document.activeElement, first = f[0], last = f[f.length - 1];
+  if (e.shiftKey && (a === first || !top.el.contains(a))) { e.preventDefault(); last.focus(); }
+  else if (!e.shiftKey && (a === last || !top.el.contains(a))) { e.preventDefault(); first.focus(); }
 }
 function confirmBox({ title, text, ok = 'Đồng ý', danger = false }) {
   return new Promise(res => {
@@ -2390,7 +2423,17 @@ function render() {
   RC = {};
   try { renderInner(); } finally { RC = null; }
 }
+/* vẽ lại màn hình không làm mất vị trí con trỏ bàn phím */
+function focusKey(a) {
+  if (!a || a === document.body || sheets.length || !$('#app')?.contains(a)) return null;
+  if (!/^(BUTTON|SUMMARY|A)$/.test(a.tagName) && !(a.tagName === 'INPUT' && a.type === 'checkbox')) return null;
+  if (a.id) return '#' + CSS.escape(a.id);
+  if (a.tagName === 'SUMMARY' && a.parentElement?.dataset.sect) return `details[data-sect="${CSS.escape(a.parentElement.dataset.sect)}"] > summary`;
+  const at = [...a.attributes].filter(x => x.name.startsWith('data-') && x.value.length < 80);
+  return at.length ? a.tagName.toLowerCase() + at.map(x => `[${x.name}="${CSS.escape(x.value)}"]`).join('') : null;
+}
 function renderInner() {
+  const fk = focusKey(document.activeElement);
   for (const p of $$('[data-pane]')) paneScroll[p.dataset.pane] = p.scrollTop;
   const app = $('#app');
   const gate = !!Team.cfg && Team.state !== 'ready' && Team.state !== 'off';
@@ -2398,11 +2441,13 @@ function renderInner() {
   app.className = 'app ' + (isWide() ? 'wide' : 'narrow') + (noRail ? ' norail' : '');
   let main;
   if (gate) main = renderTeamGate();
-  else if (Store.mode === 'loading') main = `<div class="loading"><div><b>Đang mở sổ…</b><p class="muted">Đang tải dữ liệu đơn hàng</p></div></div>`;
+  else if (Store.mode === 'loading') main = `<div class="loading"><div><b>Đang mở sổ…</b><p class="muted">Đang tải dữ liệu đơn hàng…</p></div></div>`;
   else if (S.loadError) main = `<div class="loading"><div class="stack"><b>Không mở được dữ liệu</b><p class="muted">${esc(S.loadError)}</p><button class="btn primary" data-act="reload-data">Thử lại</button></div></div>`;
   else main = renderMain();
-  app.innerHTML = (noRail ? '' : renderRail()) + `<main class="main">${main}</main>`;
+  app.innerHTML = (noRail ? '' : `<button class="skip" data-act="skip-main">Bỏ qua thanh bên, tới nội dung</button>` + renderRail()) + `<main class="main" id="main" tabindex="-1">${main}</main>`;
   for (const p of $$('[data-pane]')) if (paneScroll[p.dataset.pane] != null) p.scrollTop = paneScroll[p.dataset.pane];
+  if (fk && document.activeElement === document.body) { const el = $(fk); if (el) { try { el.focus({ preventScroll: true }); } catch (e) { /* bỏ qua */ } } }
+  saveView();
   updateSaveStatus();
   hydrate();
 }
@@ -2476,7 +2521,7 @@ function totalsInner(q) {
   return `<h3>Tổng tiền</h3>
     <div class="tline"><span>Tạm tính</span><b id="t-sub">${moneyD(t.sub)}</b></div>
     <div class="tline"><span>Giảm giá</span><div class="disc">
-      <input class="in num" id="disc-val" data-qf="discount" inputmode="${d.type === 'percent' ? 'decimal' : 'numeric'}" autocomplete="off" value="${d.value ? (d.type === 'percent' ? QF.format(d.value) : money(d.value)) : ''}" placeholder="0">
+      <input class="in num" id="disc-val" data-qf="discount" aria-label="Giảm giá" inputmode="${d.type === 'percent' ? 'decimal' : 'numeric'}" autocomplete="off" value="${d.value ? (d.type === 'percent' ? QF.format(d.value) : money(d.value)) : ''}" placeholder="0">
       <div class="seg"><button data-act="disc-type" data-t="amount" aria-pressed="${d.type !== 'percent'}">đ</button><button data-act="disc-type" data-t="percent" aria-pressed="${d.type === 'percent'}">%</button></div>
     </div></div>
     <div class="tline" id="t-disc-line" ${t.disc ? '' : 'hidden'}><span class="muted">Số tiền giảm</span><span id="t-disc">−${moneyD(t.disc)}</span></div>
@@ -2713,7 +2758,7 @@ function catalogPicker(o) {
   };
   const el = openSheet({
     title: 'Thêm từ danh mục mẫu', cls: 'wide',
-    html: `<div class="search" style="margin:0">${ic('search')}<input class="in" id="cat-q" type="search" placeholder="Tìm hạng mục" autocomplete="off"></div><div class="pick-list" id="cat-list">${listHtml('')}</div>`,
+    html: `<div class="search" style="margin:0">${ic('search')}<input class="in" id="cat-q" type="search" placeholder="Tìm hạng mục" aria-label="Tìm hạng mục" autocomplete="off"></div><div class="pick-list" id="cat-list">${listHtml('')}</div>`,
     foot: `<span class="muted" id="cat-added" style="margin-right:auto;align-self:center">Chạm để thêm. Có thể chọn nhiều.</span><button class="btn primary" data-sa="close">Xong</button>`,
     onMount: el => el.querySelector('#cat-q').addEventListener('input', e => { el.querySelector('#cat-list').innerHTML = listHtml(e.target.value); }),
     onClick: (a, b, el) => {
@@ -2737,7 +2782,7 @@ function customerPicker(o) {
   };
   openSheet({
     title: 'Chọn khách hàng',
-    html: `<div class="search" style="margin:0">${ic('search')}<input class="in" id="cus-q" type="search" placeholder="Tên hoặc số điện thoại" autocomplete="off"></div><div class="pick-list" id="cus-list">${listHtml('')}</div>`,
+    html: `<div class="search" style="margin:0">${ic('search')}<input class="in" id="cus-q" type="search" placeholder="Tên hoặc số điện thoại" aria-label="Tìm khách cũ" autocomplete="off"></div><div class="pick-list" id="cus-list">${listHtml('')}</div>`,
     onMount: el => el.querySelector('#cus-q').addEventListener('input', e => { el.querySelector('#cus-list').innerHTML = listHtml(e.target.value); }),
     onClick: (a, b, el) => {
       const c = Store.get('customers', b.dataset.id); if (!c) return;
@@ -2861,7 +2906,7 @@ async function previewQuote(o, src) {
     const res = await renderQuotePages(o, src);
     if (!document.body.contains(el)) return;
     const urls = res.pages.map(p => URL.createObjectURL(p.blob));
-    el.querySelector('#pv').innerHTML = urls.map((u, i) => `<img src="${u}" alt="Trang ${i + 1}">`).join('');
+    el.querySelector('#pv').innerHTML = urls.map((u, i) => `<img src="${u}" alt="Trang ${i + 1}" width="${res.pages[i].w}" height="${res.pages[i].h}">`).join('');
     const btn = el.querySelector('[data-sa=pdf]'); btn.disabled = false;
     btn.onclick = e => { e.stopPropagation(); exportPdf(o, src, res); };
     const pb = el.querySelector('[data-sa=png]'); pb.disabled = false;
@@ -2952,10 +2997,10 @@ function renderDetail(o) {
     ${profitCardHtml(o)}
     ${orderCashHtml(o)}
 
-    ${sect('atts', 'Ảnh hiện trường & bản vẽ', o.attachments.length ? o.attachments.length + ' tệp' : 'Chưa có', o.attachments.length ? `<div class="thumbs">${o.attachments.map(a => `<button class="thumb" data-act="open-att" data-id="${a.id}" aria-label="${esc(a.name)}">${a.kind === 'image' ? `<img data-att="${a.id}" alt="${esc(a.name)}">` : `<div class="fileph">${ic('file')}<span>${esc(a.name)}</span></div>`}</button>`).join('')}</div>` : `<p class="muted">Chụp hiện trường hoặc chọn file PDF bản vẽ.</p>`, { open: o.attachments.length > 0 && o.attachments.length <= 8, act: `<button class="btn sm" data-act="add-att" ${Store.mode === 'cloud' && !caps.assets ? 'disabled' : ''}>${ic('plus')}Thêm</button>` })}
+    ${sect('atts', 'Ảnh hiện trường & bản vẽ', o.attachments.length ? o.attachments.length + ' tệp' : 'Chưa có', o.attachments.length ? `<div class="thumbs">${o.attachments.map(a => `<button class="thumb" data-act="open-att" data-id="${a.id}" aria-label="${esc(a.name)}">${a.kind === 'image' ? `<img data-att="${a.id}" alt="" loading="lazy" decoding="async">` : `<div class="fileph">${ic('file')}<span>${esc(a.name)}</span></div>`}</button>`).join('')}</div>` : `<p class="muted">Chụp hiện trường hoặc chọn file PDF bản vẽ.</p>`, { open: o.attachments.length > 0 && o.attachments.length <= 8, act: `<button class="btn sm" data-act="add-att" ${Store.mode === 'cloud' && !caps.assets ? 'disabled' : ''}>${ic('plus')}Thêm</button>` })}
 
     ${sect('notes', 'Ghi chú', o.notes.length ? `${o.notes.length} · ${esc(String(o.notes[o.notes.length - 1].text).slice(0, 50))}` : 'Chưa có', `${o.notes.length ? `<div class="rowlist">${o.notes.map(n => `<div class="ritem"><div class="rmain">${esc(n.text)}<div class="rsub">${fmtDateTime(new Date(n.at))}</div></div><button class="iconbtn" data-act="del-note" data-id="${n.id}" aria-label="Xóa ghi chú">${ic('trash')}</button></div>`).join('')}</div>` : ''}
-      <div class="note-add"><input class="in" id="note-in" placeholder="Ghi chú ngắn, VD: khách muốn đổi màu cánh tủ" autocomplete="off"><button class="btn" data-act="add-note">Thêm</button></div>`, { open: o.notes.length > 0 })}
+      <div class="note-add"><input class="in" id="note-in" placeholder="Ghi chú ngắn, VD: khách muốn đổi màu cánh tủ" aria-label="Thêm ghi chú" autocomplete="off"><button class="btn" data-act="add-note">Thêm</button></div>`, { open: o.notes.length > 0 })}
 
     ${sect('hist', 'Lịch sử', `${(o.log || []).length} mục${o.log && o.log.length ? ' · ' + esc(String(o.log[o.log.length - 1].text).slice(0, 48)) : ''}`, `<ul class="hist">${[...(o.log || [])].reverse().map(l => `<li><span class="num">${fmtDateTime(new Date(l.at))}</span> · ${esc(l.text)}${l.by ? ` <span class="muted">(${esc(l.by)})</span>` : ''}</li>`).join('')}</ul>`)}
   </div>`;
@@ -3344,7 +3389,7 @@ function renderCatalog() {
     return `<div class="pane-in"><div class="list-head"><h1>Danh mục</h1>${tabs}</div>
       ${stale ? `<button class="notice warn banner nbtn" data-act="stale-list">${ic('info')}<div><b>${stale} báo giá / đơn đang dùng giá cũ</b> so với danh mục. Chạm để xem và chọn cập nhật.</div></button>` : ''}
       ${noPrice ? `<div class="notice banner">${ic('info')}<div><b>${noPrice} hạng mục chưa có giá.</b> Nhập ở cột Giá bán${canCost() ? ' (và Giá nhập)' : ''}. Hạng mục chưa có giá vẫn chọn được vào báo giá, bạn nhập giá ngay trong báo giá.</div></div>` : ''}
-      <section class="card"><div class="card-h"><div class="search" style="margin:0;flex:1;min-width:220px">${ic('search')}<input class="in" id="cat-search" type="search" placeholder="Tìm hạng mục" value="${esc(S.catQ)}" autocomplete="off"></div>
+      <section class="card"><div class="card-h"><div class="search" style="margin:0;flex:1;min-width:220px">${ic('search')}<input class="in" id="cat-search" type="search" placeholder="Tìm hạng mục" aria-label="Tìm hạng mục" value="${esc(S.catQ)}" autocomplete="off"></div>
         <div class="addbar" style="margin:0"><button class="btn" data-act="lib-open">${ic('book')}Bộ hạng mục chuẩn</button>${all.length ? `<button class="btn" data-act="bulk-price">${ic('stats')}Đổi giá hàng loạt</button>` : ''}<button class="btn primary" data-act="cat-add">${ic('plus')}Thêm hạng mục</button></div></div>
       ${gs.length > 1 ? `<div class="chips" role="group" aria-label="Nhóm hạng mục"><button class="chip" data-act="cat-group" data-g="" aria-pressed="${!G}">Tất cả<small>${all.length}</small></button>${gs.map(g => `<button class="chip" data-act="cat-group" data-g="${esc(g)}" aria-pressed="${G === g}">${esc(g)}<small>${all.filter(c => catGroup(c) === g).length}</small></button>`).join('')}</div>` : ''}
       <p class="muted" style="font-size:14px;margin-bottom:10px">Sửa trực tiếp trên bảng, tự lưu. Đổi giá ở đây <b>không làm thay đổi</b> các báo giá đã lập.${canCost() ? ' Giá nhập chỉ dùng để tính lãi, không in ra báo giá.' : ''}</p>
@@ -3361,7 +3406,7 @@ function renderCatalog() {
   const orders = Store.list('orders');
   const cs = Store.list('customers').filter(c => !f || fold(c.name + ' ' + c.phone + ' ' + c.address).includes(f)).sort((a, b) => (b.new || 0) - (a.new || 0) || a.name.localeCompare(b.name, 'vi'));
   return `<div class="pane-in"><div class="list-head"><h1>Danh mục</h1>${tabs}</div>
-    <section class="card"><div class="card-h"><div class="search" style="margin:0;flex:1;min-width:220px">${ic('search')}<input class="in" id="cat-search" type="search" placeholder="Tìm khách" value="${esc(S.catQ)}" autocomplete="off"></div><button class="btn primary" data-act="cus-add">${ic('plus')}Thêm khách</button></div>
+    <section class="card"><div class="card-h"><div class="search" style="margin:0;flex:1;min-width:220px">${ic('search')}<input class="in" id="cat-search" type="search" placeholder="Tìm khách" aria-label="Tìm khách" value="${esc(S.catQ)}" autocomplete="off"></div><button class="btn primary" data-act="cus-add">${ic('plus')}Thêm khách</button></div>
     <p class="muted" style="font-size:14px;margin-bottom:10px">Khách được tự lưu khi chốt đơn. Chọn lại nhanh bằng nút “Khách cũ” khi lập báo giá.</p>
     ${cs.map(c => `<div class="cus-row" data-cus="${c.id}">
       <div class="cn"><input class="in" id="kn-${c.id}" data-kf="name" value="${esc(c.name)}" placeholder="Tên khách" aria-label="Tên khách" autocomplete="off"></div>
@@ -3377,7 +3422,8 @@ function qrTestHtml(s = settings()) {
 function renderSettings() {
   S.tplWork = clone(planTemplate()).map(r => ({ ...r, id: r.id || uid('d') }));
   const s = settings(), hasDemo = COLS.some(c => Store.list(c).some(d => d.demo));
-  const f = (k, label, ph = '', type = 'text') => `<div class="field"><label for="st-${k}">${label}</label><input class="in" id="st-${k}" data-sf="${k}" type="${type}" value="${esc(s[k] || '')}" placeholder="${esc(ph)}" autocomplete="off"></div>`;
+  const FX = { phone: 'inputmode="tel"', email: 'type="email" inputmode="email" spellcheck="false" autocapitalize="off"', bankAccount: 'inputmode="numeric" spellcheck="false"', bankHolder: 'spellcheck="false" autocapitalize="characters"', memoPrefix: 'spellcheck="false" autocapitalize="characters"', codePrefix: 'spellcheck="false" autocapitalize="characters"' };
+  const f = (k, label, ph = '', type = 'text') => `<div class="field"><label for="st-${k}">${label}</label><input class="in" id="st-${k}" data-sf="${k}" ${FX[k] && FX[k].includes('type=') ? '' : `type="${type}"`} ${FX[k] || ''} value="${esc(s[k] || '')}" placeholder="${esc(ph)}" autocomplete="off"></div>`;
   if (Team.on() && !can('settings')) return `<div class="pane-in"><div class="list-head"><h1>Tài khoản</h1><span data-savestat class="savestat"></span></div>${teamCardHtml()}</div>`;
   const bankTxt = bankReady(s) ? `Sẵn sàng · ${esc(s.bankName || bankName(s.bankBin))} · ${esc(String(s.bankAccount).slice(-4).padStart(String(s.bankAccount).length > 4 ? 6 : 4, '•'))}` : '<span class="warnt">Chưa nhập tài khoản</span>';
   const lastB = meta().lastBackupAt;
@@ -3963,6 +4009,13 @@ const memo = (k, f) => { if (!RC) return f(); if (!(k in RC)) RC[k] = f(); retur
 function applyTheme() {
   let t = null; try { t = localStorage.getItem('snt-theme'); } catch (e) { t = null; }
   if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t; else delete document.documentElement.dataset.theme;
+  /* màu thanh trạng thái theo đúng giao diện đang dùng */
+  let sys = 'light'; try { sys = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'; } catch (e) { sys = 'light'; }
+  const TC = { light: '#F4EFE8', dark: '#17130F' };
+  for (const m of document.querySelectorAll('meta[name="theme-color"]')) {
+    const mode = t === 'light' || t === 'dark' ? t : m.media ? (m.media.includes('dark') ? 'dark' : 'light') : sys;
+    m.setAttribute('content', TC[mode]);
+  }
   return t || 'auto';
 }
 applyTheme();
@@ -4112,7 +4165,7 @@ function renderList() {
   const chips = FILTERS.map(([k, l]) => `<button class="chip" data-act="filter" data-f="${k}" aria-pressed="${S.filter === k}">${l}<small>${filterCount(k)}</small></button>`).join('');
   return `<div class="pane-in">
     <div class="list-head"><div><h1>${S.filter === 'all' ? 'Đơn hàng' : title}</h1><p class="d-sub">${n} đơn</p></div><div class="hd-act">${!isWide() ? `<button class="iconbtn line" data-act="palette" aria-label="Tìm nhanh">${ic('search')}</button>` : ''}${can('quote') ? `<button class="btn primary ${isWide() ? 'icon-only' : ''}" data-act="new-quote" aria-label="Tạo báo giá">${ic('plus')}<span>Tạo báo giá</span></button>` : ''}</div></div>
-    <div class="search">${ic('search')}<input class="in" id="order-search" type="search" placeholder="Tìm khách, công trình, SĐT, mã" value="${esc(S.q)}" autocomplete="off"></div>
+    <div class="search">${ic('search')}<input class="in" id="order-search" type="search" placeholder="Tìm khách, công trình, SĐT, mã" aria-label="Tìm đơn hàng" value="${esc(S.q)}" autocomplete="off"></div>
     ${isWide() ? '' : `<div class="chips" role="group" aria-label="Lọc đơn">${chips}</div>`}
     <div class="cards" id="cards">${renderCards()}</div>
   </div>`;
@@ -4214,7 +4267,7 @@ function renderStats() {
     <section class="card"><div class="card-h"><h3>Theo tháng</h3><span class="muted" style="font-size:13px">Chạm cột để xem tiền thu trong tháng</span></div>${revenueChart(from, to)}</section>
     <section class="card"><div class="card-h"><h3>Doanh thu chia theo</h3><div class="seg" role="group" aria-label="Chia theo"><button data-act="rev-by" data-v="group" aria-pressed="${view === 'group'}">Nhóm hạng mục</button><button data-act="rev-by" data-v="cust" aria-pressed="${view === 'cust'}">Khách hàng</button><button data-act="rev-by" data-v="order" aria-pressed="${view === 'order'}">Đơn</button></div></div>${bdHtml}</section>
     ${sect('debt', 'Đơn còn công nợ', `${st.debt.length} đơn · ${money(st.due)} đ`, st.debt.length ? `<div class="scrollx"><table class="lockq debt"><thead><tr><th>Khách / công trình</th><th class="r">Tổng</th><th class="r">Đã thu</th><th class="r">Quá hạn</th><th class="r">Còn phải thu</th></tr></thead><tbody>
-      ${st.debt.map(({ o, due }) => { const h = headQuote(o); return `<tr data-act="open-order" data-id="${o.id}" style="cursor:pointer"><td><b>${esc(h.customer.name)}</b><span class="sub">${esc(h.project || o.code)}</span></td><td class="r">${money(orderTotal(o))}</td><td class="r">${money(orderPaid(o))}</td><td class="r">${overdueAmount(o) ? `<span class="pill s-bad">${money(overdueAmount(o))}</span>` : '–'}</td><td class="r"><b style="color:var(--bad)">${money(due)}</b></td></tr>`; }).join('')}
+      ${st.debt.map(({ o, due }) => { const h = headQuote(o); return `<tr data-act="open-order" data-id="${o.id}" style="cursor:pointer"><td><button class="linkbtn rowlink" data-act="open-order" data-id="${o.id}">${esc(h.customer.name)}</button><span class="sub">${esc(h.project || o.code)}</span></td><td class="r">${money(orderTotal(o))}</td><td class="r">${money(orderPaid(o))}</td><td class="r">${overdueAmount(o) ? `<span class="pill s-bad">${money(overdueAmount(o))}</span>` : '–'}</td><td class="r"><b style="color:var(--bad)">${money(due)}</b></td></tr>`; }).join('')}
       </tbody></table></div>` : `<p class="muted">Không có đơn nào còn nợ.</p>`, { open: false })}
     <p class="foot-note"><b>Doanh thu</b> = giá trị đơn chốt trong kỳ (theo ngày chốt), cộng phần chênh khi chốt bản điều chỉnh và phát sinh đã xác nhận (theo ngày xác nhận). <b>Tiền đã thu</b> tính theo ngày khách trả. Báo giá chưa chốt không được tính.${ps ? ' Lãi ước tính = doanh thu đơn chốt trong kỳ − giá nhập − vận chuyển, chưa trừ nhân công và chi phí chung.' : ''}</p>
   </div>`;
@@ -4275,7 +4328,7 @@ function openPalette() {
   let res = [], sel = 0;
   const el = openSheet({
     title: 'Tìm nhanh', cls: 'palette',
-    html: `<div class="search" style="margin:0">${ic('search')}<input class="in" id="pal-q" type="search" placeholder="Tìm đơn, khách, SĐT, hạng mục, thao tác…" autocomplete="off"></div><div class="pal-list" id="pal-list" role="listbox"></div><p class="pal-hint">↑ ↓ để chọn · Enter để mở · Esc để đóng</p>`,
+    html: `<div class="search" style="margin:0">${ic('search')}<input class="in" id="pal-q" type="search" placeholder="Tìm đơn, khách, SĐT, hạng mục, thao tác…" aria-label="Tìm nhanh" autocomplete="off"></div><div class="pal-list" id="pal-list" role="listbox"></div><p class="pal-hint">↑ ↓ để chọn · Enter để mở · Esc để đóng</p>`,
     onMount: el => {
       const inp = el.querySelector('#pal-q'), list = el.querySelector('#pal-list');
       const draw = () => {
@@ -4546,7 +4599,7 @@ function renderPL() {
     <section class="card"><div class="card-h"><h3>Thu, chi, lãi từng tháng</h3><span class="muted" style="font-size:13px">Chạm cột để xem sổ tháng</span></div>${ledgerChart(L)}</section>
     <section class="card"><div class="card-h"><h3>Cộng sổ</h3><span class="muted" style="font-size:13px">${rangeTxt}</span></div>
       <div class="scrollx"><table class="lockq ledger"><thead><tr><th>Tháng</th><th class="r">Tồn đầu</th><th class="r">Thu</th><th class="r">Chi</th><th class="r">Lãi</th><th class="r">Tỷ suất</th><th class="r">Tồn cuối</th><th></th></tr></thead><tbody>
-      ${[...L].filter(r => !r.before).reverse().map(r => `<tr data-act="pl-month" data-m="${r.m}"><td><b>${ymShort(r.m)}</b>${r.n ? `<span class="sub">${r.n} khoản</span>` : ''}</td><td class="r">${sgn(r.open)}</td><td class="r okt">${money(r.income)}${r.capital ? `<span class="sub">+ vốn ${shortMoney(r.capital)}</span>` : ''}</td><td class="r negt">${money(r.out)}</td><td class="r"><b class="${r.profit < 0 ? 'negt' : ''}">${sgn(r.profit)}</b></td><td class="r">${r.pct == null ? '–' : pctTxt(r.pct)}</td><td class="r"><b>${sgn(r.close)}</b></td><td class="r">${bookCell(r)}</td></tr>`).join('')}
+      ${[...L].filter(r => !r.before).reverse().map(r => `<tr data-act="pl-month" data-m="${r.m}"><td><button class="linkbtn rowlink" data-act="pl-month" data-m="${r.m}">${ymShort(r.m)}</button>${r.n ? `<span class="sub">${r.n} khoản</span>` : ''}</td><td class="r">${sgn(r.open)}</td><td class="r okt">${money(r.income)}${r.capital ? `<span class="sub">+ vốn ${shortMoney(r.capital)}</span>` : ''}</td><td class="r negt">${money(r.out)}</td><td class="r"><b class="${r.profit < 0 ? 'negt' : ''}">${sgn(r.profit)}</b></td><td class="r">${r.pct == null ? '–' : pctTxt(r.pct)}</td><td class="r"><b>${sgn(r.close)}</b></td><td class="r">${bookCell(r)}</td></tr>`).join('')}
       ${L.every(r => r.before) ? `<tr><td colspan="8" class="muted">Chưa có khoản thu chi nào trong khoảng này.</td></tr>` : ''}
       <tr class="tot"><td><b>Cộng</b></td><td class="r">${sgn((L.find(r => !r.before) || { open: 0 }).open)}</td><td class="r okt"><b>${money(tIn)}</b></td><td class="r negt"><b>${money(tOut)}</b></td><td class="r"><b class="${tP < 0 ? 'negt' : ''}">${sgn(tP)}</b></td><td class="r"><b>${tIn ? pctTxt(tP / tIn * 100) : '–'}</b></td><td class="r"><b>${sgn(cur.close ?? 0)}</b></td><td></td></tr>
       </tbody></table></div></section>`;
@@ -4554,7 +4607,7 @@ function renderPL() {
   const aT = A.reduce((s, r) => ({ rev: s.rev + r.rev, cost: s.cost + r.ocost + r.gen - r.oin, p: s.p + r.profit, est: s.est + r.est, none: s.none + r.none }), { rev: 0, cost: 0, p: 0, est: 0, none: 0 });
   const accHtml = `${aT.none ? `<div class="notice warn" style="margin-bottom:10px">${ic('info')}<div>${aT.none} đơn chốt chưa có chi phí (chưa ghi khoản chi, chưa nhập giá nhập), lãi của các tháng đó đang cao hơn thực tế.</div></div>` : ''}
     <div class="scrollx"><table class="lockq ledger"><thead><tr><th>Tháng</th><th class="r">Giá trị đơn chốt</th><th class="r">Chi phí đơn</th><th class="r">Chi chung</th><th class="r">Thu khác</th><th class="r">Lãi</th><th class="r">Tỷ suất</th></tr></thead><tbody>
-    ${[...A].reverse().map(r => `<tr data-act="pl-month" data-m="${r.m}"><td><b>${ymShort(r.m)}</b><span class="sub">${r.orders.length} đơn chốt</span></td><td class="r">${money(r.rev)}</td><td class="r">${r.est ? '≈ ' : ''}${money(r.ocost)}${r.none ? `<span class="sub warnt">${r.none} đơn chưa có chi phí</span>` : ''}</td><td class="r">${money(r.gen)}</td><td class="r">${money(r.oin)}</td><td class="r"><b class="${r.profit < 0 ? 'negt' : ''}">${sgn(r.profit)}</b></td><td class="r">${r.pct == null ? '–' : pctTxt(r.pct)}</td></tr>`).join('')}
+    ${[...A].reverse().map(r => `<tr data-act="pl-month" data-m="${r.m}"><td><button class="linkbtn rowlink" data-act="pl-month" data-m="${r.m}">${ymShort(r.m)}</button><span class="sub">${r.orders.length} đơn chốt</span></td><td class="r">${money(r.rev)}</td><td class="r">${r.est ? '≈ ' : ''}${money(r.ocost)}${r.none ? `<span class="sub warnt">${r.none} đơn chưa có chi phí</span>` : ''}</td><td class="r">${money(r.gen)}</td><td class="r">${money(r.oin)}</td><td class="r"><b class="${r.profit < 0 ? 'negt' : ''}">${sgn(r.profit)}</b></td><td class="r">${r.pct == null ? '–' : pctTxt(r.pct)}</td></tr>`).join('')}
     <tr class="tot"><td><b>Cộng</b></td><td class="r"><b>${money(aT.rev)}</b></td><td colspan="3" class="r">chi phí ${money(aT.cost)}</td><td class="r"><b class="${aT.p < 0 ? 'negt' : ''}">${sgn(aT.p)}</b></td><td class="r"><b>${aT.rev ? pctTxt(aT.p / aT.rev * 100) : '–'}</b></td></tr>
     </tbody></table></div>
     <p class="muted" style="font-size:13px;margin-top:8px">Giá trị đơn (gồm phát sinh đã xác nhận) tính vào tháng chốt đơn. Chi phí đơn = khoản chi đã ghi cho đơn; chưa ghi thì lấy giá nhập + vận chuyển (đánh dấu ≈). Chi chung = khoản chi không gắn đơn.</p>`;
@@ -4851,8 +4904,8 @@ const Team = {
       Store.mode = 'team'; this.state = 'ready';
       const n = await Store.restoreOutbox(); if (n) setTimeout(() => toast(`Đã khôi phục ${n} thay đổi chưa gửi lên máy chủ`), 300);
       if (m.role === 'worker') { S.tab = 'jobs'; }
-      else if (S.tab === 'jobs') S.tab = 'orders';
-      render(); ensureFonts();
+      else { restoreView(); if (S.tab === 'jobs') S.tab = 'orders'; }
+      toastBox(); render(); ensureFonts();
       if (lsGet('snt-migrate') === this.uid()) { lsSet('snt-migrate', null); this.migrateLocal(); }
     } catch (e) {
       this.state = 'error'; this.msg = 'Không tải được dữ liệu từ máy chủ chung. Kiểm tra mạng rồi bấm Thử lại.'; render();
@@ -4910,7 +4963,7 @@ const Team = {
         if (c === 'orders' || c === 'customers') d.owner = d.owner || this.uid();
         Store.put(c, c === 'orders' ? normalizeOrder(d) : d, 0); if (c === 'orders') n++;
       }
-      if (n) toast(`Đang đưa ${n} đơn trên máy này lên máy chủ chung`);
+      if (n) toast(`Đang đưa ${n} đơn trên máy này lên máy chủ chung…`);
       render();
     } catch (e) { toast('Không đọc được dữ liệu cũ trên máy này.', 'bad'); }
   },
@@ -5093,7 +5146,7 @@ function renderTeamGate() {
     const inv = lsGet('snt-invite');
     return wrap(`<h2>Đăng nhập Sổ Nội Thất</h2>
       ${inv ? `<div class="notice ok">${ic('info')}<div>Bạn có mã mời <b>${esc(inv)}</b>. Nếu chưa có tài khoản, nhập email, đặt mật khẩu rồi bấm <b>Tạo tài khoản</b>. App sẽ tự đưa bạn vào xưởng.</div></div>` : `<p class="muted">Máy chủ chung: ${esc(Team.cfg?.projectId || '')}</p>`}
-      <div class="field"><label for="tm-email">Email</label><input class="in" id="tm-email" type="email" autocomplete="username" inputmode="email" value="${esc(S.tmEmail || '')}"></div>
+      <div class="field"><label for="tm-email">Email</label><input class="in" id="tm-email" type="email" autocomplete="username" inputmode="email" spellcheck="false" autocapitalize="off" value="${esc(S.tmEmail || '')}"></div>
       <div class="field"><label for="tm-pass">Mật khẩu (ít nhất 6 ký tự)</label><input class="in" id="tm-pass" type="password" autocomplete="current-password"></div>
       <p class="err" id="tm-err" ${S.tmErr ? '' : 'hidden'}>${esc(S.tmErr || '')}</p>
       <div class="addbar"><button class="btn primary" data-act="tm-signin">Đăng nhập</button><button class="btn" data-act="tm-signup">Tạo tài khoản</button><button class="linkbtn" data-act="tm-reset">Quên mật khẩu</button></div>
@@ -5102,7 +5155,7 @@ function renderTeamGate() {
   if (st === 'join') {
     return wrap(`<h2>Vào xưởng</h2><p class="muted">Tài khoản ${esc(Team.user?.email || '')} chưa thuộc xưởng nào.</p>
       <div class="field"><label for="tm-name">Tên của bạn (hiện cho cả xưởng)</label><input class="in" id="tm-name" autocomplete="name" value="${esc(S.tmName || '')}" placeholder="VD: Lan sale"></div>
-      <div class="field"><label for="tm-code">Mã mời chủ xưởng gửi</label><input class="in" id="tm-code" autocomplete="off" autocapitalize="characters" value="${esc(S.joinCode || '')}" placeholder="VD: K7MQ2XRA"></div>
+      <div class="field"><label for="tm-code">Mã mời chủ xưởng gửi</label><input class="in" id="tm-code" autocomplete="off" autocapitalize="characters" spellcheck="false" value="${esc(S.joinCode || '')}" placeholder="VD: K7MQ2XRA"></div>
       <p class="err" id="tm-err" ${S.tmErr ? '' : 'hidden'}>${esc(S.tmErr || '')}</p>
       <div class="addbar"><button class="btn primary" data-act="tm-join">Vào xưởng</button><button class="btn" data-act="tm-signout">Đăng xuất</button></div>
       <hr class="sep">
@@ -5196,7 +5249,7 @@ async function inviteShare(code) {
   const text = `Mời bạn vào Sổ Nội Thất (${ROLES[Team.invites.get(code)?.role] || ''}).\n1. Mở link bằng Safari, bấm Chia sẻ → Thêm vào MH chính: ${location.origin + location.pathname}\n2. Mở app → Cài đặt → “Tôi là nhân viên – dán mã mời”, dán mã dưới đây.\n\n${packInvite(Team.cfg, Team.wid, code)}\n\nMã ngắn: ${code} (hết hạn sau 7 ngày, dùng 1 lần)`;
   try { if (navigator.share) { await navigator.share({ text }); return; } } catch (e) { if (e && e.name === 'AbortError') return; }
   try { await navigator.clipboard.writeText(text); toast('Đã chép lời mời. Dán vào Zalo để gửi.'); }
-  catch (e) { openSheet({ title: 'Lời mời', html: `<textarea class="in" rows="8" readonly>${esc(text)}</textarea><p class="muted">Chọn hết rồi chép, dán vào Zalo.</p>` }); }
+  catch (e) { openSheet({ title: 'Lời mời', html: `<textarea class="in" rows="8" readonly aria-label="Nội dung sao chép" spellcheck="false">${esc(text)}</textarea><p class="muted">Chọn hết rồi chép, dán vào Zalo.</p>` }); }
 }
 const TEAM_ACTIONS = {
   'tm-retry': () => { if (Team.user) Team.onUser(Team.user); else Team.start(); },
@@ -5236,7 +5289,7 @@ const TEAM_ACTIONS = {
     const el = openSheet({
       title: 'Kết nối máy chủ chung',
       html: `<p>Dán đoạn <b>firebaseConfig</b> lấy từ Firebase (Cài đặt dự án → Ứng dụng web). Đoạn này không phải mật khẩu; quyền truy cập được khóa bằng luật bảo mật trên máy chủ.</p>
-        <textarea class="in" id="tm-cfg" rows="8" placeholder="const firebaseConfig = { apiKey: &quot;…&quot;, … };"></textarea><p class="err" id="tm-cfg-err" hidden></p>`,
+        <textarea class="in" id="tm-cfg" rows="8" aria-label="Mã cấu hình Firebase" spellcheck="false" autocapitalize="off" placeholder="const firebaseConfig = { apiKey: &quot;…&quot;, … };"></textarea><p class="err" id="tm-cfg-err" hidden></p>`,
       foot: `<button class="btn" data-sa="close">Hủy</button><button class="btn primary" data-sa="ok">Kết nối</button>`,
       onClick: (a, b, el2) => {
         if (a !== 'ok') return;
@@ -5250,7 +5303,7 @@ const TEAM_ACTIONS = {
   'tm-paste-invite': () => {
     openSheet({
       title: 'Dán mã mời',
-      html: `<p>Dán cả đoạn chủ xưởng gửi qua Zalo (có chữ <b>SNT1.</b>).</p><textarea class="in" id="tm-inv" rows="5"></textarea><p class="err" id="tm-inv-err" hidden></p>`,
+      html: `<p>Dán cả đoạn chủ xưởng gửi qua Zalo (có chữ <b>SNT1.</b>).</p><textarea class="in" id="tm-inv" rows="5" aria-label="Mã mời" spellcheck="false" autocapitalize="off"></textarea><p class="err" id="tm-inv-err" hidden></p>`,
       foot: `<button class="btn" data-sa="close">Hủy</button><button class="btn primary" data-sa="ok">Tiếp tục</button>`,
       onClick: (a, b, el2) => {
         if (a !== 'ok') return;
@@ -5274,7 +5327,7 @@ const TEAM_ACTIONS = {
     return el;
   },
   'tm-share-invite': b => inviteShare(b.dataset.code),
-  'tm-del-invite': async b => { try { await Team.col('invites').doc(b.dataset.code).delete(); Team.invites.delete(b.dataset.code); render(); } catch (er) { toast(errText(er), 'bad'); } },
+  'tm-del-invite': async b => { const ok = await confirmBox({ title: 'Hủy mã mời?', text: `Mã ${esc(b.dataset.code)} sẽ không dùng được nữa. Người chưa vào xưởng cần một mã mới.`, ok: 'Hủy mã', danger: true }); if (!ok) return; try { await Team.col('invites').doc(b.dataset.code).delete(); Team.invites.delete(b.dataset.code); render(); } catch (er) { toast(errText(er), 'bad'); } },
   'tm-toggle': async b => {
     const m = Team.members.get(b.dataset.uid); if (!m) return;
     if (m.active) { const ok = await confirmBox({ title: `Khóa ${esc(m.name)}?`, text: 'Người này sẽ không mở được dữ liệu của xưởng nữa. Dữ liệu họ đã làm vẫn giữ nguyên.', ok: 'Khóa', danger: true }); if (!ok) return; }
@@ -5517,7 +5570,8 @@ const ACTIONS = {
     const ok = await confirmBox({ title: 'Xóa khách hàng?', text: `Xóa “${esc(c.name || 'khách chưa đặt tên')}” khỏi danh sách. Các đơn của khách vẫn giữ nguyên.`, ok: 'Xóa', danger: true });
     if (!ok) return; Store.del('customers', c.id); render();
   },
-  'logo-del': () => { saveSettings({ logo: '' }); render(); },
+  'logo-del': async () => { const ok = await confirmBox({ title: 'Bỏ logo?', text: 'Logo sẽ không còn in trên báo giá, phiếu thu. Muốn dùng lại phải tải ảnh logo lên lần nữa.', ok: 'Bỏ logo', danger: true }); if (!ok) return; saveSettings({ logo: '' }); render(); },
+  'skip-main': () => { const m = $('#main'); m && m.focus(); },
   backup: () => backupJson(),
   'plan-add': b => {
     const ctx = planCtx(b); if (!ctx) return;
@@ -5656,6 +5710,7 @@ document.addEventListener('focusout', e => {
   if (el.id === 'disc-val' && curOrder()?.draft?.discount?.type === 'percent') { const v = parseQty(el.value); el.value = v ? QF.format(Math.min(v, 100)) : ''; }
 });
 document.addEventListener('keydown', e => {
+  if (e.key === 'Tab' && sheets.length) { trapTab(e); return; }
   const typing = /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName);
   const mod = e.metaKey || e.ctrlKey;
   if (Store.mode !== 'loading' && !(Team.cfg && Team.state !== 'ready')) {
@@ -5676,6 +5731,24 @@ document.addEventListener('visibilitychange', () => {
   }
 });
 window.addEventListener('pagehide', () => Store.flushAll());
+/* còn thay đổi chưa gửi được lên máy chủ: hỏi trước khi đóng trang (trình duyệt máy tính) */
+window.addEventListener('beforeunload', e => { if (Store.mode === 'loading') return; Store.flushAll(); if (Store.failed.size) { e.preventDefault(); e.returnValue = ''; } });
+/* nhớ màn đang xem trên máy này: iPad tự tắt app chạy ngầm rồi mở lại vẫn về đúng đơn đang làm */
+let viewSig = '';
+function saveView() {
+  if (Store.mode === 'loading' || S.loadError) return;
+  const v = { tab: S.tab, orderId: S.orderId, view: S.view, filter: S.filter, fin: S.fin || '', catTab: S.catTab };
+  const sig = JSON.stringify(v); if (sig === viewSig) return; viewSig = sig;
+  try { localStorage.setItem('snt-view', JSON.stringify({ ...v, at: Date.now() })); } catch (e) { /* bỏ qua */ }
+}
+function restoreView() {
+  let v = null; try { v = JSON.parse(localStorage.getItem('snt-view') || 'null'); } catch (e) { v = null; }
+  if (!v || Date.now() - (v.at || 0) > 12 * 3600e3) return;
+  if (['today', 'orders', 'stats', 'catalog', 'settings'].includes(v.tab)) S.tab = v.tab;
+  if (v.fin) S.fin = v.fin; if (v.filter) S.filter = v.filter; if (v.catTab) S.catTab = v.catTab;
+  const o = v.orderId && Store.get('orders', v.orderId);
+  if (o) { S.orderId = o.id; S.view = v.view === 'edit' && o.draft && can('quote') ? 'edit' : v.view === 'detail' || v.view === 'edit' ? 'detail' : 'list'; }
+}
 wideMQ.addEventListener('change', () => render());
 
 /* ảnh đính kèm lưu trên máy: điền src sau khi vẽ */
@@ -5710,6 +5783,8 @@ async function boot() {
     Store.mode = db ? 'cloud' : 'local';
     S.loadError = e && e.code === 'revoked' ? 'Bạn không còn quyền mở dữ liệu của app này.' : 'Không kết nối được tới nơi lưu dữ liệu. Kiểm tra mạng rồi bấm Thử lại.';
   }
+  if (!S.loadError) restoreView();
+  toastBox();
   render();
   ensureFonts();
 }
