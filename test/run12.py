@@ -1,0 +1,172 @@
+# Kiểm thử: lịch thanh toán tùy chọn (bật/tắt), đợt theo số tiền cố định, mẫu nhanh
+import os, threading, http.server, functools
+from playwright.sync_api import sync_playwright
+ROOT='/home/claude/so-noi-that'; OUT=ROOT+'/test/out12'; os.makedirs(OUT, exist_ok=True)
+class Q(http.server.SimpleHTTPRequestHandler):
+    def log_message(self,*a): pass
+srv=http.server.ThreadingHTTPServer(('127.0.0.1',8786),functools.partial(Q,directory=ROOT))
+threading.Thread(target=srv.serve_forever,daemon=True).start()
+res=[]
+def check(n,c,x=''): res.append(c); print(('PASS ' if c else 'FAIL ')+n+(' :: '+str(x) if x!='' else ''))
+errs=[]
+with sync_playwright() as p:
+    b=p.chromium.launch(); page=b.new_page(viewport={'width':1180,'height':820})
+    page.add_init_script(open(ROOT+'/test/mock.js').read()); page.route('**fonts.g*',lambda r:r.abort())
+    page.on('pageerror',lambda e:errs.append(str(e)))
+    page.goto('http://127.0.0.1:8786/test/local.html'); page.wait_for_selector('[data-act=new-quote]')
+    page.evaluate("() => saveSettings({ bankBin: '970436', bankAccount: '0123456789', bankHolder: 'NGUYEN VAN A' })")
+
+    # ---- tính toán ----
+    r=page.evaluate("""() => {
+      const p = [{ id:'a', label:'Cọc', fixed:true, amt:10000000, trigger:'sign' }, { id:'b', label:'Tiến độ', pct:40, trigger:'progress' }, { id:'c', label:'Bàn giao', pct:0, trigger:'accept' }];
+      const a = planAmounts(p, 50000000).map(x => x.amount);
+      const over = planOver([{ id:'a', fixed:true, amt:60000000 }, { id:'b' }], 50000000);
+      const okp = planOver(p, 50000000);
+      return { a, over, okp, sum: planSummary(p), none: planSummary([]) };
+    }""")
+    check('đợt cố định 10tr + 40% + còn lại trên 50tr = 10/20/20tr', r['a']==[10000000,20000000,20000000], r['a'])
+    check('cảnh báo khi đợt cố định vượt giá trị đơn', r['over'] and not r['okp'])
+    check('tóm tắt hiện số tiền cố định', r['sum']=='3 đợt · 10 tr / 40% / còn lại', r['sum'])
+    check('tóm tắt khi không chia đợt', r['none']=='Không chia đợt', r['none'])
+
+    # ---- báo giá: tắt / bật chia đợt, mẫu nhanh, đổi % ↔ đ ----
+    page.click('[data-act=new-quote]'); page.wait_for_selector('#plan-card')
+    page.evaluate("() => { const o=curOrder(); o.draft.customer={name:'Chị Lan',phone:'0912345678',address:'Hà Đông'}; o.draft.rows=[newRow({name:'Tủ áo cánh mở',unit:'bộ',qty:1,price:40000000})]; touchOrder(o,0); render(); }")
+    page.wait_for_selector('#plan-card [data-plan-on]')
+    check('báo giá mới mặc định chia đợt theo mẫu', page.evaluate("() => curOrder().draft.plan.length")==3)
+    page.click('#plan-card .plan-sw'); page.wait_for_timeout(150)
+    check('tắt chia đợt: báo giá không còn lịch', page.evaluate("() => curOrder().draft.plan.length")==0)
+    check('tóm tắt mục hiện "Không chia đợt"', page.inner_text('#qplan-sum')=='Không chia đợt')
+    check('khi tắt không còn ô nhập đợt', page.locator('#plan-card .prow').count()==0)
+    page.click('#plan-card .plan-sw'); page.wait_for_timeout(150)
+    check('bật lại: lấy lại đúng lịch cũ', page.evaluate("() => curOrder().draft.plan.map(r=>r.pct).join(',')")=='50,40,0')
+    page.click('#plan-card [data-act=plan-preset][data-p="2"]'); page.wait_for_timeout(150)
+    check('mẫu nhanh "2 đợt": 50% / còn lại', page.evaluate("() => curOrder().draft.plan.map(r=>r.pct).join(',')")=='50,0')
+    page.click('#plan-card [data-act=plan-preset][data-p="4"]'); page.wait_for_timeout(150)
+    check('mẫu nhanh "4 đợt" không hỏi lại khi lịch chưa sửa', page.evaluate("() => curOrder().draft.plan.length")==4 and page.locator('.sheet').count()==0)
+    page.click('#plan-card [data-act=plan-preset][data-p="3"]'); page.wait_for_timeout(150)
+    rid=page.evaluate("() => curOrder().draft.plan[0].id")
+    page.click(f'#plan-card [data-act=plan-unit][data-id="{rid}"]'); page.wait_for_timeout(150)
+    d=page.evaluate("() => curOrder().draft.plan[0]")
+    check('đổi đợt 1 sang số tiền: giữ nguyên 20tr (50%)', d.get('fixed') and d.get('amt')==20000000, d)
+    page.fill(f'#pa-{rid}', '15000000'); page.wait_for_timeout(150)
+    amts=page.locator('#plan-card [data-pamt]').all_inner_texts()
+    check('nhập cọc cố định 15tr: các đợt 15 / 16 / 9 tr', amts==['15.000.000','16.000.000','9.000.000'], amts)
+    check('ô số tiền tự thêm dấu chấm', page.input_value(f'#pa-{rid}')=='15.000.000')
+    page.fill(f'#pa-{rid}', '45000000'); page.wait_for_timeout(150)
+    check('cọc cố định vượt giá trị đơn: hiện cảnh báo', page.is_visible('#plan-card [data-planwarn]'))
+    page.fill(f'#pa-{rid}', '15000000'); page.wait_for_timeout(150)
+    page.click('#plan-card [data-act=plan-preset][data-p="2"]'); page.wait_for_timeout(200)
+    check('đã sửa lịch rồi chọn mẫu: hỏi trước khi thay', 'Thay lịch đang có' in page.locator('.sheet').last.inner_text())
+    page.click('.sheet-f [data-sa=no]'); page.wait_for_timeout(200)
+    check('bấm Hủy: giữ lịch đã sửa', page.evaluate("() => curOrder().draft.plan[0].amt")==15000000)
+    page.screenshot(path=OUT+'/editor-fixed.png')
+    page.click(f'#plan-card [data-act=plan-unit][data-id="{rid}"]'); page.wait_for_timeout(150)
+    check('đổi lại %: 15tr/40tr = 37,5%', page.evaluate("() => { const r=curOrder().draft.plan[0]; return !r.fixed && r.pct; }")==37.5)
+
+    # ---- chốt đơn không chia đợt ----
+    page.click('#plan-card .plan-sw'); page.wait_for_timeout(150)
+    page.evaluate("() => closeQuoteSheet(curOrder())"); page.wait_for_selector('#cl-dep')
+    t=page.locator('.sheet').last.inner_text()
+    check('màn chốt đơn báo "Không chia đợt"', 'Không chia đợt' in t and 'Cọc bằng đợt 1' not in t)
+    page.fill('#cl-dep','10.000.000'); page.click('.sheet-f [data-sa=ok]'); page.wait_for_timeout(400)
+    o=page.evaluate("() => { const o=curOrder(); return { plan:o.plan.length, st:planStatus(o).map(r=>({one:r.one, amount:r.amount, left:r.left, state:r.state})) }; }")
+    check('đơn chốt không có lịch đợt', o['plan']==0)
+    check('một khoản thu một lần: 40tr, còn 30tr, chưa đến hạn', o['st']==[{'one':True,'amount':40000000,'left':30000000,'state':'later'}], o['st'])
+    page.evaluate("() => { S.view='detail'; render(); }"); page.wait_for_selector('.d-actions')
+    card=page.locator('section.card', has_text='Không chia đợt').inner_text()
+    check('trang đơn: thẻ "Thanh toán · thu một lần" có nút Chia đợt', 'Thanh toán' in card and 'Chia đợt' in card and 'Đợt 1' not in card, card.replace('\n',' | ')[:120])
+    check('chưa bàn giao: không nằm trong lọc "Cần thu"', page.evaluate("() => filterCount('collect')")==0)
+    page.screenshot(path=OUT+'/detail-one.png')
+    # hẹn ngày thu đã qua → quá hạn
+    page.evaluate("() => { const i=document.querySelector('[data-due=all]'); i.value=addDays(today(),-2); i.dispatchEvent(new Event('change',{bubbles:true})); }"); page.wait_for_timeout(200)
+    check('hẹn ngày thu đã qua: quá hạn', page.evaluate("() => planStatus(curOrder())[0].state")=='overdue')
+    check('lọc "Cần thu" có đơn này', page.evaluate("() => filterCount('collect')")==1)
+    todo=page.evaluate("() => todoItems().filter(t=>t.k==='overdue').map(t=>t.title)")
+    check('Hôm nay: "tiền còn lại quá hạn 2 ngày"', todo==['Chị Lan · tiền còn lại quá hạn 2 ngày'], todo)
+    check('ghi lịch sử hẹn ngày thu', 'Hẹn ngày thu tiền còn lại' in page.evaluate("() => curOrder().log.map(l=>l.text).join('|')"))
+    page.click('[data-act=plan-pay]'); page.wait_for_selector('#pay-amt')
+    t=page.locator('.sheet').last.inner_text()
+    check('thu tiền: số tiền điền sẵn 30tr, nút "Thu đủ phần còn lại"', page.input_value('#pay-amt')=='30.000.000' and 'Thu đủ phần còn lại' in t and 'Đợt 1' not in t)
+    check('nội dung phiếu: "Thanh toán phần còn lại"', page.input_value('#pay-note')=='Thanh toán phần còn lại')
+    page.click('.sheet-f [data-sa=close]'); page.wait_for_timeout(200)
+    page.click('[data-act=plan-qr]'); page.wait_for_selector('#qr-canvas canvas')
+    t=page.locator('.sheet').last.inner_text()
+    check('mã QR: tiêu đề "tiền còn lại", nội dung CK không có "D1"', 'tiền còn lại' in t and ' D1' not in t, t[:90].replace('\n',' '))
+    page.click('.sheet-f [data-sa=close]'); page.wait_for_timeout(200)
+    # PDF báo giá: khối QR toàn bộ số còn lại, không có bảng lịch
+    page.evaluate("() => { const f = layoutQuote; window.__lqf = f; window.layoutQuote = d => { const r = f(d); window.__txt = r.flat().filter(x=>x.t==='text').map(x=>x.s); window.__qr = d.qr ? d.qr.amount : null; return r; }; }")
+    page.evaluate("() => renderQuotePages(curOrder(), String(lastVersion(curOrder()).no))")
+    txt=page.evaluate("() => window.__txt"); qa=page.evaluate("() => window.__qr")
+    check('PDF: không có bảng LỊCH THANH TOÁN', 'LỊCH THANH TOÁN' not in txt)
+    check('PDF: có khối CHUYỂN KHOẢN NHANH, QR 30tr', 'CHUYỂN KHOẢN NHANH' in txt and qa==30000000, qa)
+    pr=page.evaluate("async () => { const o=curOrder(); const r=await renderPayRequest(o, planStatus(o)[0]); return r.filename; }")
+    check('đề nghị thanh toán: tên tệp "con-lai"', pr.endswith('-con-lai.pdf'), pr)
+
+    # ---- chia đợt lại sau khi chốt ----
+    page.click('[data-act=plan-edit]'); page.wait_for_selector('#plan-edit-box .prow')
+    page.click('#plan-edit-box [data-act=plan-preset][data-p="2"]'); page.wait_for_timeout(150)
+    page.click('.sheet-f [data-sa=ok]'); page.wait_for_timeout(300)
+    st=page.evaluate("() => planStatus(curOrder()).map(r=>[r.n, r.amount, r.left, r.state])")
+    check('chia 2 đợt sau khi chốt: đợt 1 20tr (đã trừ cọc 10tr), đợt 2 20tr', st==[[1,20000000,10000000,'due'],[2,20000000,20000000,'later']], st)
+    page.evaluate("() => renderQuotePages(curOrder(), String(lastVersion(curOrder()).no))")
+    txt=page.evaluate("() => window.__txt")
+    check('PDF bản chốt theo lịch mới của đơn', 'LỊCH THANH TOÁN' in txt)
+    # bỏ chia đợt trong trang đơn
+    page.click('[data-act=plan-edit]'); page.wait_for_selector('#plan-edit-box .plan-sw')
+    page.click('#plan-edit-box .plan-sw'); page.wait_for_timeout(150)
+    check('tắt trong màn sửa lịch: không còn ô đợt', page.locator('#plan-edit-box .prow').count()==0)
+    page.click('.sheet-f [data-sa=ok]'); page.wait_for_timeout(300)
+    check('bỏ chia đợt: đơn về thu một lần', page.evaluate("() => curOrder().plan.length===0 && planStatus(curOrder())[0].one"))
+    check('ghi lịch sử "Bỏ chia đợt"', 'Bỏ chia đợt' in page.evaluate("() => curOrder().log.map(l=>l.text).join('|')"))
+    # sửa báo giá (bản 2) của đơn không chia đợt → bản mới cũng không chia đợt
+    page.evaluate("() => ACTIONS.revise()"); page.wait_for_selector('#plan-card')
+    check('tạo bản 2: giữ "không chia đợt"', page.evaluate("() => curOrder().draft.plan.length")==0 and page.is_visible('#plan-card [data-plan-on]:not(:checked)'))
+    page.evaluate("() => { const o=curOrder(); o.draft=null; touchOrder(o,0); S.view='detail'; render(); }")
+
+    # ---- mẫu trong Cài đặt: đợt cố định, báo giá mới không tự chia đợt ----
+    page.evaluate("() => { S.tab='settings'; render(); }"); page.wait_for_selector('#tpl-card')
+    tid=page.evaluate("() => S.tplWork[0].id")
+    page.click(f'#tpl-card [data-act=plan-unit][data-id="{tid}"]'); page.wait_for_timeout(150)
+    page.fill(f'#pa-{tid}','5000000'); page.wait_for_timeout(200)
+    check('mẫu lưu đợt cọc cố định 5tr', page.evaluate("() => { const t=settings().planTemplate[0]; return t.fixed && t.amt; }")==5000000)
+    nq=page.evaluate("() => newQuote().plan[0]")
+    check('báo giá mới nhận đợt cố định từ mẫu', nq.get('fixed') and nq.get('amt')==5000000, nq)
+    page.click('#tpl-card .plan-sw'); page.wait_for_timeout(200)
+    check('tắt "Báo giá mới tự chia đợt"', page.evaluate("() => settings().planAuto")==False and page.evaluate("() => newQuote().plan.length")==0)
+    check('tóm tắt mục: "Báo giá mới không chia đợt"', 'không chia đợt' in page.inner_text('details[data-sect=st-plan] summary'))
+    page.click('#tpl-card .plan-sw'); page.wait_for_timeout(200)
+    check('bật lại: báo giá mới chia đợt', page.evaluate("() => newQuote().plan.length")==3)
+
+    # ---- tắt hẳn tính năng ----
+    page.click('input[data-feat=plan]'); page.wait_for_timeout(250)
+    check('tắt tính năng: ẩn mục Lịch thanh toán mẫu', page.locator('#tpl-card').count()==0)
+    check('tắt tính năng: báo giá mới không có lịch', page.evaluate("() => newQuote().plan.length")==0)
+    oid=page.evaluate("""async () => { const q=newQuote(); q.customer={name:'Anh Tú',phone:'',address:''}; q.rows=[newRow({name:'Giường ngủ',unit:'bộ',qty:1,price:12000000})]; q.plan=newPlan(DEFAULT_PLAN);
+      const o=createOrderFrom(q); Store.put('orders',o,0); S.orderId=o.id; S.tab='orders'; S.view='edit'; render(); return o.id; }""")
+    page.wait_for_selector('.editor')
+    check('tắt tính năng: soạn báo giá không có mục lịch', page.locator('#plan-card').count()==0)
+    page.evaluate("() => doClose(curOrder(), today(), 0, 'transfer', null, '')"); page.wait_for_timeout(300)
+    page.evaluate("() => { S.view='detail'; render(); }"); page.wait_for_selector('.d-actions')
+    st=page.evaluate("() => planStatus(curOrder()).map(r=>[!!r.one, r.amount])")
+    check('tắt tính năng: đơn có lịch cũ vẫn coi như thu một lần', st==[[True,12000000]], st)
+    check('tắt tính năng: thẻ thanh toán không có nút Chia đợt', page.locator('[data-act=plan-edit]').count()==0)
+    page.evaluate("() => renderQuotePages(curOrder(), '1')")
+    txt=page.evaluate("() => window.__txt")
+    check('tắt tính năng: PDF không in bảng lịch', 'LỊCH THANH TOÁN' not in txt and 'CHUYỂN KHOẢN NHANH' in txt)
+    page.evaluate("() => { saveSettings({ features: { ...settings().features, plan: true } }); render(); }"); page.wait_for_timeout(200)
+    check('bật lại tính năng: lịch cũ của đơn hiện lại', page.evaluate("() => planStatus(curOrder()).length")==3)
+
+    # ---- điện thoại ----
+    page.set_viewport_size({'width':390,'height':844})
+    page.evaluate("() => { const o=Store.get('orders', S.orderId); S.view='list'; render(); }")
+    page.evaluate("() => newQuoteAction()"); page.wait_for_selector('#plan-card')
+    page.evaluate("() => { const o=curOrder(); o.draft.rows=[newRow({name:'Tủ bếp',unit:'md',qty:3,price:5000000})]; touchOrder(o,0); render(); }")
+    page.wait_for_selector('#plan-card .prow')
+    page.locator('details[data-sect=qplan]').screenshot(path=OUT+'/phone-editor.png')
+    sw=page.evaluate("() => document.documentElement.scrollWidth")
+    check('điện thoại: không bị tràn ngang', sw<=390, sw)
+    check('không lỗi JS', not errs, errs)
+    b.close()
+srv.shutdown()
+print(f"{sum(res)}/{len(res)} passed")

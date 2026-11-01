@@ -1,0 +1,4 @@
+test/out*/
+test/fonts/
+test/local.html
+node_modules/

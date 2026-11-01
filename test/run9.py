@@ -1,0 +1,85 @@
+# Kiểm thử: Doanh thu riêng, Hôm nay, tìm nhanh, phím tắt, thanh bên
+import os, threading, http.server, functools, base64, csv, io
+from playwright.sync_api import sync_playwright
+ROOT='/home/claude/so-noi-that'; OUT=ROOT+'/test/out9'; os.makedirs(OUT, exist_ok=True)
+class Q(http.server.SimpleHTTPRequestHandler):
+    def log_message(self,*a): pass
+srv=http.server.ThreadingHTTPServer(('127.0.0.1',8780),functools.partial(Q,directory=ROOT))
+threading.Thread(target=srv.serve_forever,daemon=True).start()
+res=[]
+def check(n,c,x=''): res.append(c); print(('PASS ' if c else 'FAIL ')+n+(' :: '+str(x) if x!='' else ''))
+errs=[]
+with sync_playwright() as p:
+    b=p.chromium.launch(); page=b.new_page(viewport={'width':1180,'height':820})
+    page.add_init_script(open(ROOT+'/test/mock.js').read()); page.route('**fonts.g*',lambda r:r.abort())
+    page.on('pageerror',lambda e:errs.append(str(e)))
+    page.goto('http://127.0.0.1:8780/test/local.html'); page.wait_for_selector('[data-act=seed-demo]')
+    check('mở app vào màn Hôm nay', page.evaluate("() => S.tab")=='today' and 'Hôm nay' in page.inner_text('.list-head h1'))
+    page.click('[data-act=seed-demo]'); page.wait_for_timeout(300)
+    # ---- Hôm nay ----
+    t=page.inner_text('.todos')
+    check('Hôm nay: đợt quá hạn đứng đầu việc cần làm', t.strip().startswith('Chị Lan') and 'quá hạn' in t.split('\n')[0], t.split('\n')[0])
+    check('Hôm nay: nút Thu, Gọi, Zalo cho khoản cần thu', page.query_selector('.todo [data-act=todo-pay]') is not None and page.query_selector('.todo a[href^="tel:"]') is not None and page.query_selector('.todo a[href^="https://zalo.me/"]') is not None)
+    page.click('.todo [data-act=todo-pay] >> nth=0'); page.wait_for_selector('#pay-amt')
+    amt=page.input_value('#pay-amt')
+    check('Thu từ Hôm nay điền sẵn số còn thiếu của đợt', amt=='6.800.000', amt)
+    page.click('.sheet-f [data-sa=save]'); page.wait_for_timeout(300); page.keyboard.press('Escape')
+    check('thu xong: khoản quá hạn biến mất khỏi việc gấp', 'Chị Lan (mẫu) · đợt 2 quá hạn' not in page.inner_text('.todos'))
+    # ---- thanh bên ----
+    badge=page.evaluate("() => { const b=document.querySelector('.rail [data-f=collect] .badge'); return b ? b.textContent : '' }")
+    check('thanh bên: đếm đơn cần thu', badge=='1', badge)
+    page.click('.rail [data-f=quote]'); page.wait_for_timeout(150)
+    names=page.locator('.list-pane .oc-name').all_inner_texts()
+    check('thanh bên: lọc Đang báo giá', len(names)==2 and all(n in ['Chị Mai (mẫu)','Anh Đức (mẫu)'] for n in names), names)
+    # ---- tìm nhanh ----
+    page.keyboard.press('Control+k'); page.wait_for_selector('#pal-q')
+    check('⌘K mở tìm nhanh, gợi ý sẵn việc cần làm và đơn gần đây', 'mở gần đây' in page.inner_text('.pal-list').lower() and 'việc cần làm' in page.inner_text('.pal-list').lower())
+    page.keyboard.type('0900 000 004'); page.wait_for_timeout(150)
+    first=page.inner_text('.pal-it[aria-selected=true]')
+    check('tìm theo số điện thoại', 'Chị Mai' in first, first.replace('\n',' '))
+    page.keyboard.press('Enter'); page.wait_for_timeout(250)
+    check('Enter mở đơn tìm được', page.evaluate("() => headQuote(curOrder()).customer.name")=='Chị Mai (mẫu)')
+    page.evaluate("() => { S.view='detail'; render(); }")
+    page.keyboard.press('Control+k'); page.wait_for_selector('#pal-q:focus'); page.keyboard.type('đổi giá'); page.wait_for_timeout(150)
+    check('tìm thấy thao tác', 'Đổi giá hàng loạt' in page.inner_text('.pal-list'))
+    page.keyboard.press('Escape'); page.wait_for_timeout(100)
+    page.keyboard.press('Control+3'); page.wait_for_timeout(150)
+    check('⌘3 mở Doanh thu', page.evaluate("() => S.tab")=='stats')
+    # ---- doanh thu ----
+    page.evaluate("() => { S.period='year'; render(); }")
+    r=page.evaluate("""() => { const [f,t]=periodRange(); const st=computeStats(f,t); const bd=revenueBreakdown(f,t);
+      return { value: st.value, groups: bd.groups.reduce((s,x)=>s+x.v,0), cust: bd.customers.reduce((s,x)=>s+x.rev,0), orders: bd.orders.reduce((s,x)=>s+x.rev,0), names: bd.groups.map(g=>g.g), paid: st.paid }; }""")
+    check('chia theo nhóm cộng lại đúng tổng doanh thu', r['groups']==r['value'], r)
+    check('chia theo khách và theo đơn cộng lại đúng tổng', r['cust']==r['value'] and r['orders']==r['value'], r)
+    check('hạng mục cũ chưa có nhóm được đoán đúng nhóm', 'Tủ quần áo' in r['names'] and 'Phòng ngủ' in r['names'] and 'Khác' not in r['names'], r['names'])
+    hero=page.inner_text('.kpi.hero')
+    check('ô Tổng doanh thu hiện số và so với kỳ trước', page.evaluate(f"() => money({r['value']})") in hero and 'kỳ trước' in hero.lower(), hero.replace('\n',' '))
+    page.click('[data-act=rev-by][data-v=cust]'); page.wait_for_timeout(100)
+    check('xem doanh thu theo khách (3 khách có đơn chốt)', page.locator('.hb').count()==3, page.locator('.hb').count())
+    page.click('.hb.clk >> nth=0'); page.wait_for_timeout(150)
+    check('chạm khách → lọc đơn của khách đó', page.evaluate("() => S.tab")=='orders' and page.locator('.list-pane .ocard').count()>=1)
+    page.evaluate("() => { S.tab='stats'; render(); }")
+    page.click('[data-act=rev-csv]'); page.wait_for_function("() => (window.__downloads||[]).some(d => d.filename.endsWith('.csv'))", timeout=10000)
+    d=page.evaluate("() => window.__downloads.filter(d => d.filename.endsWith('.csv')).at(-1)")
+    raw=base64.b64decode(d['b64']).decode('utf-8')
+    check('xuất Excel (CSV) có BOM UTF-8 cho tiếng Việt', raw.startswith('﻿'))
+    rows=list(csv.reader(io.StringIO(raw.lstrip('﻿'))))
+    tot=[x for x in rows if len(x)>1 and x[1]=='TỔNG'][0]
+    check('CSV: dòng TỔNG khớp doanh thu và tiền thu', int(tot[6])==r['value'] and int(tot[7])==r['paid'], tot)
+    check('CSV: có từng dòng chốt đơn và thu tiền', any(x[1]=='Chốt đơn' for x in rows) and any(x[1]=='Thu tiền' for x in rows))
+    open(OUT+'/'+d['filename'],'w').write(raw)
+    # ---- phần thu gọn nhớ trạng thái ----
+    page.evaluate("() => { S.open.hist=false; openOrder(Store.list('orders').find(o=>o.status==='building').id); }"); page.wait_for_timeout(150)
+    page.click('details[data-sect=hist] summary'); page.wait_for_timeout(100)
+    page.evaluate("() => render()"); page.wait_for_timeout(100)
+    check('mở phần Lịch sử, vẽ lại vẫn mở', page.evaluate("() => document.querySelector('details[data-sect=hist]').open"))
+    page.click('details[data-sect=pays] summary [data-act=add-pay]'); page.wait_for_selector('#pay-amt')
+    check('bấm nút trên dòng tiêu đề không làm đóng/mở phần', page.evaluate("() => document.querySelector('details[data-sect=pays]').open"))
+    page.keyboard.press('Escape')
+    # ---- phím tắt tạo báo giá ----
+    n0=page.evaluate("() => Store.list('orders').length")
+    page.keyboard.press('Control+n'); page.wait_for_selector('#qf-name')
+    check('⌘N tạo báo giá mới', page.evaluate("() => Store.list('orders').length")==n0+1)
+    check('không lỗi JS', not errs, errs)
+    b.close()
+print(f'{sum(res)}/{len(res)} passed')
