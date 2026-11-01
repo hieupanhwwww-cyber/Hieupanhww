@@ -16,7 +16,7 @@
 <link rel="icon" type="image/png" href="icons/favicon-32.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap&subset=vietnamese">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap">
 <style>
 :root{padding-top:env(safe-area-inset-top,0px)}html{box-sizing:border-box}body{margin:0;font-size:14px}img{max-width:100%}
 :root{
@@ -860,6 +860,167 @@ h1,h2,h3{text-wrap:balance}
 .ocard,.crow,.cat-row{content-visibility:auto;contain-intrinsic-size:auto 64px}
 .linkbtn.rowlink{color:inherit;font-weight:700;padding:0;text-align:left}
 .linkbtn.rowlink:hover{color:var(--accent)}
+
+/* =========================================================
+   XƯỞNG GỖ — thanh bên là tấm gỗ óc chó có dán chỉ cạnh,
+   vùng làm việc trắng sữa, số tiền in đậm kiểu tem xưởng.
+   Điểm nhấn duy nhất: dải chỉ cạnh màu sồi (--oak).
+   ========================================================= */
+:root{
+  --font:"Be Vietnam Pro",-apple-system,"Helvetica Neue",Arial,sans-serif;
+  --display:"Bricolage Grotesque","Be Vietnam Pro",-apple-system,sans-serif;
+  --bg:#F8F5F0; --surface:#FFFFFF; --surface-2:#F2EDE6; --line:#EAE2D7; --line-2:#DCCFBF;
+  --fg:#2A1F17; --muted:#77685B; --accent:#8B5A30; --accent-2:#6E4524; --accent-soft:#F3E7DA; --accent-ink:#FFFFFF;
+  --walnut:#33241B; --walnut-2:#3E2C21; --walnut-ink:#F5EDE2; --walnut-mute:#BBA48D; --oak:#C99559;
+  --btn:#3A281E; --btn-h:#4A3427; --btn-ink:#F8F2EA;
+  --bar:rgba(248,245,240,.9); --side:var(--walnut); --seg-on:#FFFFFF;
+  --shadow:none; --r:14px; --r-sm:10px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#18120F; --surface:#211915; --surface-2:#2A201A; --line:#33281F; --line-2:#46382C;
+  --fg:#F3EBE1; --muted:#AD9C8B; --accent:#D9A66F; --accent-2:#EABF90; --accent-soft:#3A2A1D; --accent-ink:#1B130D;
+  --walnut:#0F0A07; --walnut-2:#1A120D; --walnut-ink:#F3EBE1; --walnut-mute:#A28E7A; --oak:#D19C62;
+  --btn:#D19C62; --btn-h:#DFAE78; --btn-ink:#1B130D; --bar:rgba(24,18,15,.9); --seg-on:#3A2D24}}
+:root[data-theme="dark"]{
+  --bg:#18120F; --surface:#211915; --surface-2:#2A201A; --line:#33281F; --line-2:#46382C;
+  --fg:#F3EBE1; --muted:#AD9C8B; --accent:#D9A66F; --accent-2:#EABF90; --accent-soft:#3A2A1D; --accent-ink:#1B130D;
+  --walnut:#0F0A07; --walnut-2:#1A120D; --walnut-ink:#F3EBE1; --walnut-mute:#A28E7A; --oak:#D19C62;
+  --btn:#D19C62; --btn-h:#DFAE78; --btn-ink:#1B130D; --bar:rgba(24,18,15,.9); --seg-on:#3A2D24}
+body{font-size:15px;letter-spacing:0;background:var(--bg)}
+h1,h2,h3{letter-spacing:-.01em}
+
+/* chữ tiêu đề và số tiền: Bricolage hẹp, đậm */
+.list-head h1,.d-title h2,.welcome h2,.brand-t{font-family:var(--display);font-stretch:88%;font-weight:700;letter-spacing:-.02em}
+.list-head h1{font-size:30px;line-height:1.1}
+.d-title h2{font-size:30px;line-height:1.1}
+.bignum b,.kpi b,.tile b,.totals .tgrand b,.big-money,.oc-amt{font-family:var(--display);font-stretch:86%;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.bignum b{font-size:clamp(20px,4.4cqi,32px);font-weight:700}
+.kpi b,.tile b{font-weight:700}
+.tile b{font-size:26px}
+.big-money{font-weight:700}
+.oc-amt{font-size:16px;font-weight:650}
+.totals .tgrand b{font-size:30px;color:var(--fg)}
+
+/* ---- thanh bên: tấm gỗ óc chó, cạnh phải dán chỉ sồi ---- */
+.rail,.wide .rail{
+  background:
+    repeating-linear-gradient(91deg,rgba(255,255,255,.022) 0 1px,transparent 1px 7px),
+    repeating-linear-gradient(89deg,rgba(0,0,0,.10) 0 1px,transparent 1px 29px),
+    linear-gradient(180deg,var(--walnut-2),var(--walnut));
+  -webkit-backdrop-filter:none;backdrop-filter:none;color:var(--walnut-ink)}
+.wide .rail{border-right:0;box-shadow:inset -3px 0 0 var(--oak)}
+.wide .rail .brand{color:var(--walnut-ink);padding:4px 10px 16px}
+.brand-t{font-size:19px;line-height:1.1}
+.brand-t small{font-family:var(--font);font-stretch:100%;letter-spacing:0;font-weight:500;color:var(--walnut-mute);font-size:12px;margin-top:2px}
+.appicon{background:var(--oak);color:var(--walnut);box-shadow:none;border-radius:9px}
+.appicon.big{color:#2A1F17}
+.wide .rail .navbtn{color:color-mix(in srgb,var(--walnut-ink) 84%,transparent);border-radius:0 8px 8px 0;margin-right:6px}
+.wide .rail .navbtn .ic{color:var(--oak)}
+.wide .rail .navbtn:hover{background:rgba(255,255,255,.06);color:var(--walnut-ink)}
+.wide .rail .navbtn[aria-current="page"]{background:rgba(255,255,255,.10);color:var(--walnut-ink);box-shadow:inset 3px 0 0 var(--oak);font-weight:600}
+.sb-label{text-transform:none;letter-spacing:0;font-size:12.5px;font-weight:600;color:var(--walnut-mute);padding:16px 10px 4px}
+.sb-search{background:rgba(255,255,255,.07);color:var(--walnut-mute)}
+.sb-search:hover{background:rgba(255,255,255,.11)}
+.rail kbd{background:rgba(0,0,0,.25);box-shadow:none;color:var(--walnut-mute)}
+.rail .sb-new.btn.primary{background:var(--oak);color:#2A1F17;box-shadow:none}
+.rail .sb-new.btn.primary:hover{filter:brightness(1.06)}
+.rail .badge{background:rgba(255,255,255,.12);color:var(--walnut-ink)}
+.rail .badge.plain{background:transparent;color:var(--walnut-mute)}
+.rail .badge.bad{background:#C4503A;color:#fff}
+.rail .rail-foot,.rail .savestat{color:var(--walnut-mute)}
+.rail :focus-visible{outline-color:var(--oak)}
+/* thanh tab dưới (iPad dọc, điện thoại) */
+.narrow .rail{border-top:0;box-shadow:inset 0 3px 0 var(--oak);background:linear-gradient(180deg,var(--walnut-2),var(--walnut));-webkit-backdrop-filter:none;backdrop-filter:none}
+.narrow .rail .navbtn{color:var(--walnut-mute)}
+.narrow .rail .navbtn .ic{color:inherit}
+.narrow .rail .navbtn[aria-current="page"]{color:var(--oak);background:transparent;font-weight:600}
+
+/* ---- vùng làm việc ---- */
+.list-pane{background:var(--bg);border-right:1px solid var(--line)}
+.pane .list-head{background:var(--bar);border-bottom:1px solid var(--line)}
+.ed-top{background:var(--bar);border-bottom:1px solid var(--line)}
+.ed-bar{background:var(--bar)!important;border-top:1px solid var(--line)!important}
+
+/* khối nội dung: phẳng, viền mảnh, không đổ bóng */
+.card,.bignum,.kpi,.tile,.mini,.ocard,details.sect{box-shadow:none;border:1px solid var(--line);background:var(--surface)}
+.card,.bignum,.kpi,.tile,details.sect{border-radius:var(--r)}
+details.sect>summary{border-radius:var(--r)}
+details.sect[open]>summary{border-radius:var(--r) var(--r) 0 0;border-bottom:1px solid var(--line)}
+details.sect>summary:hover{background:var(--surface-2)}
+.tile:hover{box-shadow:none;border-color:var(--line-2);background:var(--surface)}
+.card-h h3,.card>h3,details.sect>summary h3{font-size:15.5px;font-weight:700}
+
+/* danh sách đơn: đơn đang chọn được dán chỉ cạnh */
+.ocard{border-radius:12px}
+.ocard:hover{box-shadow:none;border-color:var(--line-2)}
+.ocard[aria-current="true"]{background:var(--surface);border-color:var(--line-2);box-shadow:inset 4px 0 0 var(--oak)}
+.oc-name{font-weight:650}
+
+/* số liệu lớn: ô "tổng" nổi bật bằng dải sồi */
+.kpi.hero{box-shadow:inset 4px 0 0 var(--oak)}
+.kpi.hero b{color:var(--fg)!important}
+.totals{box-shadow:inset 4px 0 0 var(--oak)}
+
+/* nút: phẳng; nút chính màu óc chó (tối: màu sồi) */
+.btn{border-radius:var(--r-sm);background:var(--surface);box-shadow:inset 0 0 0 1px var(--line-2);font-weight:600}
+.btn:hover{filter:none;background:var(--surface-2)}
+.btn:active{filter:none;transform:translateY(1px)}
+.btn.primary{background:var(--btn);color:var(--btn-ink);box-shadow:none}
+.btn.primary:hover{background:var(--btn-h)}
+.btn.primary .ic,.d-actions .btn.primary .ic{color:var(--btn-ink)}
+.btn.danger{color:var(--bad);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--bad) 40%,transparent)}
+.btn.danger.solid{background:var(--bad);color:#fff;box-shadow:none}
+.btn.sm{border-radius:9px}
+.iconbtn{border-radius:var(--r-sm)}
+.iconbtn:hover{background:var(--surface-2)}
+.iconbtn.line{background:var(--surface);box-shadow:inset 0 0 0 1px var(--line-2)}
+.d-actions .btn{border-radius:12px}
+.d-actions .btn .ic{color:var(--accent)}
+.linkbtn{color:var(--accent)}
+
+/* ô nhập */
+.in,.datefield{border-radius:var(--r-sm);background:var(--surface);box-shadow:inset 0 0 0 1px var(--line-2)}
+.in:focus{box-shadow:inset 0 0 0 1.5px var(--oak),0 0 0 3px color-mix(in srgb,var(--oak) 28%,transparent)}
+.search .in{background:var(--surface);box-shadow:inset 0 0 0 1px var(--line)}
+.search .in:focus{box-shadow:inset 0 0 0 1.5px var(--oak),0 0 0 3px color-mix(in srgb,var(--oak) 28%,transparent)}
+.field>label,.lbl{font-size:13px;font-weight:600;color:var(--muted)}
+:focus-visible{outline-color:color-mix(in srgb,var(--oak) 80%,transparent)}
+
+/* nút chọn nhóm, chip */
+.seg{background:var(--surface-2);box-shadow:inset 0 0 0 1px var(--line);border-radius:var(--r-sm)}
+.seg button{border-radius:8px}
+.seg button[aria-pressed="true"]{background:var(--seg-on);box-shadow:inset 0 0 0 1px var(--line-2)}
+.chip{background:var(--surface-2);box-shadow:inset 0 0 0 1px var(--line);border-radius:8px}
+.chip[aria-pressed="true"]{background:var(--btn);color:var(--btn-ink);box-shadow:none}
+
+/* nhãn nhỏ: chữ thường, không viết hoa toàn bộ */
+.tag,.lockq th,.qhead,.cat-head,.cost-head,.grp-h,.pal-sec{text-transform:none;letter-spacing:0}
+.tag{font-size:12px;font-weight:600;background:var(--surface-2);color:var(--muted);border-color:var(--line)}
+.lockq th,.qhead,.cat-head,.cost-head{font-size:13px;font-weight:600}
+.grp-h{font-family:var(--display);font-stretch:90%;font-size:16px;font-weight:700;color:var(--fg);background:var(--surface)}
+.grp-h small{font-family:var(--font);font-size:12.5px}
+.pal-sec{font-size:12.5px;font-weight:600}
+.hb-bar i{background:var(--oak)}
+.lg.rev,.chart .bar.rev{background:var(--accent);fill:var(--accent)}
+
+/* hộp thoại, thông báo */
+.sheet{border-radius:16px;box-shadow:0 0 0 1px var(--line-2),0 24px 60px rgba(30,18,10,.28)}
+.sheet-h{border-bottom:1px solid var(--line)}
+.sheet-h h3{font-family:var(--display);font-stretch:90%;font-size:18px;font-weight:700}
+.sheet-f{border-top:1px solid var(--line);background:var(--surface-2);border-radius:0 0 16px 16px}
+.sheet-bg{background:rgba(30,20,12,.34)}
+.menu-list button:hover{background:var(--btn);color:var(--btn-ink)}
+.toast{background:var(--walnut);color:var(--walnut-ink);box-shadow:inset 3px 0 0 var(--oak),0 10px 30px rgba(0,0,0,.25);border-radius:12px}
+.toast.bad{box-shadow:inset 3px 0 0 #E0705A,0 10px 30px rgba(0,0,0,.25)}
+@media (max-width:999px){
+  .sheet,.sheet.wide{border-radius:18px 18px 0 0}
+  .sheet-f{border-radius:0}
+  .list-head h1,.d-title h2{font-size:26px}
+}
+/* cột ngoài kỳ đang xem: nhạt màu của chính nó thay vì xám */
+.chart .bar.rev.out{fill:color-mix(in srgb,var(--accent) 32%,var(--surface))!important}
+.chart .bar.cash.out{fill:color-mix(in srgb,var(--ok) 30%,var(--surface))!important}
+.chart .bar.spend.out{fill:color-mix(in srgb,var(--bad) 28%,var(--surface))!important}
 
 .wide .rail{padding-bottom:max(14px,env(safe-area-inset-bottom,0px))}
 </style>
