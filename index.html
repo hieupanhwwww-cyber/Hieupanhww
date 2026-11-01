@@ -4759,8 +4759,18 @@ function orderCostInfo(o) {
 function accrual(months) {
   const M = Object.fromEntries(months.map(m => [m, { m, rev: 0, ocost: 0, gen: 0, oin: 0, est: 0, none: 0, orders: [], gens: [] }]));
   for (const o of Store.list('orders')) {
-    /* lãi theo đơn: cả giá trị đơn (gồm phát sinh đã xác nhận) tính vào tháng chốt đơn */
-    if (isClosed(o) && o.closedAt) { const r = M[ym(o.closedAt)]; if (r) { const ci = orderCostInfo(o); r.rev += orderTotal(o); r.ocost += ci.cost; if (ci.kind === 'est') r.est++; if (ci.kind === 'none') r.none++; r.orders.push({ o, ci }); } }
+    /* doanh thu theo cùng quy tắc với màn Doanh thu (valueEvents): giá trị bản chốt đầu vào tháng chốt,
+       phần sửa giá (chốt bản sau) và phát sinh vào tháng xảy ra. Chi phí của đơn tính ở tháng chốt đơn. */
+    if (!isClosed(o) || !o.closedAt) continue;
+    const per = {};
+    for (const e of valueEvents(o)) { const k = ym(e.date); if (M[k]) per[k] = (per[k] || 0) + e.amount; }
+    const cm = ym(o.closedAt);
+    for (const [k, v] of Object.entries(per)) {
+      const r = M[k]; r.rev += v;
+      if (k === cm) { const ci = orderCostInfo(o); r.ocost += ci.cost; if (ci.kind === 'est') r.est++; if (ci.kind === 'none') r.none++; r.orders.push({ o, ci, v }); }
+      else r.orders.push({ o, ci: null, v, adj: true });
+    }
+    if (!per[cm] && M[cm]) { const ci = orderCostInfo(o); M[cm].ocost += ci.cost; if (ci.kind === 'est') M[cm].est++; if (ci.kind === 'none') M[cm].none++; M[cm].orders.push({ o, ci, v: 0 }); }
   }
   if (canCash()) for (const e of Store.list('cash')) {
     const r = M[ym(e.date)]; if (!r) continue;
@@ -4821,7 +4831,7 @@ function renderPL() {
   const aT = A.reduce((s, r) => ({ rev: s.rev + r.rev, cost: s.cost + r.ocost + r.gen - r.oin, p: s.p + r.profit, est: s.est + r.est, none: s.none + r.none }), { rev: 0, cost: 0, p: 0, est: 0, none: 0 });
   const accHtml = `${aT.none ? `<div class="notice warn" style="margin-bottom:10px">${ic('info')}<div>${aT.none} đơn chốt chưa có chi phí (chưa ghi khoản chi, chưa nhập giá nhập), lãi của các tháng đó đang cao hơn thực tế.</div></div>` : ''}
     <div class="scrollx"><table class="lockq ledger"><thead><tr><th>Tháng</th><th class="r">Giá trị đơn chốt</th><th class="r">Chi phí đơn</th><th class="r">Chi chung</th><th class="r">Thu khác</th><th class="r">Lãi</th><th class="r">Tỷ suất</th></tr></thead><tbody>
-    ${[...A].reverse().map(r => `<tr data-act="pl-month" data-m="${r.m}"><td><button class="linkbtn rowlink" data-act="pl-month" data-m="${r.m}">${ymShort(r.m)}</button><span class="sub">${r.orders.length} đơn chốt</span></td><td class="r">${money(r.rev)}</td><td class="r">${r.est ? '≈ ' : ''}${money(r.ocost)}${r.none ? `<span class="sub warnt">${r.none} đơn chưa có chi phí</span>` : ''}</td><td class="r">${money(r.gen)}</td><td class="r">${money(r.oin)}</td><td class="r"><b class="${r.profit < 0 ? 'negt' : ''}">${sgn(r.profit)}</b></td><td class="r">${r.pct == null ? '–' : pctTxt(r.pct)}</td></tr>`).join('')}
+    ${[...A].reverse().map(r => `<tr data-act="pl-month" data-m="${r.m}"><td><button class="linkbtn rowlink" data-act="pl-month" data-m="${r.m}">${ymShort(r.m)}</button><span class="sub">${r.orders.filter(x => !x.adj).length} đơn chốt</span></td><td class="r">${money(r.rev)}</td><td class="r">${r.est ? '≈ ' : ''}${money(r.ocost)}${r.none ? `<span class="sub warnt">${r.none} đơn chưa có chi phí</span>` : ''}</td><td class="r">${money(r.gen)}</td><td class="r">${money(r.oin)}</td><td class="r"><b class="${r.profit < 0 ? 'negt' : ''}">${sgn(r.profit)}</b></td><td class="r">${r.pct == null ? '–' : pctTxt(r.pct)}</td></tr>`).join('')}
     <tr class="tot"><td><b>Cộng</b></td><td class="r"><b>${money(aT.rev)}</b></td><td colspan="3" class="r">chi phí ${money(aT.cost)}</td><td class="r"><b class="${aT.p < 0 ? 'negt' : ''}">${sgn(aT.p)}</b></td><td class="r"><b>${aT.rev ? pctTxt(aT.p / aT.rev * 100) : '–'}</b></td></tr>
     </tbody></table></div>
     <p class="muted" style="font-size:13px;margin-top:8px">Giá trị đơn (gồm phát sinh đã xác nhận) tính vào tháng chốt đơn. Chi phí đơn = khoản chi đã ghi cho đơn; chưa ghi thì lấy giá nhập + vận chuyển (đánh dấu ≈). Chi chung = khoản chi không gắn đơn.</p>`;
@@ -4847,7 +4857,7 @@ function plMonthSheet(m) {
       ${line('Lãi tháng (thu − chi)', sgn(L.profit) + ' đ' + (L.pct == null ? '' : ' · ' + pctTxt(L.pct)), 'sum ' + (L.profit < 0 ? 'negt' : 'okt'))}</div>
       ${L.book ? `<p class="${L.changed ? 'warnt' : 'muted'}" style="font-size:13px">Đã chốt sổ lúc ${fmtDateTime(new Date(L.book.at))}${L.book.by ? ' bởi ' + esc(L.book.by) : ''}: thu ${money(L.book.in)}, chi ${money(L.book.out)}.${L.changed ? ' Số liệu đã thay đổi sau khi chốt.' : ''}</p>` : ''}`;
   }
-  html += `<h4 class="sh4">Lãi theo đơn chốt trong tháng</h4>${A.orders.length ? `<div class="pick-list">${A.orders.map(({ o, ci }) => { const t = orderTotal(o), p = t - ci.cost; return `<button class="pick" data-sa="go" data-id="${o.id}"><div class="pm"><b>${esc(headQuote(o).customer?.name || o.code)} <span class="muted" style="font-weight:400">· ${esc(o.code)}</span></b><span>Giá trị ${money(t)} · chi phí ${ci.kind === 'est' ? '≈ ' + money(ci.cost) + ' (giá nhập)' : ci.kind === 'real' ? money(ci.cost) + ' (đã chi)' : '<span class="warnt">chưa có</span>'}</span></div><div class="pp ${p < 0 ? 'negt' : ''}">${sgn(p)}</div></button>`; }).join('')}</div>` : '<p class="muted">Không có đơn chốt trong tháng.</p>'}
+  html += `<h4 class="sh4">Lãi theo đơn chốt trong tháng</h4>${A.orders.length ? `<div class="pick-list">${A.orders.map(({ o, ci, v, adj }) => { const p = v - (ci ? ci.cost : 0); return `<button class="pick" data-sa="go" data-id="${o.id}"><div class="pm"><b>${esc(headQuote(o).customer?.name || o.code)} <span class="muted" style="font-weight:400">· ${esc(o.code)}</span></b><span>${adj ? `Sửa giá, phát sinh trong tháng ${signed(v)} · chi phí tính ở tháng chốt đơn` : `Giá trị ${money(v)} · chi phí ${ci.kind === 'est' ? '≈ ' + money(ci.cost) + ' (giá nhập)' : ci.kind === 'real' ? money(ci.cost) + ' (đã chi)' : '<span class="warnt">chưa có</span>'}`}</span></div><div class="pp ${p < 0 ? 'negt' : ''}">${sgn(p)}</div></button>`; }).join('')}</div>` : '<p class="muted">Không có đơn chốt trong tháng.</p>'}
     ${A.gen ? `<div class="sumline"><span>Chi chung trong tháng</span><span class="num">−${money(A.gen)} đ</span></div>` : ''}
     ${A.oin ? `<div class="sumline"><span>Thu khác</span><span class="num">+${money(A.oin)} đ</span></div>` : ''}
     <div class="sumline"><span><b>Lãi theo đơn chốt</b></span><span class="num"><b class="${A.profit < 0 ? 'negt' : ''}">${sgn(A.profit)} đ${A.pct == null ? '' : ' · ' + pctTxt(A.pct)}</b></span></div>
