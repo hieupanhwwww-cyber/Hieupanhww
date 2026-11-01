@@ -1213,19 +1213,6 @@ const quotePlan = q => (feat('plan') && Array.isArray(q?.plan) ? q.plan : []);
 const dotLabel = r => (r.one ? 'Thanh toán' : 'Đợt ' + r.n);
 const dotName = r => (r.one ? 'tiền còn lại' : 'đợt ' + r.n);
 const payNote = r => (r.one ? 'Thanh toán phần còn lại' : `Thanh toán đợt ${r.n}: ${r.label || ''}`);
-/* Tỷ lệ % tính trên giá trị báo giá đã chốt; phát sinh đã xác nhận cộng/trừ vào đợt cuối */
-function orderPlanAmounts(o, plan = effPlan(o)) {
-  const v = lastVersion(o);
-  const rows = planAmounts(plan, v ? v.total : orderTotal(o));
-  if (!rows.length) return rows;
-  let adj = confirmedChanges(o);
-  for (let i = rows.length - 1; i >= 0 && adj !== 0; i--) {
-    const nv = rows[i].amount + adj;
-    if (nv >= 0 || i === 0) { rows[i].amount = Math.max(0, nv); adj = 0; }
-    else { adj = nv; rows[i].amount = 0; }
-  }
-  return rows;
-}
 function triggerReached(o, r) {
   if (r.reached) return true;
   if (r.trigger === 'sign') return isClosed(o);
@@ -1233,22 +1220,45 @@ function triggerReached(o, r) {
   if (r.trigger === 'accept') return o.status === 'done' || !!o.handover;
   return false;
 }
-function planStatus(o) {
-  if (!isClosed(o)) return [];
-  const T = today();
-  let pool = orderPaid(o);
-  return orderPlanAmounts(o).map(r => {
-    const paid = Math.min(pool, r.amount); pool -= paid;
-    const left = r.amount - paid;
-    let state;
-    if (left <= 0) state = 'paid';
-    else if (r.due && r.due < T) state = 'overdue';
-    else if (triggerReached(o, r) || (r.due && r.due <= T)) state = 'due';
-    else state = 'later';
-    return { ...r, paid, left, state };
-  });
+/* =========================================================
+   TIỀN CỦA MỘT ĐƠN — mọi con số về tiền của đơn đều lấy từ đây
+   (thẻ đơn, trang đơn, Hôm nay, lọc Cần thu, phiếu thu, PDF báo giá).
+   orderMoney(đơn, tùy chọn) → { base, chg, total, paid, due, over, rows, next }
+     base  : giá trị báo giá làm gốc chia đợt (bản chốt mới nhất, hoặc báo giá đang soạn)
+     chg   : phát sinh đã xác nhận (cộng/trừ dần từ đợt cuối)
+     rows  : các đợt { n, label, amount, paid, left, state, last, one?, fixed? }
+   Tùy chọn (dùng khi xem trước / in bản khác):
+     quote : tính theo báo giá này thay cho bản chốt (bản đang sửa, bản cũ)
+     plan  : dùng lịch này thay cho lịch của đơn (màn sửa lịch)
+     pays  : false = không trừ tiền đã trả (in bản cũ đã bị thay)
+   ========================================================= */
+function orderMoney(o, { quote = null, plan = null, pays = true } = {}) {
+  const closed = isClosed(o), v = lastVersion(o);
+  const base = quote ? quoteTotals(quote).total : closed ? (v ? v.total : 0) : quoteTotals(o.draft).total;
+  const chg = closed && pays ? confirmedChanges(o) : 0;
+  const P = plan || (quote ? quotePlan(quote) : closed ? effPlan(o) : quotePlan(o.draft));
+  const rows = planAmounts(P, base);
+  /* phát sinh: cộng vào đợt cuối; nếu giảm tiền thì trừ lùi dần từ đợt cuối */
+  let adj = chg;
+  for (let i = rows.length - 1; i >= 0 && adj !== 0; i--) {
+    const nv = rows[i].amount + adj;
+    if (nv >= 0 || i === 0) { rows[i].amount = Math.max(0, nv); adj = 0; }
+    else { adj = nv; rows[i].amount = 0; }
+  }
+  /* tiền khách đã trả lấp dần từ đợt 1 */
+  const paid = pays ? orderPaid(o) : 0, T = today();
+  let pool = paid;
+  for (const r of rows) {
+    r.paid = Math.min(pool, r.amount); pool -= r.paid; r.left = r.amount - r.paid;
+    r.state = r.left <= 0 ? 'paid' : r.due && r.due < T ? 'overdue' : closed && (triggerReached(o, r) || (r.due && r.due <= T)) ? 'due' : 'later';
+  }
+  const total = base + chg;
+  /* báo giá chưa chốt: chưa có gì phải thu (giống orderDue) */
+  return { base, chg, total, paid, due: closed ? Math.max(0, total - paid) : 0, over: Math.max(0, paid - total), rows, next: closed ? rows.find(r => r.left > 0) || null : null };
 }
-const nextInstallment = o => planStatus(o).find(r => r.left > 0) || null;
+/* các hàm gọn cho đơn đã chốt (đơn đang báo giá chưa có gì phải thu) */
+const planStatus = o => (isClosed(o) ? orderMoney(o).rows : []);
+const nextInstallment = o => (isClosed(o) ? orderMoney(o).next : null);
 const overdueAmount = o => planStatus(o).filter(r => r.state === 'overdue').reduce((s, r) => s + r.left, 0);
 const dueNowAmount = o => planStatus(o).filter(r => r.state === 'overdue' || r.state === 'due').reduce((s, r) => s + r.left, 0);
 function mergePlan(oldPlan, newPlanRows) {
@@ -2234,20 +2244,15 @@ async function renderQuotePages(o, src) {
   const total = quoteTotals(q).total;
   /* bản đang dùng của đơn đã chốt: theo lịch của đơn (có thể đã sửa hoặc bỏ chia đợt sau khi chốt) */
   const live = cur && src !== 'draft' && isClosed(o);
-  let pay = null, plan = planAmounts(live ? (usePlan(o) ? o.plan : []) : quotePlan(q), total);
-  if (cur && ((o.payments || []).length || confirmedChanges(o))) {
-    const pays = [...(o.payments || [])].sort((a, b) => String(a.date).localeCompare(String(b.date)));
-    const paid = pays.reduce((sum, x) => sum + (Number(x.amount) || 0), 0), chg = confirmedChanges(o);
-    plan = plan.map(r => ({ ...r }));
-    if (plan.length && chg) { const L = plan[plan.length - 1]; L.amount = Math.max(0, L.amount + chg); }
-    let rest = paid;
-    for (const r of plan) { r.paid = Math.min(r.amount, Math.max(0, rest)); r.left = r.amount - r.paid; rest -= r.paid; }
-    const grand = total + chg;
-    pay = { pays, paid, chg, due: Math.max(0, grand - paid), over: Math.max(0, paid - grand), plan };
-  }
+  /* mọi con số tiền lấy từ orderMoney, giống hệt trên màn hình */
+  const m = orderMoney(o, { quote: live ? null : q, pays: cur });
+  /* không chia đợt: không in bảng đợt, chỉ in ô chuyển khoản nhanh */
+  const plan = m.rows.some(r => r.one) ? [] : m.rows;
+  const pays = cur ? [...(o.payments || [])].sort((a, b) => String(a.date).localeCompare(String(b.date))) : [];
+  const pay = cur && (pays.length || m.chg) ? { pays, paid: m.paid, chg: m.chg, due: m.due, over: m.over, plan } : null;
   /* không chia đợt: đơn đã chốt thì in mã QR cho toàn bộ số còn phải thu */
-  const nx = plan.length ? plan.find(r => (r.left ?? r.amount) > 0) : live ? { one: true, n: 0, amount: pay ? pay.due : total + confirmedChanges(o) } : null;
-  const qr = nx && feat('qrPdf') ? orderQR(o, nx.left ?? nx.amount, nx.n) : null;
+  const nx = plan.length ? plan.find(r => r.left > 0) : live ? { one: true, n: 0, left: m.due } : null;
+  const qr = nx && feat('qrPdf') ? orderQR(o, nx.left, nx.n) : null;
   if (qr) { qr.n = nx.n; qr.one = !!nx.one; }
   const pages = layoutQuote({ q, st, code: o.code, label, logo, sign, signImg, qr, pay, plan });
   const out = await rasterize(pages, { w: PG.W, h: PG.H }, [st.shopName, st.phone].filter(Boolean).join(' · '));
@@ -2774,7 +2779,7 @@ function planEditor(plan, total, scope = 'quote', nohead = false) {
     : `<label class="feat plan-sw"><span><b>Chia thành nhiều đợt</b><small>${on ? 'Mỗi đợt tính theo % hoặc số tiền cố định. Đợt cuối tự lấy phần còn lại.' : 'Đang tắt: khách trả một lần hoặc trả dần tùy ý, app chỉ theo dõi còn phải thu bao nhiêu.'}</small></span><input type="checkbox" class="switch" data-plan-on ${on ? 'checked' : ''} aria-label="Chia thành nhiều đợt"></label>`;
   if (!on) return head + sw + (scope === 'tpl' ? planPresetBar(scope) : '');
   const ord = scope === 'order' ? curOrder() : null;
-  const rows = noamt ? plan.map((r, i) => ({ ...r, n: i + 1, last: i === plan.length - 1 })) : ord ? orderPlanAmounts(ord, plan) : planAmounts(plan, total);
+  const rows = noamt ? plan.map((r, i) => ({ ...r, n: i + 1, last: i === plan.length - 1 })) : ord ? orderMoney(ord, { plan }).rows : planAmounts(plan, total);
   const over = planOver(plan, total);
   return head + sw + planPresetBar(scope) + `<div class="plan-rows">${rows.map(r => `
     <div class="prow ${noamt ? 'noamt' : ''}" data-prow="${r.id}">
@@ -2797,7 +2802,7 @@ function refreshPlanBox(box, plan, total) {
   const sm = document.getElementById(box.dataset.planScope === 'tpl' ? 'tpl-sum' : 'qplan-sum'); if (sm) sm.textContent = planSummary(plan);
   if (total == null) return;
   const ord = box.dataset.planScope === 'order' ? curOrder() : null;
-  for (const r of (ord ? orderPlanAmounts(ord, plan) : planAmounts(plan, total))) { const el = box.querySelector(`[data-prow="${r.id}"] [data-pamt]`); if (el) el.textContent = money(r.amount); }
+  for (const r of (ord ? orderMoney(ord, { plan }).rows : planAmounts(plan, total))) { const el = box.querySelector(`[data-prow="${r.id}"] [data-pamt]`); if (el) el.textContent = money(r.amount); }
 }
 function planCtx(el) {
   const box = el.closest('[data-plan-scope]'); if (!box) return null;
@@ -2964,7 +2969,7 @@ function validateQuote(q) {
 }
 function closeQuoteSheet(o) {
   const q = o.draft, errs = validateQuote(q), t = quoteTotals(q), isRev = o.versions.length > 0, prev = lastVersion(o);
-  const plan = planAmounts(quotePlan(q), t.total), first = plan[0];
+  const plan = orderMoney(o, { quote: q, pays: false }).rows, first = plan[0];
   if (errs.length) {
     openSheet({ title: 'Chưa chốt được', html: `<p>Hãy sửa các điểm sau rồi chốt lại:</p><ul class="err">${errs.map(e => `<li>${esc(e)}</li>`).join('')}</ul>`, foot: `<button class="btn primary" data-sa="close">Đã hiểu</button>` });
     return;
@@ -3433,7 +3438,7 @@ function planEditSheet(o) {
       const had = usePlan(o);
       o.plan = mergePlan(o.plan, planCopy(S.planWork));
       if (!o.plan.length) addLog(o, had ? 'Bỏ chia đợt: khách thanh toán một lần' : 'Giữ thanh toán một lần, không chia đợt');
-      else addLog(o, 'Cập nhật lịch thanh toán: ' + orderPlanAmounts(o).map(r => `đợt ${r.n} ${money(r.amount)}`).join(', '));
+      else addLog(o, 'Cập nhật lịch thanh toán: ' + orderMoney(o).rows.map(r => `đợt ${r.n} ${money(r.amount)}`).join(', '));
       touchOrder(o, 0); closeSheet(el); render(); toast(o.plan.length ? 'Đã lưu lịch thanh toán' : 'Đã chuyển sang thu một lần');
     },
   });
