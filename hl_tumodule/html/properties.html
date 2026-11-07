@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Thuộc tính</title>
+<link rel="stylesheet" href="common.css">
+<style>
+  body { padding: 10px; padding-bottom: 70px; }
+  .top { background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; margin-bottom: 10px; }
+  .top .ttl { font-weight: 700; font-size: 14px; }
+  .top .sc { color: var(--muted); font-size: 12px; }
+  .warn { background: #fff6e8; border: 1px solid #f0d7a8; color: #6b4a00; border-radius: 8px; padding: 6px 10px; margin-bottom: 10px; font-size: 12px; }
+  .tools { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+  .tools button { padding: 4px 9px; font-size: 12px; }
+  .empty { color: var(--muted); text-align: center; padding: 40px 10px; }
+  footer { position: fixed; left: 0; right: 0; bottom: 0; background: #fff; border-top: 1px solid var(--line); padding: 8px 10px; display: flex; align-items: center; gap: 8px; }
+  footer .st { flex: 1; font-size: 12px; color: var(--warn); }
+  .note { font-size: 12px; color: var(--muted); }
+  details summary { cursor: pointer; color: var(--brown); font-size: 12px; margin-top: 4px; }
+</style>
+</head>
+<body>
+<div id="root"><div class="empty">Chọn bộ tủ, module hoặc tấm do plugin tạo.</div></div>
+<footer id="foot" style="display:none">
+  <span class="st" id="st"></span>
+  <button class="ghost" id="discard">Bỏ nháp</button>
+  <button id="apply">Áp dụng</button>
+</footer>
+<script src="common.js"></script>
+<script>
+// Nháp gắn với ID đối tượng: đổi lựa chọn không áp các ô của đối tượng trước sang đối tượng mới.
+const drafts = {};
+let cur = null;
+const $ = (s) => document.querySelector(s);
+
+function render() {
+  const root = $('#root');
+  if (!cur || cur.kind === 'none') {
+    root.innerHTML = `<div class="empty">${HL.esc((cur && cur.message) || 'Chọn bộ tủ, module hoặc tấm do plugin tạo.')}</div>`;
+    $('#foot').style.display = 'none';
+    return;
+  }
+  const d = drafts[cur.target] || {};
+  let h = `<div class="top"><div class="ttl">${HL.esc(cur.title)}</div><div class="sc">${HL.esc(cur.scope)}${cur.type_label ? ' · ' + HL.esc(cur.type_label) : ''}</div></div>`;
+  if (cur.warnings && cur.warnings.length) h += `<div class="warn">${cur.warnings.map(HL.esc).join('<br>')}</div>`;
+  if (cur.tools && cur.tools.length) h += `<div class="tools">${cur.tools.map(t => `<button class="ghost" data-tool="${HL.esc(t[0])}">${HL.esc(t[1])}</button>`).join('')}</div>`;
+  (cur.sections || []).forEach((s, si) => {
+    h += `<div class="section"><h3>${HL.esc(s.title)}</h3>` + s.fields.map(fd => HL.fieldHtml(fd, d[fd.key])).join('');
+    if (s.note) h += `<div class="note">${HL.esc(s.note)}</div>`;
+    if (s.preset_editor) {
+      const p = s.preset_editor;
+      const th = (p.thresholds || []).map(x => x[0] + ':' + x[1]).join('; ');
+      h += `<details><summary>Sửa / lưu bộ cấu hình bản lề${p.demo ? ' (đang là bộ DEMO)' : ''}</summary><div id="pe" style="margin-top:8px">
+        ${HL.fieldHtml({ key: 'pe_name', label: 'Tên bộ cấu hình', type: 'text', value: p.demo ? 'Xưởng của tôi' : p.name })}
+        ${HL.fieldHtml({ key: 'pe_diameter', label: 'Đường kính lỗ cốc (mm)', type: 'mm', value: p.diameter })}
+        ${HL.fieldHtml({ key: 'pe_depth', label: 'Sâu lỗ cốc (mm)', type: 'mm', value: p.depth })}
+        ${HL.fieldHtml({ key: 'pe_edge_offset', label: 'Tâm cốc cách cạnh cánh (mm)', type: 'mm', value: p.edge_offset })}
+        ${HL.fieldHtml({ key: 'pe_end_offset', label: 'Bản lề đầu/cuối cách mép (mm)', type: 'mm', value: p.end_offset })}
+        ${HL.fieldHtml({ key: 'pe_shelf_clearance', label: 'Khoảng tránh quanh đợt (mm)', type: 'mm', value: p.shelf_clearance })}
+        ${HL.fieldHtml({ key: 'pe_min_spacing', label: 'Khoảng cách tối thiểu giữa 2 bản lề (mm)', type: 'mm', value: p.min_spacing })}
+        ${HL.fieldHtml({ key: 'pe_thresholds', label: 'Ngưỡng chiều cao:số bản lề (vd 900:2; 1600:3)', type: 'text', value: th })}
+        <div class="row-btn"><button class="ghost" id="savePreset">Lưu bộ cấu hình</button></div></div></details>`;
+    }
+    h += '</div>';
+  });
+  root.innerHTML = h;
+  $('#foot').style.display = cur.apply ? 'flex' : 'none';
+  updateStatus();
+}
+
+function updateStatus() {
+  const n = Object.keys(drafts[cur.target] || {}).length;
+  $('#st').textContent = n ? `${n} thay đổi chưa áp dụng (bấm Áp dụng để cập nhật một lần)` : '';
+  $('#apply').disabled = !n;
+}
+
+function onEdit(e) {
+  const el = e.target.closest('[data-key]');
+  if (!el || !cur || el.dataset.key.startsWith('pe_')) return;
+  (drafts[cur.target] = drafts[cur.target] || {})[el.dataset.key] = HL.readField(el);
+  updateStatus();
+}
+$('#root').addEventListener('input', onEdit);
+$('#root').addEventListener('change', onEdit);
+$('#root').addEventListener('click', async (e) => {
+  const t = e.target.closest('[data-tool]');
+  if (t) { HL.req('tool', { name: t.dataset.tool }); return; }
+  if (e.target.id === 'savePreset') {
+    const g = (k) => document.querySelector(`[data-key="pe_${k}"]`).value;
+    const preset = { name: g('name'), diameter: g('diameter'), depth: g('depth'), edge_offset: g('edge_offset'), end_offset: g('end_offset'),
+      shelf_clearance: g('shelf_clearance'), min_spacing: g('min_spacing'), thresholds: g('thresholds') };
+    const r = await HL.req('save_hinge_preset', { preset });
+    if (!r.ok) return HL.toast(r.error, true);
+    show(r);
+  }
+});
+$('#apply').onclick = async () => {
+  const target = cur.target;
+  const r = await HL.req('apply', { target, values: drafts[target] || {} });
+  if (!r.ok) return HL.toast(r.error, true);
+  delete drafts[target];
+  show(r);
+};
+$('#discard').onclick = () => { delete drafts[cur.target]; render(); };
+
+function show(r) {
+  if (!r) return;
+  if (r.ok === false) return HL.toast(r.error, true);
+  cur = r; render();
+  if (r.message) HL.toast(r.message);
+}
+HL.onpush = (m) => { cur = m; render(); };
+HL.req('init').then(show);
+</script>
+</body>
+</html>

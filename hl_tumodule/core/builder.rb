@@ -559,7 +559,7 @@ module HungLoan
               forb = forbidden_for(door, shelves, hp)
               feats, errs = Hinges.features_for(door, data, hp, forb)
               door['features'].concat(feats)
-              errs.each { |e| r['errors'] << e.merge('level' => 'error', 'part' => door['local_id']) }
+              errs.each { |e| r['errors'] << e.merge('level' => 'warning', 'part' => door['local_id']) }
             end
             hstate['doors'] = newmap
           end

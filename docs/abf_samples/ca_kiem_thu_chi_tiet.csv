@@ -1,0 +1,48 @@
+﻿id,ten,vai_tro,module,vat_lieu,dai_mm,rong_mm,day_mm,so_thao_tac
+mod_to57mr30820002/side_L,Hồi,side,mod_to57mr30820002,,580.0,1200.0,17.0,7
+mod_to57mr30820002/side_R,Hồi,side,mod_to57mr30820002,,580.0,1200.0,17.0,7
+mod_to57mr30820002/top,Nóc,top,mod_to57mr30820002,,866.0,580.0,17.0,9
+mod_to57mr30820002/bottom,Đáy,bottom,mod_to57mr30820002,,866.0,580.0,17.0,9
+mod_to57mr30820002/back,Hậu,back,mod_to57mr30820002,,880.0,1180.0,7.0,0
+mod_to57mr30820002/dot_to57mr00650003,Đợt,shelf,mod_to57mr30820002,,866.0,558.0,17.0,8
+mod_to57mr30820002/door:side_L|side_R:0,Cánh,door,mod_to57mr30820002,,447.0,1196.0,17.0,3
+mod_to57mr30820002/door:side_L|side_R:1,Cánh,door,mod_to57mr30820002,,447.0,1196.0,17.0,3
+mod_to57mrccc50007/top,Nóc chữ L,top,mod_to57mrccc50007,,1600.0,1200.0,17.0,4
+mod_to57mrccc50007/bottom,Đáy chữ L,bottom,mod_to57mrccc50007,,1600.0,1200.0,17.0,4
+mod_to57mrccc50007/end_A,Hồi chữ L,l_end,mod_to57mrccc50007,,400.0,766.0,17.0,8
+mod_to57mrccc50007/end_B,Hồi chữ L,l_end,mod_to57mrccc50007,,400.0,766.0,17.0,8
+mod_to57mrccc50007/back_A,Hậu,back,mod_to57mrccc50007,,1583.0,766.0,7.0,0
+mod_to57mrccc50007/back_B,Hậu,back,mod_to57mrccc50007,,1176.0,766.0,7.0,0
+mod_to57mr9ae50009/side_L,Hồi,side,mod_to57mr9ae50009,,580.0,883.0,17.0,0
+mod_to57mr9ae50009/side_R,Hồi,side,mod_to57mr9ae50009,,580.0,883.0,17.0,1
+mod_to57mr9ae50009/top,Nóc,top,mod_to57mr9ae50009,,900.0,580.0,17.0,0
+mod_to57mr9ae50009/bottom,Đáy,bottom,mod_to57mr9ae50009,,866.0,580.0,17.0,0
+mod_to57mr9ae50009/back,Hậu,back,mod_to57mr9ae50009,,866.0,866.0,7.0,0
+mod_to57mr63fd000a/side_L,Hồi,side,mod_to57mr63fd000a,,350.0,883.0,17.0,1
+mod_to57mr63fd000a/side_R,Hồi,side,mod_to57mr63fd000a,,350.0,883.0,17.0,1
+mod_to57mr63fd000a/top,Nóc,top,mod_to57mr63fd000a,,400.0,350.0,17.0,1
+mod_to57mr63fd000a/bottom,Đáy,bottom,mod_to57mr63fd000a,,366.0,350.0,17.0,1
+mod_to57mr63fd000a/back,Hậu,back,mod_to57mr63fd000a,,380.0,880.0,7.0,0
+mod_to57mr29aa000c/side_L,Hồi,side,mod_to57mr29aa000c,,500.0,703.0,17.0,1
+mod_to57mr29aa000c/side_R,Hồi,side,mod_to57mr29aa000c,,500.0,703.0,17.0,1
+mod_to57mr29aa000c/top,Nóc,top,mod_to57mr29aa000c,,600.0,500.0,17.0,1
+mod_to57mr29aa000c/bottom,Đáy,bottom,mod_to57mr29aa000c,,566.0,500.0,17.0,1
+mod_to57mr29aa000c/back,Hậu,back,mod_to57mr29aa000c,,580.0,700.0,7.0,0
+mod_to57mr29aa000c/dface:0,Mặt ngăn kéo,drawer_face,mod_to57mr29aa000c,,596.0,214.333,17.0,0
+mod_to57mr29aa000c/dface:1,Mặt ngăn kéo,drawer_face,mod_to57mr29aa000c,,596.0,214.333,17.0,0
+mod_to57mr29aa000c/dface:2,Mặt ngăn kéo,drawer_face,mod_to57mr29aa000c,,596.0,214.333,17.0,0
+mod_to57mr29aa000c/dr_to57mr1fd7000d:side_L,Hông thùng,drawer_side,mod_to57mr29aa000c,,450.0,150.0,15.0,0
+mod_to57mr29aa000c/dr_to57mr1fd7000d:side_R,Hông thùng,drawer_side,mod_to57mr29aa000c,,450.0,150.0,15.0,0
+mod_to57mr29aa000c/dr_to57mr1fd7000d:front,Đầu thùng,drawer_front,mod_to57mr29aa000c,,510.0,143.0,15.0,0
+mod_to57mr29aa000c/dr_to57mr1fd7000d:back,Hậu thùng,drawer_back,mod_to57mr29aa000c,,510.0,143.0,15.0,0
+mod_to57mr29aa000c/dr_to57mr1fd7000d:bottom,Đáy thùng,drawer_bottom,mod_to57mr29aa000c,,540.0,450.0,7.0,0
+mod_to57mr29aa000c/dr_to57mr809a000e:side_L,Hông thùng,drawer_side,mod_to57mr29aa000c,,450.0,150.0,15.0,0
+mod_to57mr29aa000c/dr_to57mr809a000e:side_R,Hông thùng,drawer_side,mod_to57mr29aa000c,,450.0,150.0,15.0,0
+mod_to57mr29aa000c/dr_to57mr809a000e:front,Đầu thùng,drawer_front,mod_to57mr29aa000c,,510.0,143.0,15.0,0
+mod_to57mr29aa000c/dr_to57mr809a000e:back,Hậu thùng,drawer_back,mod_to57mr29aa000c,,510.0,143.0,15.0,0
+mod_to57mr29aa000c/dr_to57mr809a000e:bottom,Đáy thùng,drawer_bottom,mod_to57mr29aa000c,,540.0,450.0,7.0,0
+mod_to57mr29aa000c/dr_to57mrd353000f:side_L,Hông thùng,drawer_side,mod_to57mr29aa000c,,450.0,150.0,15.0,0
+mod_to57mr29aa000c/dr_to57mrd353000f:side_R,Hông thùng,drawer_side,mod_to57mr29aa000c,,450.0,150.0,15.0,0
+mod_to57mr29aa000c/dr_to57mrd353000f:front,Đầu thùng,drawer_front,mod_to57mr29aa000c,,510.0,143.0,15.0,0
+mod_to57mr29aa000c/dr_to57mrd353000f:back,Hậu thùng,drawer_back,mod_to57mr29aa000c,,510.0,143.0,15.0,0
+mod_to57mr29aa000c/dr_to57mrd353000f:bottom,Đáy thùng,drawer_bottom,mod_to57mr29aa000c,,540.0,450.0,7.0,0

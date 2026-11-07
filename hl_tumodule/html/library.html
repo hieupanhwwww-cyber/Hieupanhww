@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Thư viện module</title>
+<link rel="stylesheet" href="common.css">
+<style>
+  body { display: flex; flex-direction: column; height: 100vh; }
+  header { display: flex; gap: 8px; align-items: center; padding: 8px 10px; background: #fff; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+  header .brand { font-weight: 700; color: var(--brown); margin-right: auto; }
+  header select { width: auto; min-width: 150px; }
+  main { flex: 1; display: flex; min-height: 0; }
+  #tree { width: 210px; min-width: 160px; border-right: 1px solid var(--line); overflow: auto; padding: 6px 0; background: #fff; }
+  .node { padding: 4px 8px; cursor: pointer; display: flex; align-items: center; gap: 4px; white-space: nowrap; }
+  .node:hover { background: var(--milk); }
+  .node.sel { background: #ead9c3; font-weight: 600; }
+  .node .tw { width: 14px; color: var(--muted); text-align: center; flex: none; }
+  .node .cnt { margin-left: auto; color: var(--muted); font-size: 11px; }
+  #right { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+  #scope { padding: 6px 12px; font-size: 12px; color: var(--muted); display: flex; gap: 8px; align-items: center; }
+  #scope.filter { background: #fff3df; color: var(--brown); }
+  #cards { flex: 1; overflow: auto; padding: 6px 12px 16px; display: grid; grid-template-columns: repeat(auto-fill, minmax(132px, 1fr)); gap: 10px; align-content: start; }
+  .card { background: #fff; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; cursor: pointer; display: flex; flex-direction: column; }
+  .card:hover { border-color: var(--brown-2); box-shadow: 0 2px 8px rgba(122,82,48,.15); }
+  .card svg { width: 100%; display: block; }
+  .card .nm { padding: 6px 8px 2px; font-weight: 600; font-size: 12.5px; }
+  .card .tp { padding: 0 8px; color: var(--muted); font-size: 11px; }
+  .card .ft { display: flex; justify-content: space-between; align-items: center; padding: 4px 6px 6px 8px; }
+  .gear { background: transparent; color: var(--brown); border: 1px solid var(--line); padding: 2px 8px; font-size: 15px; line-height: 1.2; }
+  .gear:hover { background: var(--milk); }
+  .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--brown-2); display: inline-block; }
+  .empty { grid-column: 1 / -1; color: var(--muted); padding: 30px 10px; text-align: center; }
+</style>
+</head>
+<body>
+<header>
+  <span class="brand">Thư viện Tủ Module</span>
+  <label>Lọc loại <select id="type"></select></label>
+  <button class="ghost" id="btnFolder" title="Thêm thư mục (con của thư mục đang chọn)">＋ Thư mục</button>
+  <button class="ghost" id="btnExport">Xuất sao lưu</button>
+  <button class="ghost" id="btnImport">Nhập sao lưu</button>
+</header>
+<main>
+  <nav id="tree"></nav>
+  <section id="right">
+    <div id="scope"></div>
+    <div id="cards"></div>
+  </section>
+</main>
+<script src="common.js"></script>
+<script>
+const st = { folders: [], types: [], counts: {}, total: 0, folder: '__all__', type: '', cards: [], open: {} };
+const $ = (s) => document.querySelector(s);
+
+function kids(pid) { return st.folders.filter(f => (f.parent || null) === pid); }
+function folderName(id) { const f = st.folders.find(x => x.id === id); return f ? f.name : id; }
+function folderPath(id) {
+  const out = []; let f = st.folders.find(x => x.id === id);
+  while (f) { out.unshift(f.name); f = st.folders.find(x => x.id === f.parent); }
+  return out.join(' › ');
+}
+
+function renderTree() {
+  const rows = [`<div class="node ${st.folder === '__all__' && !st.type ? 'sel' : ''}" data-id="__all__"><span class="tw">▣</span>Tất cả mẫu<span class="cnt">${st.total}</span></div>`];
+  const walk = (pid, depth) => kids(pid).forEach(f => {
+    const has = kids(f.id).length > 0;
+    const open = st.open[f.id] !== false;
+    rows.push(`<div class="node ${st.folder === f.id && !st.type ? 'sel' : ''}" data-id="${HL.esc(f.id)}" style="padding-left:${8 + depth * 14}px">
+      <span class="tw" data-tw="${HL.esc(f.id)}">${has ? (open ? '▾' : '▸') : '•'}</span>${HL.esc(f.name)}<span class="cnt">${st.counts[f.id] || 0}</span></div>`);
+    if (has && open) walk(f.id, depth + 1);
+  });
+  walk(null, 0);
+  $('#tree').innerHTML = rows.join('');
+}
+
+function renderScope() {
+  const el = $('#scope');
+  if (st.type) {
+    const t = st.types.find(x => x[0] === st.type);
+    el.className = 'filter';
+    el.innerHTML = `Đang lọc: <b>${HL.esc(t ? t[1] : st.type)}</b> · Phạm vi: <b>Toàn bộ thư viện</b> (không phụ thuộc thư mục) <button class="ghost" id="clr">Xóa lọc</button>`;
+    $('#clr').onclick = () => { $('#type').value = ''; setType(''); };
+  } else {
+    el.className = '';
+    el.textContent = st.folder === '__all__' ? 'Tất cả mẫu đã hỗ trợ' : 'Thư mục: ' + folderPath(st.folder);
+  }
+}
+
+function renderCards() {
+  const c = $('#cards');
+  if (!st.cards.length) {
+    c.innerHTML = `<div class="empty">${st.type ? 'Không có mẫu đã hỗ trợ thuộc loại này trong toàn bộ thư viện.' : 'Thư mục chưa có mẫu. Chuột phải một mẫu → “Thêm vào thư mục”.'}</div>`;
+    return;
+  }
+  c.innerHTML = st.cards.map(k => `<div class="card" data-tid="${HL.esc(k.id)}" title="${HL.esc(k.name)} — điểm bám: ${HL.esc(k.anchor)}">
+      ${HL.thumb(k)}<div class="nm">${HL.esc(k.name)}</div><div class="tp">${HL.esc(k.type_label)}</div>
+      <div class="ft"><span>${k.customized ? '<span class="dot" title="Đã lưu setting riêng"></span>' : ''}</span>
+      <button class="gear" data-gear="${HL.esc(k.id)}" title="Chỉnh và lưu setting cho các lần đặt mới của mẫu này">⚙</button></div></div>`).join('');
+}
+
+async function load() {
+  const r = st.type ? await HL.req('filter', { type: st.type }, 'cards') : await HL.req('list', { folder: st.folder }, 'cards');
+  if (!r) return;
+  if (!r.ok) return HL.toast(r.error, true);
+  st.cards = r.cards; renderCards(); renderScope(); renderTree();
+}
+
+function applyState(r) {
+  if (!r || !r.ok) { if (r && r.error) HL.toast(r.error, true); return false; }
+  if (r.folders) { st.folders = r.folders; st.counts = r.counts || {}; st.total = r.total || st.total; }
+  if (r.types && !st.types.length) {
+    st.types = r.types;
+    $('#type').innerHTML = '<option value="">Tất cả loại</option>' + r.types.map(t => `<option value="${HL.esc(t[0])}">${HL.esc(t[1])}</option>`).join('');
+  }
+  if (st.folder !== '__all__' && !st.folders.some(f => f.id === st.folder)) st.folder = '__all__';
+  if (r.select) st.folder = r.select;
+  if (r.message) HL.toast(r.message);
+  if (r.notes && r.notes.length) HL.toast('Cập nhật cấu hình: bỏ ' + r.notes.join('; '));
+  return true;
+}
+
+function setType(t) { st.type = t; load(); }
+
+function closeCtx() { document.querySelectorAll('.ctx').forEach(x => x.remove()); }
+function ctxMenu(x, y, items) {
+  closeCtx();
+  const m = document.createElement('div'); m.className = 'ctx';
+  m.innerHTML = items.map((it, i) => it === '-' ? '<hr>' : it.head ? `<div class="head">${HL.esc(it.head)}</div>` : `<div data-i="${i}" style="padding-left:${12 + (it.indent || 0) * 12}px">${HL.esc(it.label)}</div>`).join('');
+  document.body.appendChild(m);
+  m.style.left = Math.min(x, innerWidth - m.offsetWidth - 6) + 'px';
+  m.style.top = Math.min(y, innerHeight - m.offsetHeight - 6) + 'px';
+  m.onclick = (e) => { const i = e.target.dataset.i; if (i !== undefined) { closeCtx(); items[i].run(); } };
+}
+document.addEventListener('click', (e) => { if (!e.target.closest('.ctx')) closeCtx(); });
+
+function flatFolders() {
+  const out = [];
+  const walk = (pid, d) => kids(pid).forEach(f => { out.push({ f, d }); walk(f.id, d + 1); });
+  walk(null, 0);
+  return out;
+}
+
+async function mutate(action, data) { const r = await HL.req(action, data); if (applyState(r)) load(); }
+
+$('#cards').addEventListener('click', (e) => {
+  const g = e.target.closest('[data-gear]');
+  if (g) { e.stopPropagation(); HL.req('gear', { tid: g.dataset.gear }).then(r => { if (!r.ok) HL.toast(r.error, true); }); return; }
+  const c = e.target.closest('.card');
+  if (c) HL.req('place', { tid: c.dataset.tid }).then(r => { if (!r.ok) HL.toast(r.error, true); else HL.toast('Rê chuột trong vùng vẽ để xem trước, click để đặt.'); });
+});
+
+$('#cards').addEventListener('contextmenu', (e) => {
+  const c = e.target.closest('.card'); if (!c) return;
+  e.preventDefault();
+  const card = st.cards.find(k => k.id === c.dataset.tid);
+  const items = [{ head: 'Thêm vào thư mục' }];
+  flatFolders().forEach(({ f, d }) => items.push({ label: (card.folders.includes(f.id) ? '✓ ' : '') + f.name, indent: d,
+    run: () => mutate('add_to_folder', { folder: f.id, tid: card.id }) }));
+  if (card.folders.length) {
+    items.push('-');
+    if (!st.type && st.folder !== '__all__' && card.folders.includes(st.folder)) {
+      items.push({ label: `Bỏ khỏi thư mục “${folderName(st.folder)}”`, run: () => mutate('remove_from_folder', { folder: st.folder, tid: card.id }) });
+    } else {
+      items.push({ head: 'Bỏ khỏi thư mục (chỉ thư mục được chọn)' });
+      card.folders.forEach(fid => items.push({ label: folderPath(fid), indent: 1, run: () => mutate('remove_from_folder', { folder: fid, tid: card.id }) }));
+    }
+  }
+  ctxMenu(e.clientX, e.clientY, items);
+});
+
+$('#tree').addEventListener('click', (e) => {
+  const tw = e.target.closest('[data-tw]');
+  if (tw && kids(tw.dataset.tw).length) { st.open[tw.dataset.tw] = st.open[tw.dataset.tw] === false; renderTree(); return; }
+  const n = e.target.closest('.node'); if (!n) return;
+  st.folder = n.dataset.id;
+  if (st.type) { st.type = ''; $('#type').value = ''; }
+  load();
+});
+
+$('#tree').addEventListener('contextmenu', (e) => {
+  const n = e.target.closest('.node'); if (!n || n.dataset.id === '__all__') return;
+  e.preventDefault();
+  const id = n.dataset.id;
+  ctxMenu(e.clientX, e.clientY, [
+    { label: 'Thêm thư mục con…', run: async () => { const nm = await HL.modal('Thư mục con mới', { input: '' }); if (nm) { st.open[id] = true; mutate('folder_add', { name: nm, parent: id }); } } },
+    { label: 'Đổi tên…', run: async () => { const nm = await HL.modal('Đổi tên thư mục', { input: folderName(id) }); if (nm) mutate('folder_rename', { id, name: nm }); } },
+    '-',
+    { label: 'Xóa thư mục', run: async () => { if (await HL.modal('Xóa thư mục?', { text: 'Xóa thư mục và thư mục con. Mẫu, setting và các module đã đặt giữ nguyên.', ok: 'Xóa' })) mutate('folder_delete', { id }); } }
+  ]);
+});
+
+$('#type').onchange = (e) => setType(e.target.value);
+$('#btnFolder').onclick = async () => {
+  const parent = st.folder === '__all__' || st.type ? null : st.folder;
+  const nm = await HL.modal(parent ? `Thư mục con trong “${folderName(parent)}”` : 'Thư mục mới', { input: '' });
+  if (nm) { if (parent) st.open[parent] = true; mutate('folder_add', { name: nm, parent }); }
+};
+$('#btnExport').onclick = async () => { const r = await HL.req('export'); if (r.ok && r.message) HL.toast(r.message); else if (!r.ok) HL.toast(r.error, true); };
+$('#btnImport').onclick = async () => { const r = await HL.req('import'); if (r.ok && !r.cancel) { applyState(r); load(); } else if (!r.ok) HL.toast('Không nhập: ' + r.error + ' — cấu hình hiện tại được giữ nguyên.', true); };
+
+HL.req('init').then(r => { if (applyState(r)) load(); });
+</script>
+</body>
+</html>

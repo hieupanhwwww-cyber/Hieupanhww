@@ -52,7 +52,8 @@ module HungLoan
                 errors << { 'code' => 'LINK_CONFLICT', 'message' => "Hai module liên kết bị đặt hai giá trị #{key} khác nhau cùng lúc" }
                 next
               end
-              v = vals.first || grp.map { |id| mods[id][key] }.first
+              roots = grp.reject { |id| links.any? { |l| l['upper'] == id && grp.include?(l['lower']) } }
+              v = vals.first || mods[(roots.first || grp.first)][key]
               grp.each { |id| mods[id][key] = v }
             end
           end

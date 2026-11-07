@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Setting mẫu</title>
+<link rel="stylesheet" href="common.css">
+<style>
+  body { padding: 10px; }
+  .head { display: flex; gap: 10px; align-items: center; background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 8px; margin-bottom: 10px; }
+  .head svg { width: 84px; flex: none; border-radius: 6px; }
+  .head .meta { font-size: 12px; color: var(--muted); }
+  .head .nm { font-weight: 700; font-size: 14px; color: var(--text); }
+  .note { font-size: 12px; color: var(--muted); margin: 0 0 10px; }
+  .dirty { color: var(--warn); font-size: 12px; }
+  footer { position: sticky; bottom: 0; background: var(--bg); padding: 8px 0 2px; }
+</style>
+</head>
+<body>
+<div class="head" id="head"></div>
+<p class="note">Setting chỉ áp dụng cho các lần <b>đặt mới</b> của đúng mẫu này. Module đã đặt trong bản vẽ giữ nguyên. Một mẫu ở nhiều thư mục dùng chung một bộ setting.</p>
+<div class="section" id="form"></div>
+<footer>
+  <div class="dirty" id="dirty"></div>
+  <div class="row-btn">
+    <button class="ghost" id="restore" title="Nạp thông số gốc vào hộp; chỉ khi bấm Lưu mới thay bộ đã lưu">Khôi phục setting gốc</button>
+    <button class="ghost" id="close">Đóng</button>
+    <button id="save">Lưu setting</button>
+  </div>
+</footer>
+<script src="common.js"></script>
+<script>
+let cur = null, errors = {}, dirty = false;
+const $ = (s) => document.querySelector(s);
+
+function render(values) {
+  $('#head').innerHTML = `${HL.thumb({ module_type: cur.type_key || '', geometry: cur.geometry })}
+    <div><div class="meta">Mẫu đang chỉnh</div><div class="nm">${HL.esc(cur.name)}</div>
+    <div class="meta">${HL.esc(cur.type_label)} · ID ${HL.esc(cur.tid)}<br>Điểm bám: ${HL.esc(cur.anchor)}${cur.customized ? ' · <b>đã có setting riêng</b>' : ' · đang dùng thông số gốc'}</div></div>`;
+  $('#form').innerHTML = cur.fields.map(fd => HL.fieldHtml(fd, values[fd.key], errors[fd.key])).join('');
+  $('#dirty').textContent = dirty ? 'Có thay đổi chưa lưu.' : '';
+  document.title = 'Setting: ' + cur.name;
+}
+
+function values() {
+  const v = {};
+  document.querySelectorAll('#form [data-key]').forEach(el => { v[el.dataset.key] = HL.readField(el); });
+  return v;
+}
+
+function load(r) {
+  if (!r || !r.ok) { if (r && r.error) HL.toast(r.error, true); return; }
+  if (r.tid && cur && r.tid !== cur.tid && dirty) HL.toast('Đã chuyển sang mẫu ' + r.name + ' — thay đổi chưa lưu của mẫu trước bị bỏ.', true);
+  cur = r; cur.type_key = r.module_type || '';
+  errors = r.errors || {}; dirty = !!r.dirty;
+  render(r.values);
+  if (r.message) HL.toast(r.message);
+}
+
+$('#form').addEventListener('input', () => { dirty = true; $('#dirty').textContent = 'Có thay đổi chưa lưu.'; });
+$('#form').addEventListener('change', () => { dirty = true; $('#dirty').textContent = 'Có thay đổi chưa lưu.'; });
+$('#save').onclick = async () => {
+  const v = values();
+  const r = await HL.req('save', { tid: cur.tid, values: v });
+  if (r.ok === false || !r.ok) {
+    errors = r.errors || {}; render(v);
+    HL.toast(r.error || 'Chưa lưu', true);
+    return;
+  }
+  load(r);
+};
+$('#restore').onclick = async () => { const r = await HL.req('restore', { tid: cur.tid }); errors = {}; load(r); };
+$('#close').onclick = () => HL.req('close', { tid: cur && cur.tid });
+HL.onpush = load;
+HL.req('init').then(load);
+</script>
+</body>
+</html>
