@@ -169,7 +169,6 @@ module Sketchup
     def clear!; @items.each(&:erase!); @items = []; end
     def erase_entities(list) list.each { |e| e.erase!; @items.delete(e) } end
     def add_observer(_o) true end
-    def entityID; object_id; end
   end
 
   class ComponentDefinition < Entity
@@ -246,7 +245,7 @@ module Sketchup
     def clear; @a = []; end
     def add(*e) @a.concat(e.flatten) end
     def add_observer(_o) true end
-    def entityID; 1; end
+    def model; Sketchup.active_model; end
   end
 
   class Model < Entity
@@ -262,6 +261,7 @@ module Sketchup
       @depth = 0
     end
     def active_entities; @entities; end
+    def guid; "guid-#{object_id}"; end
     def edit_transform; Geom::Transformation.new; end
     def start_operation(name, *_a)
       raise "mock: start_operation lồng nhau (#{name})" if @depth > 0

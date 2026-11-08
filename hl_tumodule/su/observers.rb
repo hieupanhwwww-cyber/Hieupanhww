@@ -98,8 +98,20 @@ module HungLoan
         MOD = ModelObs.new
         APP = AppObs.new
 
+        # Khóa nhận diện ổn định: Entities/Selection/Model KHÔNG có entityID trong SketchUp.
+        def ident(x)
+          case x
+          when Sketchup::Model then [:model, x.guid]
+          when Sketchup::Selection then [:sel, x.model.guid]
+          when Sketchup::Entities
+            par = x.parent
+            par.is_a?(Sketchup::Model) ? [:ents, par.guid] : [:ents, par.entityID]
+          else [:ent, x.entityID]
+          end
+        end
+
         def attach(e, obs)
-          key = [e.entityID, obs.object_id]
+          key = [ident(e), obs.object_id]
           return if @attached[key]
           e.add_observer(obs)
           @attached[key] = true
