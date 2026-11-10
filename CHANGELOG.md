@@ -1,5 +1,16 @@
 # Nhật ký thay đổi
 
+## 1.5.0 — 10/11/2026 — Chống lỗi, tự kiểm tra
+Căn cứ: `test.skp` — ABF đã nhận 19/19 tấm và 56 bộ cam từ plugin (`docs/khao_sat/ABF_KET_QUA_TEST.md`).
+- **Lớp an toàn (`su/safe.rb`)**: mọi lệnh, mọi callback công cụ chuột (rê, vẽ, click, phím, gõ số) được bọc. Lỗi Ruby không còn làm đứng
+  công cụ hay spam hộp thoại: ghi vào nhật ký, báo một lần, công cụ lỗi ≥ 5 lần tự thoát.
+- **Nhật ký lỗi** `loi.log` (menu *Mở nhật ký lỗi*), có phiên bản SketchUp, hệ điều hành và vết lỗi.
+- **Tự kiểm tra trong SketchUp thật** (menu *Tự kiểm tra plugin…*): thử API host, đặt từng mẫu, bật mặt trước/cam/bản lề, ghép bộ tủ,
+  Move/Scale, vách/đợt/thùng, đổi tên ABF, xuất bản gia công; xóa sạch sau khi xong; ghi `tu_kiem_tra.txt` kèm nhật ký.
+- Hộp thoại lưu/mở file luôn có thư mục mặc định hợp lệ (trước đây truyền `nil`). Timer observer 0 → 0,01 s.
+- Thao tác lỗi: hoàn lại bằng `abort_operation` có bắt lỗi; không còn nuốt lỗi âm thầm.
+- Khảo sát model: từng nhóm lỗi không làm hỏng cả file; làm sạch chuỗi UTF-8/NaN trước khi ghi JSON; nhóm ABF ghi đủ đỉnh mặt/cạnh.
+
 ## 1.4.1 — 10/11/2026
 - **Sửa lỗi ghép ngược ở 1.4.0:** cốc cam Ø15 phải là `_ABF_minifixBolts` (part-b, cùng tấm với lỗ cạnh), lỗ Ø5 ở tấm đối diện là
   `_ABF_minifixPlasticBase` (part-a). Đã kiểm trên 150/150 tấm có lỗ cạnh của dự án ABF thật. Cấu hình tên đã lưu từ 1.4.0 được tự sửa.

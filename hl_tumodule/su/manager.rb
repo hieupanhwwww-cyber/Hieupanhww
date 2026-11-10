@@ -26,29 +26,50 @@ module HungLoan
 
         def registries; @registries; end
 
-        # Bao một hành động thành operation. Không lồng start_operation.
+        # Bao một hành động thành operation. Không lồng start_operation. Lỗi → abort (model về trạng thái trước),
+        # ghi nhật ký, thông báo ngắn. Trả nil khi lỗi để nơi gọi biết hoàn lại.
         def operation(name, transparent: false)
           model = Sketchup.active_model
           return guard { yield model } if @in_op
           @in_op = true
-          model.start_operation(name, true, false, transparent)
+          @last_error = nil
+          begin
+            model.start_operation(name, true, false, transparent)
+          rescue StandardError => e
+            @in_op = false
+            Safe.log("start_operation #{name}", e)
+            @last_error = e
+            Safe.msgbox("Không bắt đầu được thao tác “#{name}”: #{e.message}")
+            return nil
+          end
           begin
             r = guard { yield model }
             model.commit_operation
             r
           rescue C::ValidationError, OpError => e
-            model.abort_operation
-            UI.messagebox(e.message)
+            abort_safe(model)
+            @last_error = e
+            Safe.msgbox(e.message)
             nil
-          rescue StandardError => e
-            model.abort_operation
-            warn "[TuModule] #{e.class}: #{e.message}\n#{e.backtrace.first(8).join("\n")}"
-            UI.messagebox("Lỗi khi cập nhật: #{e.message}")
+          rescue StandardError, ScriptError => e
+            abort_safe(model)
+            @last_error = e
+            Safe.log("thao tác “#{name}”", e)
+            Safe.msgbox("Không thực hiện được “#{name}”: #{e.message}\n\nModel đã được giữ nguyên. Chi tiết: #{Safe.log_path}")
             nil
           ensure
             @in_op = false
           end
         end
+
+        def abort_safe(model)
+          model.abort_operation
+        rescue StandardError => e
+          Safe.log('abort_operation', e)
+        end
+
+        def last_error; @last_error; end
+        def last_error=(v); @last_error = v; end
 
         # ---------------------------------------------------------------- dữ liệu
         def record(g, p)

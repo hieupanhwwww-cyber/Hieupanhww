@@ -121,7 +121,7 @@ module HungLoan
         def place(h, dist)
           c = center_for(h, dist)
           if c - h['t'] / 2.0 < h['a'] - 0.01 || c + h['t'] / 2.0 > h['b'] + 0.01
-            UI.messagebox(format('Khoảng cách %.1f mm làm %s vượt khoang (lọt lòng %.1f mm).', dist, name, h['b'] - h['a']))
+            Safe.msgbox(format('Khoảng cách %.1f mm làm %s vượt khoang (lọt lòng %.1f mm).', dist, name, h['b'] - h['a']))
             return
           end
           Actions.insert_divider(h['mod'], h['cell']['id'], @axis, c)

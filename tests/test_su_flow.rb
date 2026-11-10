@@ -432,6 +432,64 @@ class TestSUFlow < Minitest::Test
     assert sside
   end
 
+  def test_selftest_runs_and_cleans_up
+    $mock_save_path = File.join(ENV['APPDATA'], 'st.json')
+    n0 = model.entities.to_a.size
+    S::SelfTest.run
+    rep = File.read(S::Prefs.path('tu_kiem_tra.txt'), encoding: 'UTF-8')
+    assert_match(/KẾT QUẢ: \d+ đạt, 0 lỗi/, rep, rep[0, 3000])
+    assert_equal n0, model.entities.to_a.reject { |e| !e.valid? }.size, 'tự kiểm tra xóa sạch những gì đã thêm'
+  end
+
+  def test_selftest_reports_real_failures
+    $mock_save_path = File.join(ENV['APPDATA'], 'st2.json')
+    orig = S::Props.method(:apply_module)
+    S::Props.define_singleton_method(:apply_module) { |*_a| raise NoMethodError, 'undefined method `entityID\' for Entities' }
+    begin
+      S::SelfTest.run
+    ensure
+      S::Props.define_singleton_method(:apply_module, orig)
+    end
+    rep = File.read(S::Prefs.path('tu_kiem_tra.txt'), encoding: 'UTF-8')
+    assert_match(/LỖI\s+  mặt trước \+ cam/, rep)
+    assert_match(/undefined method `entityID'/, rep)
+    assert_match(/KẾT QUẢ: \d+ đạt, [1-9]\d* lỗi/, rep)
+  end
+
+  def test_safe_guard_logs_and_does_not_raise
+    File.delete(S::Safe.log_path) if File.exist?(S::Safe.log_path)
+    r = S::Safe.guard('thử nghiệm') { raise NoMethodError, 'undefined method foo' }
+    assert_nil r
+    assert_match(/undefined method foo/, UI.messages.last)
+    assert_match(/thử nghiệm: NoMethodError/, File.read(S::Safe.log_path, encoding: 'UTF-8'))
+    n = UI.messages.size
+    S::Safe.guard('thử nghiệm') { raise 'lại lỗi' }
+    assert_equal n, UI.messages.size, 'cùng một chỗ không báo lại trong 30 giây'
+    # lỗi dữ liệu người dùng: chỉ thông báo, không ghi nhật ký lỗi
+    assert_equal :x, S::Safe.guard('v', default: :x) { raise CORE::ValidationError, 'số sai' }
+  end
+
+  def test_tool_errors_are_contained
+    klass = Class.new do
+      def onMouseMove(*) raise 'rê lỗi' end
+      def draw(_v) raise 'vẽ lỗi' end
+      def onLButtonDown(*) raise 'click lỗi' end
+      def onKeyDown(*) raise 'phím lỗi' end
+      def enableVCB?; raise 'vcb lỗi' end
+    end
+    S::Safe.protect_tool(klass)
+    t = klass.new
+    model.select_tool(t)
+    UI.messages.clear
+    assert_nil t.onMouseMove(0, 1, 1, nil)
+    assert_nil t.draw(nil)
+    assert_nil t.onLButtonDown(0, 1, 1, nil)
+    assert_equal false, t.onKeyDown(9, 0, 0, nil)
+    assert_equal false, t.enableVCB?
+    assert_nil model.tool, 'quá nhiều lỗi → công cụ tự tắt'
+    assert(UI.messages.size <= 4, "không spam hộp thoại: #{UI.messages.size}")
+  end
+
   def test_tools_construct
     S::Commands.start_place('hl.khung_tu.v1')
     assert_kind_of S::PlaceTool, model.tool

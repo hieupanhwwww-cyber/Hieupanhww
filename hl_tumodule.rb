@@ -5,7 +5,7 @@ require 'extensions.rb'
 
 module HungLoan
   module TuModule
-    VERSION = '1.4.1'.freeze
+    VERSION = '1.5.0'.freeze
     unless file_loaded?(__FILE__)
       ex = SketchupExtension.new('Tủ Module Hùng Loan', 'hl_tumodule/main')
       ex.description = 'Dựng tủ bằng thư viện module: ghép bộ tủ, vách/đợt, cánh, ngăn kéo ray bi, hậu, chữ L, bo; ' \

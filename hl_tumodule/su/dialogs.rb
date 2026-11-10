@@ -110,15 +110,15 @@ module HungLoan
             Prefs.library = L.remove_from_folder(cfg, d['folder'], d['tid'])
             state
           when 'export'
-            path = UI.savepanel('Xuất sao lưu thư viện', nil, 'thu_vien_tu_module.json')
+            path = Safe.save_panel('Xuất sao lưu thư viện', 'thu_vien_tu_module.json')
             return { 'cancel' => true } unless path
             File.write(path, L.export_backup(cfg, TuModule::VERSION), encoding: 'UTF-8')
             { 'message' => "Đã xuất: #{path}" }
           when 'import'
-            path = UI.openpanel('Nhập sao lưu thư viện', nil, 'JSON|*.json||')
+            path = Safe.open_panel('Nhập sao lưu thư viện', 'JSON|*.json||')
             return { 'cancel' => true } unless path
             newcfg = L.import_backup(File.read(path, encoding: 'UTF-8'))
-            ok = UI.messagebox("Nhập sẽ THAY TOÀN BỘ setting và cây thư mục hiện tại bằng bản sao lưu (không gộp).\n" \
+            ok = Safe.msgbox("Nhập sẽ THAY TOÀN BỘ setting và cây thư mục hiện tại bằng bản sao lưu (không gộp).\n" \
                                'Các module đã đặt trong bản vẽ không bị thay đổi. Tiếp tục?', MB_YESNO)
             return { 'cancel' => true } unless ok == IDYES
             Prefs.library = newcfg

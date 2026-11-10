@@ -133,6 +133,12 @@ nên ba tên setting trong *Cài đặt chung › Tên setting trong ABF* phải
 - Tick “Cập nhật luôn mọi tủ…” rồi **Lưu cài đặt**: tủ đã đặt được vẽ lại dấu theo tên mới. Ô sai báo đỏ, không lưu.
   “Tên mặc định” chỉ nạp lại tên gốc vào bảng, bấm Lưu mới áp dụng. Tag cũ không còn dùng vẫn nằm trong bảng Tags của SketchUp (xóa bằng Purge nếu muốn).
 
+### Khi gặp lỗi (từ 1.5.0)
+1. **Extensions › Tủ Module Hùng Loan › Tự kiểm tra plugin…** → bấm Có. Chạy 10–30 giây, tự thêm rồi xóa vài tủ thử. Kết quả ghi vào `tu_kiem_tra.txt`
+   trong thư mục dữ liệu (đường dẫn hiện trong hộp thoại cuối).
+2. **Mở nhật ký lỗi** để xem lỗi mới nhất. Gửi một trong hai file này để được sửa.
+3. **Khảo sát model đang mở…**: ghi cấu trúc model ra file `.json` (dùng để đối chiếu với model đã chạy ABF).
+
 ## 14. Thuộc tính & Undo
 - **Thuộc tính**: chuột phải đối tượng → Thuộc tính, hoặc nút trên thanh công cụ. Đổi đối tượng chọn → bảng tự theo.
 - Sửa nhiều ô rồi bấm **Áp dụng** — cập nhật một lần. Nháp gắn theo từng đối tượng; đổi lựa chọn không áp nhầm.

@@ -167,6 +167,9 @@ module Sketchup
     def add_group(*_a) g = Group.new; g.parent = @parent; @items << g; g end
     def add_face(*pts)
       pts = pts.flatten
+      if pts.size >= 3 && pts.all? { |p| p.is_a?(Edge) } # add_face(add_circle(...)) như SketchUp thật
+        f = Face.new([Geom::Point3d.new(0, 0, 0), Geom::Point3d.new(1, 0, 0), Geom::Point3d.new(0, 1, 0)]); @items << f; return f
+      end
       return nil if pts.size < 3 || !pts.all? { |p| p.is_a?(Geom::Point3d) }
       f = Face.new(pts); @items << f; f
     end
@@ -229,6 +232,7 @@ module Sketchup
       g.parent = defn
       g
     end
+    def copy; g = copy_into(@parent || Sketchup.active_model); g; end
     def copy_into(defn)
       g = Group.new
       g.attrs = attrs_copy
@@ -311,6 +315,7 @@ module Sketchup
   def self.reset_model!; @model = Model.new; end
   def self.status_text=(s) $mock_log << [:status, s] end
   def self.vcb_label=(s) end
+  def self.is_64bit?; true; end
   def self.version; 'mock'; end
   def self.vcb_value=(s) end
   def self.add_observer(_o) true end

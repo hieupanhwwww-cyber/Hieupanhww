@@ -70,7 +70,7 @@ module HungLoan
           near = h['existing'].find { |f| (f['pos'][1] - h['raw']).abs <= 30 }
           lid = h['lid']; door = h['door']
           if near.nil? && h['v'].nil?
-            UI.messagebox('Không còn vị trí hợp lệ trên cánh tại đây (vướng đợt hoặc quá sát mép).')
+            Safe.msgbox('Không còn vị trí hợp lệ trên cánh tại đây (vướng đợt hoặc quá sát mép).')
             return
           end
           Manager.update_module_params(h['mod'], 'Bản lề thủ công') do |p|
@@ -141,7 +141,7 @@ module HungLoan
         def activate
           n = @items.size
           Sketchup.status_text = "Liên kết Cam Minifix (preset DEMO): #{n} cạnh tiếp xúc hợp lệ. Click: đổi mặt cam · Delete: xóa/khôi phục · Enter: áp dụng · Esc: hủy."
-          UI.messagebox('Không tìm thấy cạnh tiếp xúc hợp lệ cạnh–mặt giữa các tấm thân tủ.') if n.zero?
+          Safe.msgbox('Không tìm thấy cạnh tiếp xúc hợp lệ cạnh–mặt giữa các tấm thân tủ.') if n.zero?
         end
 
         def deactivate(view) view.invalidate end
@@ -317,11 +317,11 @@ module HungLoan
           keys = @rows.select { |r| r['status'] == 'ok' }.map { |r| r['key'] }
           unresolved = @rows.select { |r| r['status'] == 'unresolved' }
           if keys.empty?
-            UI.messagebox('Không có vùng tiết diện hợp lệ để đánh dấu.')
+            Safe.msgbox('Không có vùng tiết diện hợp lệ để đánh dấu.')
           else
             Actions.mark_sections(@asm, keys, @over)
             note = unresolved.any? ? "\n#{unresolved.size} vùng chưa xác định tấm nhận chưa được đánh dấu:\n" + unresolved.first(6).map { |r| "• #{r['a']} ↔ #{r['b']}" }.join("\n") : ''
-            UI.messagebox("Đã đánh dấu #{keys.size} vùng tiết diện.#{note}")
+            Safe.msgbox("Đã đánh dấu #{keys.size} vùng tiết diện.#{note}")
           end
           Sketchup.active_model.select_tool(nil)
         end

@@ -18,7 +18,7 @@ module HungLoan
           @queue << ev
           return if @scheduled
           @scheduled = true
-          UI.start_timer(0, false) { flush }
+          UI.start_timer(0.01, false) { flush }
         end
 
         def flush
@@ -35,17 +35,19 @@ module HungLoan
             when :module_removed then removed_mods[ev[1]] << ev[2]
             end
           end
-          removed_panels.each { |mod, lids| Actions.on_panels_removed(mod, lids.uniq) if mod.valid? }
-          removed_mods.each { |asm, ids| Actions.on_modules_removed(asm, ids.uniq) if asm.valid? }
+          removed_panels.each { |mod, lids| Safe.guard('xóa tấm') { Actions.on_panels_removed(mod, lids.uniq) if mod.valid? } }
+          removed_mods.each { |asm, ids| Safe.guard('xóa module') { Actions.on_modules_removed(asm, ids.uniq) if asm.valid? } }
           changed.uniq.each do |g|
             next unless g.valid?
-            if Store.module?(g) then Actions.on_module_transformed(g)
-            elsif Store.assembly?(g) then Actions.on_assembly_transformed(g)
-            elsif Store.panel?(g) then Actions.on_panel_transformed(g)
+            Safe.guard('cập nhật sau Move/Scale') do
+              if Store.module?(g) then Actions.on_module_transformed(g)
+              elsif Store.assembly?(g) then Actions.on_assembly_transformed(g)
+              elsif Store.panel?(g) then Actions.on_panel_transformed(g)
+              end
             end
           end
         rescue StandardError => e
-          warn "[TuModule] observer: #{e.message}\n#{e.backtrace.first(5).join("\n")}"
+          Safe.log('observer.flush', e)
         end
 
         class EntObs < Sketchup::EntityObserver

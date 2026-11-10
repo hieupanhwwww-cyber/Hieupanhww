@@ -163,7 +163,7 @@ module HungLoan
         def onLButtonDown(_flags, x, y, view)
           onMouseMove(0, x, y, view)
           if @pv['errors'].any?
-            UI.messagebox("Chưa đặt được: #{@pv['errors'].first['message']}")
+            Safe.msgbox("Chưa đặt được: #{@pv['errors'].first['message']}")
             return
           end
           model = Sketchup.active_model
@@ -171,7 +171,7 @@ module HungLoan
                     tgt = @snap['target']
                     asm = Manager.asm_of(tgt)
                     unless asm
-                      UI.messagebox('Module đích không nằm trong bộ tủ do plugin tạo. Đặt tự do rồi ghép lại.')
+                      Safe.msgbox('Module đích không nằm trong bộ tủ do plugin tạo. Đặt tự do rồi ghép lại.')
                       return
                     end
                     rec = Manager.record(tgt, Store.params(tgt))

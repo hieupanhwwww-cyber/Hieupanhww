@@ -26,33 +26,47 @@ module HungLoan
 
         def copy_divider
           pg = model.selection.find { |e| Store.panel?(e) && %w[partition shelf].include?(e.get_attribute(Store::DICT, 'role')) }
-          return UI.messagebox('Mở module (bấm đúp) rồi chọn MỘT vách hoặc đợt cần sao chép.') unless pg
+          return Safe.msgbox('Mở module (bấm đúp) rồi chọn MỘT vách hoặc đợt cần sao chép.') unless pg
           mod = Store.parent_group(pg)
           r = UI.inputbox(['Số bản sao', 'Khoảng LỌT LÒNG giữa hai tấm (mm)', 'Hướng'], [1, 400, 'Phải/Lên'],
                           ['', '', 'Phải/Lên|Trái/Xuống'], 'Sao chép vách/đợt')
           return unless r
           n = r[0].to_i
           clear = Units.parse_mm(r[1].to_s)
-          return UI.messagebox('Khoảng lọt lòng phải là số mm.') unless clear
+          return Safe.msgbox('Khoảng lọt lòng phải là số mm.') unless clear
           Actions.copy_divider(mod, pg.get_attribute(Store::DICT, 'local_id'), n, clear, r[2] == 'Phải/Lên' ? 1 : -1)
         end
 
         def cam_tool
           mods = Actions.selected_modules
-          return UI.messagebox('Chọn bộ tủ hoặc module rồi chạy lệnh Liên kết cam.') if mods.empty?
+          return Safe.msgbox('Chọn bộ tủ hoặc module rồi chạy lệnh Liên kết cam.') if mods.empty?
           model.select_tool(CamTool.new(mods))
         end
 
         def section_tool
           mods = Actions.selected_modules
           asm = mods.map { |m| Manager.asm_of(m) }.compact.first
-          return UI.messagebox('Chọn bộ tủ hoặc module trong bộ tủ để quét tiết diện.') unless asm
+          return Safe.msgbox('Chọn bộ tủ hoặc module trong bộ tủ để quét tiết diện.') unless asm
           whole = model.selection.any? { |e| Store.assembly?(e) }
           ids = whole ? nil : mods.map { |m| Store.id(m) }
           model.select_tool(SectionTool.new(asm, ids))
         end
 
         def run(name)
+          Safe.guard("chạy lệnh #{name}") { dispatch(name) }
+        end
+
+        def open_log
+          p = Safe.log_path
+          unless File.exist?(p)
+            return Safe.msgbox("Chưa có lỗi nào được ghi.\nNhật ký sẽ nằm ở:\n#{p}")
+          end
+          UI.openURL("file:///#{p.tr('\\', '/')}")
+        rescue StandardError
+          Safe.msgbox("Nhật ký lỗi nằm ở:\n#{p}")
+        end
+
+        def dispatch(name)
           case name
           when 'library' then LibraryDialog.show
           when 'properties' then PropertiesDialog.show
@@ -72,16 +86,16 @@ module HungLoan
           when 'sections' then section_tool
           when 'sections_clear'
             asm = Actions.selected_assemblies.first
-            asm ? Actions.clear_sections(asm) : UI.messagebox('Chọn bộ tủ.')
+            asm ? Actions.clear_sections(asm) : Safe.msgbox('Chọn bộ tủ.')
           when 'mfg_check' then Export.cmd_check
           when 'mfg_files' then Export.cmd_export_files
           when 'mfg_snapshot' then Export.cmd_snapshot
           when 'abf_cases' then TestCases.build_all
           when 'survey' then Survey.run
           when 'survey_open' then Survey.run_open_model
+          when 'selftest' then SelfTest.run
+          when 'open_log' then open_log
           end
-        rescue C::ValidationError, OpError => e
-          UI.messagebox(e.message)
         end
 
         ITEMS = [
@@ -111,6 +125,8 @@ module HungLoan
           ['mfg_snapshot', 'Tạo bản gia công (bàn giao ABF/Nesting)', 'Tấm phẳng một cấp, lỗ/rãnh khoét thật — ABF chưa kiểm chứng', 'export'],
           ['abf_cases', 'Dựng bộ ca kiểm thử ABF', 'Dựng các ca chuẩn để nạp thử trên ABF/Nesting', nil],
           nil,
+          ['selftest', 'Tự kiểm tra plugin…', 'Chạy thử mọi chức năng trong SketchUp này và ghi báo cáo (tạm thêm rồi xóa vài tủ)', nil],
+          ['open_log', 'Mở nhật ký lỗi', 'Mở file nhật ký lỗi của plugin', nil],
           ['survey_open', 'Khảo sát model đang mở…', 'Ghi cấu trúc nhóm/tag/thuộc tính ABF của model đang mở ra JSON', nil],
           ['survey', 'Khảo sát bộ mẫu SKP…', 'Đo cấu tạo từng file .skp mẫu, ghi ra JSON (model đang mở không bị đổi)', nil]
         ].freeze

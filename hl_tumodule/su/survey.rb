@@ -17,7 +17,7 @@ module HungLoan
           dir = UI.select_directory(title: 'Chọn thư mục chứa các file .skp mẫu (Model_17MM)')
           return unless dir
           files = Dir.glob(File.join(dir, '*.skp')).sort
-          return UI.messagebox('Thư mục không có file .skp.') if files.empty?
+          return Safe.msgbox('Thư mục không có file .skp.') if files.empty?
           out = UI.savepanel('Lưu kết quả khảo sát', dir, 'khao_sat_mau.json')
           return unless out
           out += '.json' unless out.downcase.end_with?('.json')
@@ -35,9 +35,9 @@ module HungLoan
           end
           doc = { 'format' => 'HLTM-SURVEY', 'version' => 1, 'units' => 'mm', 'sketchup' => Sketchup.version,
                   'plugin' => TuModule::VERSION, 'files' => results }
-          File.write(out, JSON.generate(doc), encoding: 'UTF-8')
+          File.write(out, JSON.generate(clean_json(doc)), encoding: 'UTF-8')
           bad = results.count { |r| r['error'] }
-          UI.messagebox("Đã khảo sát #{results.size} file (#{bad} lỗi) trong #{(Time.now - t0).round} giây.\n" \
+          Safe.msgbox("Đã khảo sát #{results.size} file (#{bad} lỗi) trong #{(Time.now - t0).round} giây.\n" \
                         "Kết quả: #{out}\n\nGửi file JSON này để làm thông minh đúng theo model gốc.", MB_MULTILINE)
         end
 
@@ -45,7 +45,7 @@ module HungLoan
         def run_open_model
           model = Sketchup.active_model
           base = model.path.to_s.empty? ? 'model' : File.basename(model.path, '.skp')
-          out = UI.savepanel('Lưu kết quả khảo sát model đang mở', nil, "khao_sat_#{base}.json")
+          out = Safe.save_panel('Lưu kết quả khảo sát model đang mở', "khao_sat_#{base}.json")
           return unless out
           out += '.json' unless out.downcase.end_with?('.json')
           @count = 0
@@ -55,10 +55,21 @@ module HungLoan
           r['truncated'] = true if @count >= MAX_NODES
           doc = { 'format' => 'HLTM-SURVEY', 'version' => 1, 'units' => 'mm', 'sketchup' => Sketchup.version,
                   'plugin' => TuModule::VERSION, 'files' => [r] }
-          File.write(out, JSON.generate(doc), encoding: 'UTF-8')
-          UI.messagebox("Đã ghi #{@count} nhóm vào:\n#{out}\n\nGửi file JSON này cho kỹ thuật.", MB_MULTILINE)
+          File.write(out, JSON.generate(clean_json(doc)), encoding: 'UTF-8')
+          Safe.msgbox("Đã ghi #{@count} nhóm vào:\n#{out}\n\nGửi file JSON này cho kỹ thuật.", MB_MULTILINE)
         rescue StandardError => e
-          UI.messagebox("Khảo sát lỗi: #{e.message}")
+          Safe.msgbox("Khảo sát lỗi: #{e.message}")
+        end
+
+        # JSON.generate chết với chuỗi UTF-8 hỏng hoặc NaN/Infinity — làm sạch trước khi ghi.
+        def clean_json(o)
+          case o
+          when Hash then o.each_with_object({}) { |(k, v), h| h[k.to_s.scrub('?')] = clean_json(v) }
+          when Array then o.map { |v| clean_json(v) }
+          when String then o.dup.force_encoding('UTF-8').scrub('?')
+          when Float then o.finite? ? o : nil
+          else o
+          end
         end
 
         def survey_file(model, path)
@@ -82,26 +93,53 @@ module HungLoan
             next unless e.is_a?(Sketchup::Group) || e.is_a?(Sketchup::ComponentInstance)
             break if @count >= MAX_NODES
             @count += 1
-            d = e.definition
-            t = tf * e.transformation
-            n = {
-              'name' => e.name.to_s, 'def' => d.name.to_s, 'type' => e.is_a?(Sketchup::Group) ? 'group' : 'component',
-              'tag' => e.layer ? e.layer.name : nil, 'material' => e.material ? e.material.display_name : nil,
-              'hidden' => e.hidden?, 'locked' => e.locked?, 'entity_id' => e.entityID,
-              'persistent_id' => (e.respond_to?(:persistent_id) ? e.persistent_id : nil),
-              'box' => box_mm(d.bounds, t), 'origin' => pt_mm(t.origin), 'axes' => axes(t)
-            }
-            n['size'] = (0..2).map { |k| (n['box'][1][k] - n['box'][0][k]).round(2) }
-            n['loose'] = loose_info(d.entities, t)
-            dd = dicts(e).merge(dicts(d)) { |_k, a, b| a.merge(b) }
-            n['dicts'] = dd unless dd.empty?
-            if depth < MAX_DEPTH
-              kids = children(d.entities, t, depth + 1)
-              n['children'] = kids unless kids.empty?
+            n = begin
+              node_info(e, tf, depth)
+            rescue StandardError => err
+              { 'name' => (e.name.to_s rescue '?'), 'error' => "#{err.class}: #{err.message}" }
             end
             out << n
           end
           out
+        end
+
+        def node_info(e, tf, depth)
+          d = e.definition
+          t = tf * e.transformation
+          n = {
+            'name' => e.name.to_s, 'def' => d.name.to_s, 'type' => e.is_a?(Sketchup::Group) ? 'group' : 'component',
+            'tag' => e.layer ? e.layer.name : nil, 'material' => e.material ? e.material.display_name : nil,
+            'hidden' => e.hidden?, 'locked' => e.locked?, 'entity_id' => e.entityID,
+            'persistent_id' => (e.respond_to?(:persistent_id) ? e.persistent_id : nil),
+            'box' => box_mm(d.bounds, t), 'origin' => pt_mm(t.origin), 'axes' => axes(t)
+          }
+          n['size'] = (0..2).map { |k| (n['box'][1][k] - n['box'][0][k]).round(2) }
+          n['loose'] = loose_info(d.entities, t)
+          # Nhóm do ABF tạo (tên bắt đầu bằng _ABF / ABF): ghi ĐẦY ĐỦ đỉnh của từng mặt/cạnh để biết đúng hình dạng.
+          n['shape'] = shape_info(d.entities, t) if n['name'] =~ /\A_?ABF/i
+          dd = dicts(e).merge(dicts(d)) { |_k, a, b| a.merge(b) }
+          n['dicts'] = dd unless dd.empty?
+          if depth < MAX_DEPTH
+            kids = children(d.entities, t, depth + 1)
+            n['children'] = kids unless kids.empty?
+          end
+          n
+        end
+
+        # Hình học chi tiết (mm, hệ thế giới của model): mỗi mặt = danh sách đỉnh; mỗi cạnh rời = 2 đầu + tag.
+        def shape_info(ents, tf)
+          faces = []; edges = []
+          ents.each do |x|
+            if x.is_a?(Sketchup::Face)
+              faces << { 'tag' => (x.layer ? x.layer.name : nil), 'n' => x.normal.transform(tf).normalize.to_a.map { |q| q.round(3) },
+                         'pts' => x.outer_loop.vertices.map { |v| pt_mm(v.position.transform(tf)) },
+                         'inner' => x.loops.reject(&:outer?).size, 'material' => (x.material ? x.material.display_name : nil) }
+            elsif x.is_a?(Sketchup::Edge) && x.faces.empty?
+              edges << { 'tag' => (x.layer ? x.layer.name : nil), 'a' => pt_mm(x.start.position.transform(tf)), 'b' => pt_mm(x.end.position.transform(tf)) }
+            end
+            break if faces.size + edges.size > 80
+          end
+          { 'faces' => faces, 'free_edges' => edges }
         end
 
         # Hình học rời trong một nhóm: số mặt/cạnh, tag đang dùng, các cung/lỗ tròn (bán kính, tâm, pháp tuyến).

@@ -20,7 +20,7 @@ module HungLoan
 
         def build_all
           model = Sketchup.active_model
-          r = UI.messagebox("Dựng bộ ca kiểm thử ABF trong model hiện tại (cách gốc tọa độ theo trục Y âm)?", MB_YESNO)
+          r = Safe.msgbox("Dựng bộ ca kiểm thử ABF trong model hiện tại (cách gốc tọa độ theo trục Y âm)?", MB_YESNO)
           return unless r == IDYES
           made = []
           # Ca 1: khung tủ nóc/đáy lọt, hậu soi rãnh, 2 cánh + lỗ cốc, cam Minifix
@@ -56,7 +56,7 @@ module HungLoan
           Actions.add_drawers(g4, b4['cells'][0]['id'], list, box) if errs.empty?
           made << 'Ca 4: tủ 3 ngăn kéo, mặt phẳng khe 25 mm, cụm 3 thùng ray bi 450'
           model.selection.clear
-          UI.messagebox("Đã dựng:\n• #{made.join("\n• ")}\n\nTiếp theo: Extensions › #{C::Config::DISPLAY_NAME} › Tạo bản gia công, rồi nạp vào ABF/Nesting và đối chiếu theo docs/ABF_HANDOFF.md.", MB_MULTILINE)
+          Safe.msgbox("Đã dựng:\n• #{made.join("\n• ")}\n\nTiếp theo: Extensions › #{C::Config::DISPLAY_NAME} › Tạo bản gia công, rồi nạp vào ABF/Nesting và đối chiếu theo docs/ABF_HANDOFF.md.", MB_MULTILINE)
         end
       end
     end

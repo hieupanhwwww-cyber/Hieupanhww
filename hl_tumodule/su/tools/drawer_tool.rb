@@ -138,7 +138,7 @@ module HungLoan
         def commit(h, dist)
           _, errs = preview(h, dist)
           if errs.any?
-            UI.messagebox("Không đặt được thùng: #{errs.first['message']}")
+            Safe.msgbox("Không đặt được thùng: #{errs.first['message']}")
             return
           end
           Actions.add_drawers(h['mod'], h['cell']['id'], bottoms_for(h, dist), box_tpl)

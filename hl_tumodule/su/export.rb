@@ -103,17 +103,17 @@ module HungLoan
 
         def cmd_check
           parts, _, issues = check
-          return UI.messagebox('Không có bộ tủ nào do plugin tạo.') if parts.empty?
-          UI.messagebox(report_text(parts, issues), MB_MULTILINE, 'Kiểm tra dữ liệu sản xuất')
+          return Safe.msgbox('Không có bộ tủ nào do plugin tạo.') if parts.empty?
+          Safe.msgbox(report_text(parts, issues), MB_MULTILINE, 'Kiểm tra dữ liệu sản xuất')
         end
 
         def cmd_export_files
           model = Sketchup.active_model
           parts, _, issues = check(model)
-          return UI.messagebox('Không có bộ tủ nào do plugin tạo.') if parts.empty?
+          return Safe.msgbox('Không có bộ tủ nào do plugin tạo.') if parts.empty?
           base = File.basename(model.path.to_s, '.skp')
           base = 'bo_tu' if base.empty?
-          path = UI.savepanel('Lưu dữ liệu gia công (JSON)', nil, "#{base}_gia_cong.json")
+          path = Safe.save_panel('Lưu dữ liệu gia công (JSON)', "#{base}_gia_cong.json")
           return unless path
           path += '.json' unless path.downcase.end_with?('.json')
           meta = { 'model' => File.basename(model.path.to_s), 'plugin' => Core::Config::DISPLAY_NAME, 'version' => TuModule::VERSION,
@@ -121,18 +121,18 @@ module HungLoan
           File.write(path, C::Mfg.to_json(parts, issues, meta), encoding: 'UTF-8')
           File.write(path.sub(/\.json\z/i, '_chi_tiet.csv'), "\uFEFF" + C::Mfg.to_csv_parts(parts), encoding: 'UTF-8')
           File.write(path.sub(/\.json\z/i, '_thao_tac.csv'), "\uFEFF" + C::Mfg.to_csv_ops(parts), encoding: 'UTF-8')
-          UI.messagebox("Đã lưu:\n#{path}\n+ 2 file CSV (chi tiết, thao tác).\n\n#{report_text(parts, issues)}", MB_MULTILINE)
+          Safe.msgbox("Đã lưu:\n#{path}\n+ 2 file CSV (chi tiết, thao tác).\n\n#{report_text(parts, issues)}", MB_MULTILINE)
         end
 
         # ---- Bản gia công (snapshot) cho ABF/Nesting — dựng lại mỗi lần, không cộng dồn lỗ cũ.
         def cmd_snapshot
           model = Sketchup.active_model
           parts, _, issues = check(model)
-          return UI.messagebox('Không có bộ tủ nào do plugin tạo.') if parts.empty?
+          return Safe.msgbox('Không có bộ tủ nào do plugin tạo.') if parts.empty?
           plan = C::AbfAdapter.plan(parts, issues)
           errs = issues.count { |i| i['level'] == 'error' && i['code'] != 'UNSUPPORTED_BENT' }
           if errs > 0
-            r = UI.messagebox("Có #{errs} lỗi dữ liệu sản xuất.\n\n#{report_text(parts, issues)}\n\nVẫn tạo bản gia công để xem?", MB_YESNO)
+            r = Safe.msgbox("Có #{errs} lỗi dữ liệu sản xuất.\n\n#{report_text(parts, issues)}\n\nVẫn tạo bản gia công để xem?", MB_YESNO)
             return unless r == IDYES
           end
           failed = []
@@ -178,7 +178,7 @@ module HungLoan
           msg = "Đã tạo bản gia công: #{plan['items'].size} chi tiết phẳng một cấp, cam/chốt, bản lề, rãnh hậu là đối tượng kiểu ABF (_ABF_minifix…, _ABF_Intersect) nằm ngay trong tấm.\n" \
                 "Bỏ qua (chưa hỗ trợ): #{plan['skipped'].size}\nTương thích ABF/Nesting: CHƯA KIỂM CHỨNG — xem docs/ABF_HANDOFF.md."
           msg += "\n\nKhông khoét được #{failed.size} thao tác (đã ghi trong thuộc tính):\n" + failed.first(8).join("\n") if failed.any?
-          UI.messagebox(msg, MB_MULTILINE)
+          Safe.msgbox(msg, MB_MULTILINE)
         end
 
         def draw_part(g, it, failed)

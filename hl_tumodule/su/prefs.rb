@@ -3,6 +3,7 @@
 #  Windows: %APPDATA%/HungLoanTuModule ; macOS: ~/Library/Application Support/HungLoanTuModule
 require 'json'
 require 'fileutils'
+require 'tmpdir'
 
 module HungLoan
   module TuModule
@@ -15,7 +16,13 @@ module HungLoan
           @dir ||= begin
             base = ENV['APPDATA'] && !ENV['APPDATA'].empty? ? ENV['APPDATA'] : File.join(Dir.home, 'Library', 'Application Support')
             d = File.join(base, 'HungLoanTuModule')
-            FileUtils.mkdir_p(d)
+            begin
+              FileUtils.mkdir_p(d)
+              raise Errno::EACCES, d unless File.writable?(d)
+            rescue StandardError
+              d = File.join(Dir.tmpdir, 'HungLoanTuModule')
+              FileUtils.mkdir_p(d)
+            end
             d
           end
         end
@@ -51,7 +58,7 @@ module HungLoan
               C::Library.default_config
             end
           rescue C::ValidationError => e
-            UI.messagebox("Cấu hình thư viện không dùng được (#{e.message}). Dùng cấu hình mặc định; file cũ được giữ lại.") if defined?(UI)
+            Safe.msgbox("Cấu hình thư viện không dùng được (#{e.message}). Dùng cấu hình mặc định; file cũ được giữ lại.") if defined?(UI)
             FileUtils.cp(path('library.json'), path("library.broken.#{Time.now.to_i}.json")) rescue nil
             C::Library.default_config
           end

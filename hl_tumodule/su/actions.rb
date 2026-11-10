@@ -80,7 +80,7 @@ module HungLoan
         # ---- Mặt trước
         def create_fronts
           mods = selected_modules
-          return UI.messagebox('Chọn bộ tủ hoặc module do plugin tạo rồi bấm "Tạo mặt trước".') if mods.empty?
+          return Safe.msgbox('Chọn bộ tủ hoặc module do plugin tạo rồi bấm "Tạo mặt trước".') if mods.empty?
           M.operation('Tạo mặt trước') do
             mods.group_by { |m| M.asm_of(m) }.each do |asm, list|
               edits = {}
@@ -98,7 +98,7 @@ module HungLoan
         # ---- Bản lề tự động
         def auto_hinges
           mods = selected_modules
-          return UI.messagebox('Chọn module có cánh.') if mods.empty?
+          return Safe.msgbox('Chọn module có cánh.') if mods.empty?
           M.operation('Đánh dấu bản lề tự động') do
             mods.group_by { |m| M.asm_of(m) }.each do |asm, list|
               edits = {}
@@ -210,9 +210,9 @@ module HungLoan
         def select_single_modules
           Prefs.set_work('select_mode', 'module')
           asm = model.selection.find { |e| Store.assembly?(e) } || selected_assemblies.first
-          return UI.messagebox('Chọn một bộ tủ trước.') unless asm
+          return Safe.msgbox('Chọn một bộ tủ trước.') unless asm
           unless model.respond_to?(:active_path=)
-            return UI.messagebox('Phiên bản SketchUp này không hỗ trợ mở nhóm bằng Ruby. Bấm đúp vào bộ tủ để chọn từng module.')
+            return Safe.msgbox('Phiên bản SketchUp này không hỗ trợ mở nhóm bằng Ruby. Bấm đúp vào bộ tủ để chọn từng module.')
           end
           model.active_path = path_to(asm) + [asm]
           model.selection.clear
@@ -237,7 +237,7 @@ module HungLoan
           if [sx, sy, sz].any? { |s| (s - 1.0).abs > 1e-6 }
             if [sx, sy, sz].any? { |s| s <= 0 }
               M.operation('Hoàn lại lật module', transparent: true) { g.transformation = old }
-              UI.messagebox('Không hỗ trợ lật (scale âm) module. Đã giữ nguyên.')
+              Safe.msgbox('Không hỗ trợ lật (scale âm) module. Đã giữ nguyên.')
               return
             end
             np = C::Util.deep_copy(p)
@@ -289,7 +289,7 @@ module HungLoan
           det = asm.transformation.to_a.then { |m| m[0] * (m[5] * m[10] - m[6] * m[9]) - m[4] * (m[1] * m[10] - m[2] * m[9]) + m[8] * (m[1] * m[6] - m[2] * m[5]) }
           if det <= 0
             M.operation('Hoàn lại lật bộ tủ', transparent: true) { asm.transformation = old }
-            UI.messagebox('Không hỗ trợ lật (scale âm) bộ tủ. Đã giữ nguyên.')
+            Safe.msgbox('Không hỗ trợ lật (scale âm) bộ tủ. Đã giữ nguyên.')
             return
           end
           rot = U.rot_of(asm.transformation)
