@@ -50,6 +50,7 @@ module HungLoan
           else
             dims << f('w', 'Rộng (mm)', 'mm', p['w']) << f('d', 'Sâu (mm)', 'mm', p['d'])
           end
+          dims.unshift(f('label', 'Ký hiệu tủ (in trước tên tấm trên nhãn ABF, vd TU 1)', 'text', p['label'].to_s))
           dims << f('h', 'Cao (mm)', 'mm', p['h']) << f('t', 'Độ dày ván (mm)', 'mm', p['t']) << f('tb', 'Độ dày hậu (mm)', 'mm', p['tb'])
           secs << { 'title' => 'Kích thước', 'fields' => dims }
           if p['geometry'] == 'carcass'
@@ -266,6 +267,7 @@ module HungLoan
         def apply_module(mod, v)
           M.update_module_params(mod, 'Áp dụng thuộc tính') do |p|
             %w[w d h t tb].each { |k| p[k] = num(v[k], k) if v.key?(k) }
+            p['label'] = v['label'].to_s.strip[0, 30] if v.key?('label')
             if p['l']
               p['l']['la'] = num(v['la'], 'la') if v.key?('la')
               p['l']['lb'] = num(v['lb'], 'lb') if v.key?('lb')

@@ -68,11 +68,18 @@ module HungLoan
         }.freeze
 
         ROLE_LABELS = {
-          'side' => 'Hồi', 'top' => 'Nóc', 'bottom' => 'Đáy', 'back' => 'Hậu', 'partition' => 'Vách',
-          'shelf' => 'Đợt', 'door' => 'Cánh', 'drawer_face' => 'Mặt ngăn kéo', 'drawer_side' => 'Hông thùng',
-          'drawer_front' => 'Đầu thùng', 'drawer_back' => 'Hậu thùng', 'drawer_bottom' => 'Đáy thùng',
-          'bent_end' => 'Tấm uốn đầu bo', 'l_end' => 'Hồi chữ L', 'plinth' => 'Len chân', 'stretcher' => 'Xà'
+          'side' => 'Hồi', 'top' => 'Đình', 'bottom' => 'Đáy', 'back' => 'Hậu', 'partition' => 'Vách',
+          'shelf' => 'Đợt', 'door' => 'Cánh', 'drawer_face' => 'Mặt Ngăn Kéo', 'drawer_side' => 'Thành NK',
+          'drawer_front' => 'Thành Trước NK', 'drawer_back' => 'Thành Sau NK', 'drawer_bottom' => 'Tấm Đáy NK',
+          'bent_end' => 'Tấm uốn đầu bo', 'l_end' => 'Hồi chữ L', 'plinth' => 'Chân', 'stretcher' => 'Xà'
         }.freeze
+        # Tên riêng theo vị trí (ABF in nhãn theo tên nhóm) — theo cách gọi trong model của xưởng.
+        PANEL_NAMES = {
+          'side_L' => 'Hồi Trái', 'side_R' => 'Hồi Phải', 'plinth_F' => 'Chân Trước', 'plinth_B' => 'Chân Sau',
+          'stretcher_F' => 'Xà Trước', 'stretcher_B' => 'Xà Sau', 'end_A' => 'Hồi nhánh A', 'end_B' => 'Hồi nhánh B',
+          'back_A' => 'Hậu nhánh A', 'back_B' => 'Hậu nhánh B'
+        }.freeze
+        PANEL_SUFFIX = { 'side_L' => 'Thành Trái NK', 'side_R' => 'Thành Phải NK' }.freeze # cho thùng ngăn kéo "<id>:side_L"
       end
     end
   end

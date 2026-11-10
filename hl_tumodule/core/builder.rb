@@ -607,11 +607,40 @@ module HungLoan
             r['joints'] = joints
             issues.each { |i| r['errors'] << i.merge('level' => 'warning') }
           end
+          name_panels!(r['panels'], p)
           # Thao tác gia công người dùng đã xóa trong Thuộc tính: không tự hồi sinh.
           supf = p['suppressed_features'] || []
           r['panels'].each { |pn| pn['features'].reject! { |f| supf.include?(f['id']) } } if supf.any?
           r['params'] = p
           r
+        end
+
+        # Tên tấm theo cách gọi của xưởng + ký hiệu tủ (ABF in nhãn theo tên nhóm).
+        def name_panels!(panels, p)
+          prefix = p['label'].to_s.strip
+          door_zones = panels.select { |x| x['role'] == 'door' }.group_by { |x| x['zone'] }
+          shelf_i = 0; part_i = 0
+          panels.each do |pn|
+            lid = pn['local_id'].to_s
+            key = lid.sub(/\A[AB]\./, '')
+            name = if pn['drawer']
+                     C::PANEL_SUFFIX[lid.split(':').last] || pn['label']
+                   elsif C::PANEL_NAMES[key]
+                     branch = lid =~ /\A([AB])\./ ? " #{Regexp.last_match(1)}" : ''
+                     C::PANEL_NAMES[key] + branch
+                   elsif pn['role'] == 'door'
+                     zs = door_zones[pn['zone']] || []
+                     if zs.size == 2 then zs.index(pn).zero? ? 'Cánh Trái' : 'Cánh Phải'
+                     elsif zs.size > 2 then "Cánh #{zs.index(pn) + 1}"
+                     else 'Cánh'
+                     end
+                   elsif pn['role'] == 'drawer_face' then "Mặt Ngăn Kéo #{pn['face_index'].to_i + 1}"
+                   elsif pn['role'] == 'shelf' then "Đợt #{shelf_i += 1}"
+                   elsif pn['role'] == 'partition' then "Vách #{part_i += 1}"
+                   else pn['label']
+                   end
+            pn['label'] = prefix.empty? ? name : "#{prefix} #{name}"
+          end
         end
 
         def interior_center(info)

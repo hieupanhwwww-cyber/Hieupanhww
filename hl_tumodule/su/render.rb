@@ -163,10 +163,10 @@ module HungLoan
             begin
               key = rules.op_key(f)
               src = f['source'] || {}
-              a_id = b_id = nil
+              edge_id = face_id = nil
               if src['kind'] == 'cam'
-                la, lb = src['joint'].to_s.split('>', 2)
-                a_id = ctx['resolve'].call(la); b_id = ctx['resolve'].call(lb)
+                la, lb = src['joint'].to_s.split('>', 2) # la = tấm mang cam (cạnh tựa), lb = tấm nhận Ø5 trên mặt
+                edge_id = ctx['resolve'].call(la); face_id = ctx['resolve'].call(lb)
               end
               case f['type']
               when 'drill'
@@ -175,21 +175,28 @@ module HungLoan
                 sub = mk.call(f, key)
                 edges = sub.entities.add_circle(U.pt(f['pos']), dir, U.l(f['diameter'] / 2.0), 24)
                 sub.entities.add_face(edges)
-                ids = { 'a' => a_id, 'b' => b_id }
+                ids = { 'edge' => edge_id, 'face' => face_id }
                 jk = "#{src['joint']}:#{src['index']}"
+                up = lambda do |ff|
+                  v = U.vec(C::Geom.dir_f2w(pn['frame'], ff['dir'].map { |x| -x }))
+                  ctx['world'] ? v.transform(ctx['world']) : v
+                end
                 if key == 'cam_housing'
                   ctx['cam_groups'][jk] = abf_id(sub)
-                  n = C::Geom.dir_f2w(pn['frame'], f['dir'].map { |x| -x })
-                  v = U.vec(n)
-                  v = v.transform(ctx['world']) if ctx['world']
-                  sub.set_attribute(rules::DICT, 'minifix-up-face-normal', v)
+                  (ctx['cam_normals'] ||= {})[jk] = up.call(f)
+                  sub.set_attribute(rules::DICT, 'minifix-up-face-normal', ctx['cam_normals'][jk])
+                elsif key == 'cam_bolt'
+                  sub.set_attribute(rules::DICT, 'minifix-up-face-normal', up.call(f))
                 elsif key == 'cam_edge_hole'
                   ids['face_group'] = ctx['cam_groups'][jk]
+                  nrm = (ctx['cam_normals'] || {})[jk]
+                  sub.set_attribute(rules::DICT, 'minifix-up-face-normal', nrm) if nrm
                   rect = rules.side_depth_rect(f)
                   if rect
                     dsub = mk.call(f, 'cam_side_depth')
                     dsub.entities.add_face(rect.map { |q| U.pt(q) })
                     put.call(dsub, f, 'cam_side_depth', ids)
+                    dsub.set_attribute(rules::DICT, 'minifix-up-face-normal', nrm) if nrm
                   end
                 end
                 put.call(sub, f, key, ids)

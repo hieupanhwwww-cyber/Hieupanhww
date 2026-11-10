@@ -26,22 +26,26 @@ module HungLoan
         # Dùng được {D} = đường kính lỗ, {Z} = độ sâu (mm) trong tên.
         OP_KEYS = %w[cam_housing cam_edge_hole cam_side_depth cam_bolt hinge_cup back_groove section section_through].freeze
         OP_TITLES = {
-          'cam_housing' => 'Cốc cam Minifix', 'cam_edge_hole' => 'Lỗ cạnh (khoan ngang)', 'cam_side_depth' => 'Dấu độ sâu lỗ cạnh',
-          'cam_bolt' => 'Lỗ chốt cam trên mặt', 'hinge_cup' => 'Lỗ cốc bản lề', 'back_groove' => 'Rãnh hậu (soi âm)',
+          'cam_housing' => 'Cốc cam Ø15 (tấm mang cam)', 'cam_edge_hole' => 'Lỗ cạnh (khoan ngang)', 'cam_side_depth' => 'Dấu độ sâu lỗ cạnh',
+          'cam_bolt' => 'Lỗ Ø5 trên mặt tấm đối diện', 'hinge_cup' => 'Lỗ cốc bản lề', 'back_groove' => 'Rãnh hậu (soi âm)',
           'section' => 'Tiết diện (khoét sâu)', 'section_through' => 'Tiết diện (cắt xuyên)'
         }.freeze
         # MẶC ĐỊNH = đúng tên nhóm/layer do công cụ ABF tạo, đọc từ dự án ABF thật của xưởng (CHAU_NAM_CNC/Untitled.skp).
         DEFAULT_OPS = {
-          'cam_housing' => { 'layer' => 'ABF-D{D}', 'instance' => '_ABF_minifixPlasticBase' },
+          'cam_housing' => { 'layer' => 'ABF-D{D}', 'instance' => '_ABF_minifixBolts' },
           'cam_edge_hole' => { 'layer' => 'ABF-DSIDE-{D}', 'instance' => '_ABF_sideDrill' },
           'cam_side_depth' => { 'layer' => 'ABF-DSIDE-{D}', 'instance' => '_ABF_sideDrillDepth' },
-          'cam_bolt' => { 'layer' => 'ABF-D{D}', 'instance' => '_ABF_minifixBolts' },
+          'cam_bolt' => { 'layer' => 'ABF-D{D}', 'instance' => '_ABF_minifixPlasticBase' },
           'hinge_cup' => { 'layer' => 'ABF_D{D}', 'instance' => 'ABF_D{D}' },
           'back_groove' => { 'layer' => 'ABF_SOI HAU', 'instance' => '_ABF_Intersect' },
           'section' => { 'layer' => 'ABF_SOI HAU', 'instance' => '_ABF_Intersect' },
           'section_through' => { 'layer' => 'ABF_CatTrong', 'instance' => 'ABF_CatTrong' }
         }.freeze
         # Tên mặc định của các bản 1.1–1.3 (để tự chuyển cấu hình đã lưu sang tên ABF thật).
+        SWAPPED_140 = {
+          'cam_housing' => { 'layer' => 'ABF-D{D}', 'instance' => '_ABF_minifixPlasticBase' },
+          'cam_bolt' => { 'layer' => 'ABF-D{D}', 'instance' => '_ABF_minifixBolts' }
+        }.freeze
         LEGACY_OPS = {
           'cam_housing' => { 'layer' => 'ABF_D{D}', 'instance' => 'ABF_Cam' },
           'cam_edge_hole' => { 'layer' => 'ABF_D{D}', 'instance' => 'ABF_ChotCam_Canh' },
@@ -99,7 +103,7 @@ module HungLoan
           out = {}
           OP_KEYS.each do |k|
             src = (raw || {})[k]
-            out[k] = if src.nil? || (LEGACY_OPS[k] && src == LEGACY_OPS[k]) then DEFAULT_OPS[k].dup
+            out[k] = if src.nil? || (LEGACY_OPS[k] && src == LEGACY_OPS[k]) || (SWAPPED_140[k] && src == SWAPPED_140[k]) then DEFAULT_OPS[k].dup
                      else src
                      end
           end
@@ -112,18 +116,21 @@ module HungLoan
         end
 
         # Thuộc tính dictionary "ABF" cho nhóm dấu của một feature (theo đối tượng do công cụ ABF tạo).
-        # ids: {'a'=>id tấm mang cam, 'b'=>id tấm nhận chốt, 'face_group'=>id nhóm cốc cam, 'other'=>id tấm đối tác rãnh}
+        # Quy ước ABF (kiểm trên 150/150 tấm có lỗ cạnh của dự án thật):
+        #   "tấm A" của ABF = tấm NHẬN lỗ Ø5 trên mặt (_ABF_minifixPlasticBase, is-minifix-part-a, trỏ b-id)
+        #   "tấm B" của ABF = tấm MANG cốc cam Ø15 + lỗ cạnh (_ABF_minifixBolts, is-minifix-part-b, trỏ a-id)
+        # ids: {'face' => id tấm nhận Ø5, 'edge' => id tấm mang cam, 'face_group' => id nhóm cốc cam Ø15, 'other' => id tấm đối tác rãnh}
         def attrs_for(f, key, ids = {})
           st = settings
           case key
           when 'cam_housing'
-            { 'is-minifix-part-a' => true, 'minifix-group-b-id' => ids['b'], 'setting-name' => st['cam'] }
+            { 'is-minifix-part-b' => true, 'minifix-group-a-id' => ids['face'], 'setting-name' => st['cam'] }
           when 'cam_bolt'
-            { 'is-minifix-part-b' => true, 'minifix-group-a-id' => ids['a'], 'setting-name' => st['cam'] }
+            { 'is-minifix-part-a' => true, 'minifix-group-b-id' => ids['edge'], 'setting-name' => st['cam'] }
           when 'cam_edge_hole'
-            { 'face-drill-group-id' => ids['face_group'], 'is-side-drill' => true, 'minifix-group-a-id' => ids['a'], 'setting-name' => st['cam'] }
+            { 'face-drill-group-id' => ids['face_group'], 'is-side-drill' => true, 'minifix-group-a-id' => ids['face'], 'setting-name' => st['cam'] }
           when 'cam_side_depth'
-            { 'is-side-drill-depth' => true, 'minifix-group-a-id' => ids['a'], 'setting-name' => st['cam'] }
+            { 'is-side-drill-depth' => true, 'minifix-group-a-id' => ids['face'], 'setting-name' => st['cam'] }
           when 'hinge_cup'
             { 'is-hinge-part-b' => true, 'is-user-nesting-obj' => true, 'setting-name' => st['hinge'] }
           when 'back_groove', 'section'

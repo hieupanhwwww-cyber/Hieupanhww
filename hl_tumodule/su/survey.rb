@@ -10,7 +10,7 @@ module HungLoan
       module Survey
         MM = 25.4
         MAX_DEPTH = 7
-        MAX_NODES = 1500
+        MAX_NODES = 6000
         module_function
 
         def run
@@ -41,6 +41,26 @@ module HungLoan
                         "Kết quả: #{out}\n\nGửi file JSON này để làm thông minh đúng theo model gốc.", MB_MULTILINE)
         end
 
+        # Khảo sát chính MODEL ĐANG MỞ (vd dự án đã chạy ABF): ghi cấu trúc nhóm, tag, hình học, thuộc tính + ID.
+        def run_open_model
+          model = Sketchup.active_model
+          base = model.path.to_s.empty? ? 'model' : File.basename(model.path, '.skp')
+          out = UI.savepanel('Lưu kết quả khảo sát model đang mở', nil, "khao_sat_#{base}.json")
+          return unless out
+          out += '.json' unless out.downcase.end_with?('.json')
+          @count = 0
+          idt = Geom::Transformation.new
+          r = { 'file' => File.basename(model.path.to_s), 'loose' => loose_info(model.entities, idt),
+                'nodes' => children(model.entities, idt, 0), 'tags' => model.layers.map { |l| l.name } }
+          r['truncated'] = true if @count >= MAX_NODES
+          doc = { 'format' => 'HLTM-SURVEY', 'version' => 1, 'units' => 'mm', 'sketchup' => Sketchup.version,
+                  'plugin' => TuModule::VERSION, 'files' => [r] }
+          File.write(out, JSON.generate(doc), encoding: 'UTF-8')
+          UI.messagebox("Đã ghi #{@count} nhóm vào:\n#{out}\n\nGửi file JSON này cho kỹ thuật.", MB_MULTILINE)
+        rescue StandardError => e
+          UI.messagebox("Khảo sát lỗi: #{e.message}")
+        end
+
         def survey_file(model, path)
           r = { 'file' => File.basename(path) }
           defn = model.definitions.load(path)
@@ -67,7 +87,8 @@ module HungLoan
             n = {
               'name' => e.name.to_s, 'def' => d.name.to_s, 'type' => e.is_a?(Sketchup::Group) ? 'group' : 'component',
               'tag' => e.layer ? e.layer.name : nil, 'material' => e.material ? e.material.display_name : nil,
-              'hidden' => e.hidden?, 'locked' => e.locked?,
+              'hidden' => e.hidden?, 'locked' => e.locked?, 'entity_id' => e.entityID,
+              'persistent_id' => (e.respond_to?(:persistent_id) ? e.persistent_id : nil),
               'box' => box_mm(d.bounds, t), 'origin' => pt_mm(t.origin), 'axes' => axes(t)
             }
             n['size'] = (0..2).map { |k| (n['box'][1][k] - n['box'][0][k]).round(2) }

@@ -78,6 +78,7 @@ module HungLoan
           when 'mfg_snapshot' then Export.cmd_snapshot
           when 'abf_cases' then TestCases.build_all
           when 'survey' then Survey.run
+          when 'survey_open' then Survey.run_open_model
           end
         rescue C::ValidationError, OpError => e
           UI.messagebox(e.message)
@@ -110,6 +111,7 @@ module HungLoan
           ['mfg_snapshot', 'Tạo bản gia công (bàn giao ABF/Nesting)', 'Tấm phẳng một cấp, lỗ/rãnh khoét thật — ABF chưa kiểm chứng', 'export'],
           ['abf_cases', 'Dựng bộ ca kiểm thử ABF', 'Dựng các ca chuẩn để nạp thử trên ABF/Nesting', nil],
           nil,
+          ['survey_open', 'Khảo sát model đang mở…', 'Ghi cấu trúc nhóm/tag/thuộc tính ABF của model đang mở ra JSON', nil],
           ['survey', 'Khảo sát bộ mẫu SKP…', 'Đo cấu tạo từng file .skp mẫu, ghi ra JSON (model đang mở không bị đổi)', nil]
         ].freeze
 

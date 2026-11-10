@@ -650,9 +650,9 @@ class TestAbfRules < Minitest::Test
   def test_names_match_real_abf_project
     cam = { 'type' => 'drill', 'op' => 'cam_housing', 'diameter' => 15.0, 'depth' => 13.0 }
     assert_equal 'ABF-D15', AbfRules.tag_for(cam)
-    assert_equal '_ABF_minifixPlasticBase', AbfRules.instance_for(cam)
+    assert_equal '_ABF_minifixBolts', AbfRules.instance_for(cam), 'Ø15 đi cùng lỗ cạnh = _ABF_minifixBolts (150/150 tấm dự án thật)'
     bolt = { 'type' => 'drill', 'op' => 'cam_bolt', 'diameter' => 5.0 }
-    assert_equal ['ABF-D5', '_ABF_minifixBolts'], [AbfRules.tag_for(bolt), AbfRules.instance_for(bolt)]
+    assert_equal ['ABF-D5', '_ABF_minifixPlasticBase'], [AbfRules.tag_for(bolt), AbfRules.instance_for(bolt)]
     side = { 'type' => 'drill', 'op' => 'cam_edge_hole', 'diameter' => 8.0, 'depth' => 34.0, 'pos' => [0.0, 100.0, 8.5], 'dir' => [1.0, 0.0, 0.0] }
     assert_equal ['ABF-DSIDE-8', '_ABF_sideDrill'], [AbfRules.tag_for(side), AbfRules.instance_for(side)]
     assert_equal '_ABF_sideDrillDepth', AbfRules.instance_for(side, 'cam_side_depth')
@@ -665,12 +665,12 @@ class TestAbfRules < Minitest::Test
   end
 
   def test_abf_attributes_like_real_project
-    a = AbfRules.attrs_for({}, 'cam_housing', 'a' => 11, 'b' => 22)
-    assert_equal({ 'is-minifix-part-a' => true, 'minifix-group-b-id' => 22, 'setting-name' => 'CAM_17MM' }, a)
-    b = AbfRules.attrs_for({}, 'cam_bolt', 'a' => 11, 'b' => 22)
-    assert_equal({ 'is-minifix-part-b' => true, 'minifix-group-a-id' => 11, 'setting-name' => 'CAM_17MM' }, b)
-    s = AbfRules.attrs_for({}, 'cam_edge_hole', 'a' => 11, 'face_group' => 33)
-    assert_equal({ 'face-drill-group-id' => 33, 'is-side-drill' => true, 'minifix-group-a-id' => 11, 'setting-name' => 'CAM_17MM' }, s)
+    a = AbfRules.attrs_for({}, 'cam_housing', 'edge' => 11, 'face' => 22)
+    assert_equal({ 'is-minifix-part-b' => true, 'minifix-group-a-id' => 22, 'setting-name' => 'CAM_17MM' }, a, 'cốc cam Ø15 trỏ tới tấm nhận Ø5')
+    b = AbfRules.attrs_for({}, 'cam_bolt', 'edge' => 11, 'face' => 22)
+    assert_equal({ 'is-minifix-part-a' => true, 'minifix-group-b-id' => 11, 'setting-name' => 'CAM_17MM' }, b, 'lỗ Ø5 trỏ tới tấm mang cam')
+    s = AbfRules.attrs_for({}, 'cam_edge_hole', 'face' => 22, 'face_group' => 33)
+    assert_equal({ 'face-drill-group-id' => 33, 'is-side-drill' => true, 'minifix-group-a-id' => 22, 'setting-name' => 'CAM_17MM' }, s)
     h = AbfRules.attrs_for({}, 'hinge_cup')
     assert_equal true, h['is-hinge-part-b']
     assert_equal 'BẢN LỀ A - Loại A', h['setting-name']
@@ -682,7 +682,9 @@ class TestAbfRules < Minitest::Test
   def test_saved_legacy_defaults_migrate_to_real_names
     old = { 'cam_housing' => { 'layer' => 'ABF_D{D}', 'instance' => 'ABF_Cam' }, 'back_groove' => { 'layer' => 'XUONG', 'instance' => 'RanhHau' } }
     m = AbfRules.migrate_ops(old)
-    assert_equal '_ABF_minifixPlasticBase', m['cam_housing']['instance'], 'ô còn tên mặc định cũ → đổi sang tên ABF thật'
+    assert_equal '_ABF_minifixBolts', m['cam_housing']['instance'], 'ô còn tên mặc định cũ → đổi sang tên ABF thật'
+    sw = AbfRules.migrate_ops('cam_housing' => { 'layer' => 'ABF-D{D}', 'instance' => '_ABF_minifixPlasticBase' })
+    assert_equal '_ABF_minifixBolts', sw['cam_housing']['instance'], 'tên bị ghép ngược của 1.4.0 được tự sửa'
     assert_equal 'XUONG', m['back_groove']['layer'], 'ô người dùng đã tự đặt → giữ nguyên'
     assert_equal 'ABF-DSIDE-{D}', m['cam_side_depth']['layer']
   end
@@ -794,5 +796,24 @@ class TestAbfOpsConfig < Minitest::Test
     assert errs.key?('back_groove.layer')
     assert errs.key?('back_groove.instance')
     assert errs.key?('cam_bolt.layer')
+  end
+end
+
+class TestPanelNames < Minitest::Test
+  def test_shop_vocabulary_and_module_label
+    p = H.params('hl.khung_tu.v1', 'plinth_h' => 50, 'w' => 1000)
+    p['front']['enabled'] = true
+    p['label'] = 'TU 1'
+    r = Builder.build(p)
+    names = r['panels'].map { |x| [x['local_id'], x['label']] }.to_h
+    assert_equal 'TU 1 Hồi Trái', names['side_L']
+    assert_equal 'TU 1 Hồi Phải', names['side_R']
+    assert_equal 'TU 1 Đình', names['top']
+    assert_equal 'TU 1 Chân Trước', names['plinth_F']
+    assert_equal 'TU 1 Chân Sau', names['plinth_B']
+    doors = r['doors'].sort_by { |d| d['x0'] }.map { |d| d['label'] }
+    assert_equal ['TU 1 Cánh Trái', 'TU 1 Cánh Phải'], doors
+    p['label'] = ''
+    assert_equal 'Hồi Trái', Builder.build(p)['panels'].find { |x| x['local_id'] == 'side_L' }['label']
   end
 end

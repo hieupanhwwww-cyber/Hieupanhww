@@ -378,24 +378,27 @@ class TestSUFlow < Minitest::Test
     kids = lambda { |lid, name| pg.call(lid).entities.items.select { |e| e.is_a?(Sketchup::Group) && e.name == name } }
     abf = lambda { |e, k| e.get_attribute('ABF', k) }
     top = pg.call('top'); side = pg.call('side_L'); back = pg.call('back')
-    bases = kids.call('top', '_ABF_minifixPlasticBase')
-    assert_equal 4, bases.size, 'mỗi cốc cam là một nhóm riêng như công cụ ABF tạo'
-    b0 = bases.find { |e| abf.call(e, 'minifix-group-b-id') == side.persistent_id }
-    assert b0, 'cốc cam trỏ tới ID tấm nhận chốt'
-    assert_equal true, abf.call(b0, 'is-minifix-part-a')
-    assert_equal 'CAM_17MM', abf.call(b0, 'setting-name')
-    assert_kind_of Geom::Vector3d, abf.call(b0, 'minifix-up-face-normal')
-    assert_equal 'ABF-D15', b0.layer
-    bolts = kids.call('side_L', '_ABF_minifixBolts')
-    assert(bolts.any? { |e| abf.call(e, 'minifix-group-a-id') == top.persistent_id && abf.call(e, 'is-minifix-part-b') == true })
-    assert_equal 'ABF-D5', bolts[0].layer
+    cams = kids.call('top', '_ABF_minifixBolts')
+    assert_equal 4, cams.size, 'mỗi cốc cam Ø15 là một nhóm riêng trên tấm mang cam'
+    c0 = cams.find { |e| abf.call(e, 'minifix-group-a-id') == side.persistent_id }
+    assert c0, 'cốc cam trỏ tới ID tấm nhận lỗ Ø5 (tấm A của ABF)'
+    assert_equal true, abf.call(c0, 'is-minifix-part-b')
+    assert_equal 'CAM_17MM', abf.call(c0, 'setting-name')
+    assert_kind_of Geom::Vector3d, abf.call(c0, 'minifix-up-face-normal')
+    assert_equal 'ABF-D15', c0.layer
+    bases = kids.call('side_L', '_ABF_minifixPlasticBase')
+    assert(bases.any? { |e| abf.call(e, 'minifix-group-b-id') == top.persistent_id && abf.call(e, 'is-minifix-part-a') == true })
+    assert_equal 'ABF-D5', bases[0].layer
     sd = kids.call('top', '_ABF_sideDrill'); sdd = kids.call('top', '_ABF_sideDrillDepth')
-    assert_equal 4, sd.size
-    assert_equal 4, sdd.size
+    assert_equal cams.size, sd.size, 'số lỗ cạnh = số cốc cam trên cùng tấm (như dự án ABF thật)'
+    assert_equal cams.size, sdd.size
+    assert_empty kids.call('side_L', '_ABF_sideDrillDepth').select { |e| abf.call(e, 'minifix-group-a-id') == side.persistent_id }
     assert_equal 'ABF-DSIDE-8', sd[0].layer
-    assert_includes bases.map(&:persistent_id), abf.call(sd[0], 'face-drill-group-id'), 'lỗ cạnh trỏ tới nhóm cốc cam'
+    assert_includes cams.map(&:persistent_id), abf.call(sd[0], 'face-drill-group-id'), 'lỗ cạnh trỏ tới nhóm cốc cam Ø15'
     assert_equal true, abf.call(sdd[0], 'is-side-drill-depth')
-    assert_equal top.persistent_id, abf.call(sdd[0], 'minifix-group-a-id')
+    assert_includes [side.persistent_id, pg.call('side_R').persistent_id], abf.call(sdd[0], 'minifix-group-a-id')
+    assert_equal 'Hồi Trái', side.name
+    assert_equal 'Đình', top.name
     inter = kids.call('side_L', '_ABF_Intersect').first
     assert_equal back.persistent_id, abf.call(inter, 'intersect-group-b-id'), 'rãnh hậu trỏ tới tấm hậu'
     assert_equal true, abf.call(inter, 'is-intersect')
@@ -416,16 +419,16 @@ class TestSUFlow < Minitest::Test
     sets = r['settings'].map { |x| [x['key'], x['value']] }.to_h
     ok = d.js('save', 'ops' => ops, 'cam' => cam, 'settings' => sets.merge('cam' => 'CAM_18MM'), 'regen' => true)
     assert ok['ok'], ok['error']
-    nb = kids.call('top', '_ABF_minifixPlasticBase').first
+    nb = kids.call('top', '_ABF_minifixBolts').first
     assert_equal 'CAM_18MM', nb.get_attribute('ABF', 'setting-name')
     S::Export.cmd_snapshot
     snap = model.entities.find { |e| e.is_a?(Sketchup::Group) && e.get_attribute(S::Export::DICT, 'kind') == 'snapshot' }
     stop = snap.entities.items.find { |e| e.get_attribute(S::Export::DICT, 'part_id').to_s.end_with?('/top') }
-    sb = stop.entities.items.find { |e| e.is_a?(Sketchup::Group) && e.name == '_ABF_minifixPlasticBase' }
+    sb = stop.entities.items.find { |e| e.is_a?(Sketchup::Group) && e.name == '_ABF_minifixBolts' }
     assert sb, 'bản gia công cũng có đối tượng ABF'
     sside = snap.entities.items.find { |e| e.get_attribute(S::Export::DICT, 'part_id').to_s.end_with?('/side_L') || e.get_attribute(S::Export::DICT, 'part_id').to_s.end_with?('/side_R') }
     ids = snap.entities.items.map(&:persistent_id)
-    assert_includes ids, sb.get_attribute('ABF', 'minifix-group-b-id'), 'ID đối tác trong bản gia công trỏ tới tấm của bản gia công'
+    assert_includes ids, sb.get_attribute('ABF', 'minifix-group-a-id'), 'ID đối tác trong bản gia công trỏ tới tấm của bản gia công'
     assert sside
   end
 

@@ -1,4 +1,4 @@
-# TEST_REPORT — Tủ Module Hùng Loan 1.4.0 (10/11/2026)
+# TEST_REPORT — Tủ Module Hùng Loan 1.4.1 (10/11/2026)
 
 ## 1. Môi trường thực tế
 | Hạng mục | Trạng thái |
@@ -16,8 +16,8 @@ Ba mức kiểm thử, phân biệt rõ:
 ## 2. Kết quả chạy
 | Bộ kiểm thử | Lệnh | Kết quả |
 |---|---|---|
-| Lõi | `ruby -Itests tests/test_core.rb` | **52 phép thử, 380 kiểm tra, 0 lỗi** |
-| Luồng SketchUp (giả lập) | `ruby tests/test_su_flow.rb` | **15 phép thử, 213 kiểm tra, 0 lỗi** |
+| Lõi | `ruby -Itests tests/test_core.rb` | **53 phép thử, 388 kiểm tra, 0 lỗi** |
+| Luồng SketchUp (giả lập) | `ruby tests/test_su_flow.rb` | **15 phép thử, 218 kiểm tra, 0 lỗi** |
 | Công cụ tương tác (view giả lập) | `ruby tests/test_su_tools.rb` | **4 phép thử, 12 kiểm tra, 0 lỗi** |
 | Cú pháp mọi file `.rb` | `tools/build_rbz.sh` | Đạt |
 | Gói RBZ | giải nén + nạp loader `hl_tumodule.rb` → `hl_tumodule/main` | Nạp được (trên giả lập); không chứa đường dẫn máy phát triển |

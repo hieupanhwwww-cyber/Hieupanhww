@@ -1,5 +1,14 @@
 # Nhật ký thay đổi
 
+## 1.4.1 — 10/11/2026
+- **Sửa lỗi ghép ngược ở 1.4.0:** cốc cam Ø15 phải là `_ABF_minifixBolts` (part-b, cùng tấm với lỗ cạnh), lỗ Ø5 ở tấm đối diện là
+  `_ABF_minifixPlasticBase` (part-a). Đã kiểm trên 150/150 tấm có lỗ cạnh của dự án ABF thật. Cấu hình tên đã lưu từ 1.4.0 được tự sửa.
+- `minifix-up-face-normal` gắn đủ trên cả bốn loại nhóm cam.
+- **Tên tấm theo cách gọi của xưởng** (ABF in nhãn theo tên nhóm): Hồi Trái/Phải, Đình, Chân Trước/Sau, Xà Trước/Sau, Cánh Trái/Phải,
+  Đợt 1…, Vách 1…, Thành Trái/Phải/Trước/Sau NK, Tấm Đáy NK, Mặt Ngăn Kéo 1…
+- Thuộc tính module thêm **Ký hiệu tủ** (vd `TU 1`) — in trước tên tấm trên nhãn ABF.
+- Thêm lệnh **Khảo sát model đang mở…** (ghi cấu trúc nhóm/tag/thuộc tính + ID ra JSON để đối chiếu với ABF).
+
 ## 1.4.0 — 10/11/2026 — Đối tượng gia công đúng kiểu ABF
 Căn cứ: dự án ABF thật của xưởng `CHAU_NAM_CNC` (`docs/khao_sat/ABF_DU_AN_THAT.md`).
 - Cam/chốt, lỗ cạnh, bản lề, rãnh hậu sinh ra **đúng tên nhóm, layer và thuộc tính** như công cụ ABF:

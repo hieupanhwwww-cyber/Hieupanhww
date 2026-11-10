@@ -8,12 +8,16 @@ Mỗi thao tác là **một nhóm con** trong tấm; thuộc tính nằm trong a
 
 | Tên nhóm | Layer trong dự án | Thuộc tính (dictionary `ABF`) |
 |---|---|---|
-| `_ABF_minifixPlasticBase` (cốc cam) | `ABF-D15` | `is-minifix-part-a: true`, `minifix-group-b-id: <id tấm đối tác>`, `minifix-up-face-normal: <vector>`, `setting-name: "CAM_17MM"` |
-| `_ABF_minifixBolts` (chốt) | `ABF-D5` | `is-minifix-part-b: true`, `minifix-group-a-id: <id tấm mang cam>`, `minifix-up-face-normal`, `setting-name` |
-| `_ABF_sideDrill` (lỗ cạnh) | `ABF-DSIDE-8` | `face-drill-group-id: <id nhóm cốc cam>`, `is-side-drill: true`, `minifix-group-a-id`, `minifix-up-face-normal`, `setting-name` |
-| `_ABF_sideDrillDepth` | `ABF-DSIDE-8` | `is-side-drill-depth: true`, `minifix-group-a-id`, `minifix-up-face-normal`, `setting-name` |
+| `_ABF_minifixBolts` (**cốc cam Ø15**, trên tấm mang cam) | `ABF-D15` | `is-minifix-part-b: true`, `minifix-group-a-id: <id tấm nhận Ø5>`, `minifix-up-face-normal: <vector>`, `setting-name: "CAM_17MM"` |
+| `_ABF_minifixPlasticBase` (**lỗ Ø5**, trên mặt tấm đối diện) | `ABF-D5` | `is-minifix-part-a: true`, `minifix-group-b-id: <id tấm mang cam>`, `minifix-up-face-normal`, `setting-name` |
+| `_ABF_sideDrill` (lỗ cạnh, cùng tấm với cốc cam) | `ABF-DSIDE-8` | `face-drill-group-id: <id nhóm cốc cam>`, `is-side-drill: true`, `minifix-group-a-id`, `minifix-up-face-normal`, `setting-name` |
+| `_ABF_sideDrillDepth` (cùng tấm với cốc cam) | `ABF-DSIDE-8` | `is-side-drill-depth: true`, `minifix-group-a-id`, `minifix-up-face-normal`, `setting-name` |
 | `ABF_D35` (lỗ cốc bản lề) | `ABF_D35` | `is-hinge-part-b: true`, `is-user-nesting-obj: true`, `setting-name: "BẢN LỀ A - Loại A"` (+ `ban_le`, `ban_le_id` của thư viện DC) |
 | `_ABF_Intersect` (rãnh hậu) | `ABF_SOI HAU` | `intersect-group-b-id: <id tấm hậu>`, `intersect-offset: 0.0`, `intersect-x: 2.0`, `is-intersect: true`, `setting-name: "SOI ÂM 9MM - RÃNH HẬU"` |
+
+**Kiểm chứng ghép nhóm:** tách dữ liệu theo từng tấm (mỗi tấm một nhãn `_ABF_Label`): trên **150/150** tấm có lỗ cạnh, số `_ABF_minifixBolts` = số `_ABF_sideDrillDepth`;
+tấm chỉ có `_ABF_minifixPlasticBase` thì không có lỗ cạnh nào. Vậy `Bolts` là cốc cam Ø15 (luôn đi với lỗ cạnh), `PlasticBase` là lỗ Ø5 ở tấm đối diện.
+(Bản 1.4.0 ghép ngược hai nhóm này — đã sửa ở 1.4.1.)
 
 Gán layer ↔ nhóm là **suy luận** từ tên layer có trong file và đường kính (không đọc được liên kết layer trong nhị phân).
 Layer khác có trong dự án: `ABF_HM`, `ABF_D3`, `TAM_HAU`.

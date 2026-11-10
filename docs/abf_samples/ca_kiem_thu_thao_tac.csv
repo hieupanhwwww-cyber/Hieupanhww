@@ -1,80 +1,80 @@
 ﻿part_id,feature_id,loai,thao_tac,mat,u,v,w,huong_u,huong_v,huong_w,duong_kinh,sau,xuyen,nguon,tag_abf
-mod_toa5pva0090002/side_L,side_L:back_groove,groove,back_groove,A,557.0,0.0,0.0,,,,,9.0,0,back_groove,ABF_SOI HAU
-mod_toa5pva0090002/side_L,top>side_L:0:bolt,drill,cam_bolt,A,50.0,1191.5,17.0,0.0,0.0,-1.0,5.0,13.0,0,cam,ABF-D5
-mod_toa5pva0090002/side_L,top>side_L:1:bolt,drill,cam_bolt,A,530.0,1191.5,17.0,0.0,0.0,-1.0,5.0,13.0,0,cam,ABF-D5
-mod_toa5pva0090002/side_L,bottom>side_L:0:bolt,drill,cam_bolt,A,50.0,58.5,17.0,0.0,0.0,-1.0,5.0,13.0,0,cam,ABF-D5
-mod_toa5pva0090002/side_L,bottom>side_L:1:bolt,drill,cam_bolt,A,530.0,58.5,17.0,0.0,0.0,-1.0,5.0,13.0,0,cam,ABF-D5
-mod_toa5pva0090002/side_L,dot_toa5pv59ba0003>side_L:0:bolt,drill,cam_bolt,A,50.0,600.0,17.0,0.0,0.0,-1.0,5.0,13.0,0,cam,ABF-D5
-mod_toa5pva0090002/side_L,dot_toa5pv59ba0003>side_L:1:bolt,drill,cam_bolt,A,508.0,600.0,17.0,0.0,0.0,-1.0,5.0,13.0,0,cam,ABF-D5
-mod_toa5pva0090002/side_R,side_R:back_groove,groove,back_groove,B,557.0,0.0,0.0,,,,,9.0,0,back_groove,ABF_SOI HAU
-mod_toa5pva0090002/side_R,top>side_R:0:bolt,drill,cam_bolt,B,50.0,1191.5,0.0,0.0,0.0,1.0,5.0,13.0,0,cam,ABF-D5
-mod_toa5pva0090002/side_R,top>side_R:1:bolt,drill,cam_bolt,B,530.0,1191.5,0.0,0.0,0.0,1.0,5.0,13.0,0,cam,ABF-D5
-mod_toa5pva0090002/side_R,bottom>side_R:0:bolt,drill,cam_bolt,B,50.0,58.5,0.0,0.0,0.0,1.0,5.0,13.0,0,cam,ABF-D5
-mod_toa5pva0090002/side_R,bottom>side_R:1:bolt,drill,cam_bolt,B,530.0,58.5,0.0,0.0,0.0,1.0,5.0,13.0,0,cam,ABF-D5
-mod_toa5pva0090002/side_R,dot_toa5pv59ba0003>side_R:0:bolt,drill,cam_bolt,B,50.0,600.0,0.0,0.0,0.0,1.0,5.0,13.0,0,cam,ABF-D5
-mod_toa5pva0090002/side_R,dot_toa5pv59ba0003>side_R:1:bolt,drill,cam_bolt,B,508.0,600.0,0.0,0.0,0.0,1.0,5.0,13.0,0,cam,ABF-D5
-mod_toa5pva0090002/top,top:back_groove,groove,back_groove,B,0.0,557.0,0.0,,,,,9.0,0,back_groove,ABF_SOI HAU
-mod_toa5pva0090002/top,top>side_L:0:edge,drill,cam_edge_hole,E:u0,0.0,50.0,8.5,1.0,0.0,0.0,8.0,34.0,0,cam,ABF-DSIDE-8
-mod_toa5pva0090002/top,top>side_L:0:cam,drill,cam_housing,B,24.0,50.0,0.0,0.0,0.0,1.0,15.0,13.0,0,cam,ABF-D15
-mod_toa5pva0090002/top,top>side_L:1:edge,drill,cam_edge_hole,E:u0,0.0,530.0,8.5,1.0,0.0,0.0,8.0,34.0,0,cam,ABF-DSIDE-8
-mod_toa5pva0090002/top,top>side_L:1:cam,drill,cam_housing,B,24.0,530.0,0.0,0.0,0.0,1.0,15.0,13.0,0,cam,ABF-D15
-mod_toa5pva0090002/top,top>side_R:0:edge,drill,cam_edge_hole,E:u1,866.0,50.0,8.5,-1.0,0.0,0.0,8.0,34.0,0,cam,ABF-DSIDE-8
-mod_toa5pva0090002/top,top>side_R:0:cam,drill,cam_housing,B,842.0,50.0,0.0,0.0,0.0,1.0,15.0,13.0,0,cam,ABF-D15
-mod_toa5pva0090002/top,top>side_R:1:edge,drill,cam_edge_hole,E:u1,866.0,530.0,8.5,-1.0,0.0,0.0,8.0,34.0,0,cam,ABF-DSIDE-8
-mod_toa5pva0090002/top,top>side_R:1:cam,drill,cam_housing,B,842.0,530.0,0.0,0.0,0.0,1.0,15.0,13.0,0,cam,ABF-D15
-mod_toa5pva0090002/bottom,bottom:back_groove,groove,back_groove,A,0.0,557.0,0.0,,,,,9.0,0,back_groove,ABF_SOI HAU
-mod_toa5pva0090002/bottom,bottom>side_L:0:edge,drill,cam_edge_hole,E:u0,0.0,50.0,8.5,1.0,0.0,0.0,8.0,34.0,0,cam,ABF-DSIDE-8
-mod_toa5pva0090002/bottom,bottom>side_L:0:cam,drill,cam_housing,A,24.0,50.0,17.0,0.0,0.0,-1.0,15.0,13.0,0,cam,ABF-D15
-mod_toa5pva0090002/bottom,bottom>side_L:1:edge,drill,cam_edge_hole,E:u0,0.0,530.0,8.5,1.0,0.0,0.0,8.0,34.0,0,cam,ABF-DSIDE-8
-mod_toa5pva0090002/bottom,bottom>side_L:1:cam,drill,cam_housing,A,24.0,530.0,17.0,0.0,0.0,-1.0,15.0,13.0,0,cam,ABF-D15
-mod_toa5pva0090002/bottom,bottom>side_R:0:edge,drill,cam_edge_hole,E:u1,866.0,50.0,8.5,-1.0,0.0,0.0,8.0,34.0,0,cam,ABF-DSIDE-8
-mod_toa5pva0090002/bottom,bottom>side_R:0:cam,drill,cam_housing,A,842.0,50.0,17.0,0.0,0.0,-1.0,15.0,13.0,0,cam,ABF-D15
-mod_toa5pva0090002/bottom,bottom>side_R:1:edge,drill,cam_edge_hole,E:u1,866.0,530.0,8.5,-1.0,0.0,0.0,8.0,34.0,0,cam,ABF-DSIDE-8
-mod_toa5pva0090002/bottom,bottom>side_R:1:cam,drill,cam_housing,A,842.0,530.0,17.0,0.0,0.0,-1.0,15.0,13.0,0,cam,ABF-D15
-mod_toa5pva0090002/dot_toa5pv59ba0003,dot_toa5pv59ba0003>side_L:0:edge,drill,cam_edge_hole,E:u0,0.0,50.0,8.5,1.0,0.0,0.0,8.0,34.0,0,cam,ABF-DSIDE-8
-mod_toa5pva0090002/dot_toa5pv59ba0003,dot_toa5pv59ba0003>side_L:0:cam,drill,cam_housing,A,24.0,50.0,17.0,0.0,0.0,-1.0,15.0,13.0,0,cam,ABF-D15
-mod_toa5pva0090002/dot_toa5pv59ba0003,dot_toa5pv59ba0003>side_L:1:edge,drill,cam_edge_hole,E:u0,0.0,508.0,8.5,1.0,0.0,0.0,8.0,34.0,0,cam,ABF-DSIDE-8
-mod_toa5pva0090002/dot_toa5pv59ba0003,dot_toa5pv59ba0003>side_L:1:cam,drill,cam_housing,A,24.0,508.0,17.0,0.0,0.0,-1.0,15.0,13.0,0,cam,ABF-D15
-mod_toa5pva0090002/dot_toa5pv59ba0003,dot_toa5pv59ba0003>side_R:0:edge,drill,cam_edge_hole,E:u1,866.0,50.0,8.5,-1.0,0.0,0.0,8.0,34.0,0,cam,ABF-DSIDE-8
-mod_toa5pva0090002/dot_toa5pv59ba0003,dot_toa5pv59ba0003>side_R:0:cam,drill,cam_housing,A,842.0,50.0,17.0,0.0,0.0,-1.0,15.0,13.0,0,cam,ABF-D15
-mod_toa5pva0090002/dot_toa5pv59ba0003,dot_toa5pv59ba0003>side_R:1:edge,drill,cam_edge_hole,E:u1,866.0,508.0,8.5,-1.0,0.0,0.0,8.0,34.0,0,cam,ABF-DSIDE-8
-mod_toa5pva0090002/dot_toa5pv59ba0003,dot_toa5pv59ba0003>side_R:1:cam,drill,cam_housing,A,842.0,508.0,17.0,0.0,0.0,-1.0,15.0,13.0,0,cam,ABF-D15
-mod_toa5pva0090002/door:side_L|side_R:0,door:side_L|side_R:0:hinge:0,drill,hinge_cup,B,22.5,100.0,0.0,0.0,0.0,1.0,35.0,12.5,0,hinge,ABF_D35
-mod_toa5pva0090002/door:side_L|side_R:0,door:side_L|side_R:0:hinge:1,drill,hinge_cup,B,22.5,581.5,0.0,0.0,0.0,1.0,35.0,12.5,0,hinge,ABF_D35
-mod_toa5pva0090002/door:side_L|side_R:0,door:side_L|side_R:0:hinge:2,drill,hinge_cup,B,22.5,1046.0,0.0,0.0,0.0,1.0,35.0,12.5,0,hinge,ABF_D35
-mod_toa5pva0090002/door:side_L|side_R:1,door:side_L|side_R:1:hinge:0,drill,hinge_cup,B,424.5,100.0,0.0,0.0,0.0,1.0,35.0,12.5,0,hinge,ABF_D35
-mod_toa5pva0090002/door:side_L|side_R:1,door:side_L|side_R:1:hinge:1,drill,hinge_cup,B,424.5,581.5,0.0,0.0,0.0,1.0,35.0,12.5,0,hinge,ABF_D35
-mod_toa5pva0090002/door:side_L|side_R:1,door:side_L|side_R:1:hinge:2,drill,hinge_cup,B,424.5,1046.0,0.0,0.0,0.0,1.0,35.0,12.5,0,hinge,ABF_D35
-mod_toa5pv6ef80007/top,end_B>top:0:bolt,drill,cam_bolt,B,50.0,8.5,0.0,0.0,0.0,1.0,5.0,13.0,0,cam,ABF-D5
-mod_toa5pv6ef80007/top,end_B>top:1:bolt,drill,cam_bolt,B,350.0,8.5,0.0,0.0,0.0,1.0,5.0,13.0,0,cam,ABF-D5
-mod_toa5pv6ef80007/top,end_A>top:0:bolt,drill,cam_bolt,B,1591.5,850.0,0.0,0.0,0.0,1.0,5.0,13.0,0,cam,ABF-D5
-mod_toa5pv6ef80007/top,end_A>top:1:bolt,drill,cam_bolt,B,1591.5,1150.0,0.0,0.0,0.0,1.0,5.0,13.0,0,cam,ABF-D5
-mod_toa5pv6ef80007/bottom,end_B>bottom:0:bolt,drill,cam_bolt,A,50.0,8.5,17.0,0.0,0.0,-1.0,5.0,13.0,0,cam,ABF-D5
-mod_toa5pv6ef80007/bottom,end_B>bottom:1:bolt,drill,cam_bolt,A,350.0,8.5,17.0,0.0,0.0,-1.0,5.0,13.0,0,cam,ABF-D5
-mod_toa5pv6ef80007/bottom,end_A>bottom:0:bolt,drill,cam_bolt,A,1591.5,850.0,17.0,0.0,0.0,-1.0,5.0,13.0,0,cam,ABF-D5
-mod_toa5pv6ef80007/bottom,end_A>bottom:1:bolt,drill,cam_bolt,A,1591.5,1150.0,17.0,0.0,0.0,-1.0,5.0,13.0,0,cam,ABF-D5
-mod_toa5pv6ef80007/end_A,end_A>top:0:edge,drill,cam_edge_hole,E:v1,50.0,766.0,8.5,0.0,-1.0,0.0,8.0,34.0,0,cam,ABF-DSIDE-8
-mod_toa5pv6ef80007/end_A,end_A>top:0:cam,drill,cam_housing,B,50.0,742.0,0.0,0.0,0.0,1.0,15.0,13.0,0,cam,ABF-D15
-mod_toa5pv6ef80007/end_A,end_A>top:1:edge,drill,cam_edge_hole,E:v1,350.0,766.0,8.5,0.0,-1.0,0.0,8.0,34.0,0,cam,ABF-DSIDE-8
-mod_toa5pv6ef80007/end_A,end_A>top:1:cam,drill,cam_housing,B,350.0,742.0,0.0,0.0,0.0,1.0,15.0,13.0,0,cam,ABF-D15
-mod_toa5pv6ef80007/end_A,end_A>bottom:0:edge,drill,cam_edge_hole,E:v0,50.0,0.0,8.5,0.0,1.0,0.0,8.0,34.0,0,cam,ABF-DSIDE-8
-mod_toa5pv6ef80007/end_A,end_A>bottom:0:cam,drill,cam_housing,B,50.0,24.0,0.0,0.0,0.0,1.0,15.0,13.0,0,cam,ABF-D15
-mod_toa5pv6ef80007/end_A,end_A>bottom:1:edge,drill,cam_edge_hole,E:v0,350.0,0.0,8.5,0.0,1.0,0.0,8.0,34.0,0,cam,ABF-DSIDE-8
-mod_toa5pv6ef80007/end_A,end_A>bottom:1:cam,drill,cam_housing,B,350.0,24.0,0.0,0.0,0.0,1.0,15.0,13.0,0,cam,ABF-D15
-mod_toa5pv6ef80007/end_B,end_B>top:0:edge,drill,cam_edge_hole,E:v1,50.0,766.0,8.5,0.0,-1.0,0.0,8.0,34.0,0,cam,ABF-DSIDE-8
-mod_toa5pv6ef80007/end_B,end_B>top:0:cam,drill,cam_housing,B,50.0,742.0,0.0,0.0,0.0,1.0,15.0,13.0,0,cam,ABF-D15
-mod_toa5pv6ef80007/end_B,end_B>top:1:edge,drill,cam_edge_hole,E:v1,350.0,766.0,8.5,0.0,-1.0,0.0,8.0,34.0,0,cam,ABF-DSIDE-8
-mod_toa5pv6ef80007/end_B,end_B>top:1:cam,drill,cam_housing,B,350.0,742.0,0.0,0.0,0.0,1.0,15.0,13.0,0,cam,ABF-D15
-mod_toa5pv6ef80007/end_B,end_B>bottom:0:edge,drill,cam_edge_hole,E:v0,50.0,0.0,8.5,0.0,1.0,0.0,8.0,34.0,0,cam,ABF-DSIDE-8
-mod_toa5pv6ef80007/end_B,end_B>bottom:0:cam,drill,cam_housing,B,50.0,24.0,0.0,0.0,0.0,1.0,15.0,13.0,0,cam,ABF-D15
-mod_toa5pv6ef80007/end_B,end_B>bottom:1:edge,drill,cam_edge_hole,E:v0,350.0,0.0,8.5,0.0,1.0,0.0,8.0,34.0,0,cam,ABF-DSIDE-8
-mod_toa5pv6ef80007/end_B,end_B>bottom:1:cam,drill,cam_housing,B,350.0,24.0,0.0,0.0,0.0,1.0,15.0,13.0,0,cam,ABF-D15
-mod_toa5pv88d70009/side_R,sec:mod_toa5pv43f2000a/side_L~mod_toa5pv88d70009/side_R,pocket,section,A,0.0,0.0,0.0,,,,,7.0,0,section,ABF_SOI HAU
-mod_toa5pv43f2000a/side_L,side_L:back_groove,groove,back_groove,A,327.0,0.0,0.0,,,,,9.0,0,back_groove,ABF_SOI HAU
-mod_toa5pv43f2000a/side_R,side_R:back_groove,groove,back_groove,B,327.0,0.0,0.0,,,,,9.0,0,back_groove,ABF_SOI HAU
-mod_toa5pv43f2000a/top,top:back_groove,groove,back_groove,B,0.0,327.0,0.0,,,,,9.0,0,back_groove,ABF_SOI HAU
-mod_toa5pv43f2000a/bottom,bottom:back_groove,groove,back_groove,A,0.0,327.0,0.0,,,,,9.0,0,back_groove,ABF_SOI HAU
-mod_toa5pvc34e000c/side_L,side_L:back_groove,groove,back_groove,A,477.0,0.0,0.0,,,,,9.0,0,back_groove,ABF_SOI HAU
-mod_toa5pvc34e000c/side_R,side_R:back_groove,groove,back_groove,B,477.0,0.0,0.0,,,,,9.0,0,back_groove,ABF_SOI HAU
-mod_toa5pvc34e000c/top,top:back_groove,groove,back_groove,B,0.0,477.0,0.0,,,,,9.0,0,back_groove,ABF_SOI HAU
-mod_toa5pvc34e000c/bottom,bottom:back_groove,groove,back_groove,A,0.0,477.0,0.0,,,,,9.0,0,back_groove,ABF_SOI HAU
+mod_toa5xo79660002/side_L,side_L:back_groove,groove,back_groove,A,557.0,0.0,0.0,,,,,9.0,0,back_groove,ABF_SOI HAU
+mod_toa5xo79660002/side_L,top>side_L:0:bolt,drill,cam_bolt,A,50.0,1191.5,17.0,0.0,0.0,-1.0,5.0,13.0,0,cam,ABF-D5
+mod_toa5xo79660002/side_L,top>side_L:1:bolt,drill,cam_bolt,A,530.0,1191.5,17.0,0.0,0.0,-1.0,5.0,13.0,0,cam,ABF-D5
+mod_toa5xo79660002/side_L,bottom>side_L:0:bolt,drill,cam_bolt,A,50.0,58.5,17.0,0.0,0.0,-1.0,5.0,13.0,0,cam,ABF-D5
+mod_toa5xo79660002/side_L,bottom>side_L:1:bolt,drill,cam_bolt,A,530.0,58.5,17.0,0.0,0.0,-1.0,5.0,13.0,0,cam,ABF-D5
+mod_toa5xo79660002/side_L,dot_toa5xob0000003>side_L:0:bolt,drill,cam_bolt,A,50.0,600.0,17.0,0.0,0.0,-1.0,5.0,13.0,0,cam,ABF-D5
+mod_toa5xo79660002/side_L,dot_toa5xob0000003>side_L:1:bolt,drill,cam_bolt,A,508.0,600.0,17.0,0.0,0.0,-1.0,5.0,13.0,0,cam,ABF-D5
+mod_toa5xo79660002/side_R,side_R:back_groove,groove,back_groove,B,557.0,0.0,0.0,,,,,9.0,0,back_groove,ABF_SOI HAU
+mod_toa5xo79660002/side_R,top>side_R:0:bolt,drill,cam_bolt,B,50.0,1191.5,0.0,0.0,0.0,1.0,5.0,13.0,0,cam,ABF-D5
+mod_toa5xo79660002/side_R,top>side_R:1:bolt,drill,cam_bolt,B,530.0,1191.5,0.0,0.0,0.0,1.0,5.0,13.0,0,cam,ABF-D5
+mod_toa5xo79660002/side_R,bottom>side_R:0:bolt,drill,cam_bolt,B,50.0,58.5,0.0,0.0,0.0,1.0,5.0,13.0,0,cam,ABF-D5
+mod_toa5xo79660002/side_R,bottom>side_R:1:bolt,drill,cam_bolt,B,530.0,58.5,0.0,0.0,0.0,1.0,5.0,13.0,0,cam,ABF-D5
+mod_toa5xo79660002/side_R,dot_toa5xob0000003>side_R:0:bolt,drill,cam_bolt,B,50.0,600.0,0.0,0.0,0.0,1.0,5.0,13.0,0,cam,ABF-D5
+mod_toa5xo79660002/side_R,dot_toa5xob0000003>side_R:1:bolt,drill,cam_bolt,B,508.0,600.0,0.0,0.0,0.0,1.0,5.0,13.0,0,cam,ABF-D5
+mod_toa5xo79660002/top,top:back_groove,groove,back_groove,B,0.0,557.0,0.0,,,,,9.0,0,back_groove,ABF_SOI HAU
+mod_toa5xo79660002/top,top>side_L:0:edge,drill,cam_edge_hole,E:u0,0.0,50.0,8.5,1.0,0.0,0.0,8.0,34.0,0,cam,ABF-DSIDE-8
+mod_toa5xo79660002/top,top>side_L:0:cam,drill,cam_housing,B,24.0,50.0,0.0,0.0,0.0,1.0,15.0,13.0,0,cam,ABF-D15
+mod_toa5xo79660002/top,top>side_L:1:edge,drill,cam_edge_hole,E:u0,0.0,530.0,8.5,1.0,0.0,0.0,8.0,34.0,0,cam,ABF-DSIDE-8
+mod_toa5xo79660002/top,top>side_L:1:cam,drill,cam_housing,B,24.0,530.0,0.0,0.0,0.0,1.0,15.0,13.0,0,cam,ABF-D15
+mod_toa5xo79660002/top,top>side_R:0:edge,drill,cam_edge_hole,E:u1,866.0,50.0,8.5,-1.0,0.0,0.0,8.0,34.0,0,cam,ABF-DSIDE-8
+mod_toa5xo79660002/top,top>side_R:0:cam,drill,cam_housing,B,842.0,50.0,0.0,0.0,0.0,1.0,15.0,13.0,0,cam,ABF-D15
+mod_toa5xo79660002/top,top>side_R:1:edge,drill,cam_edge_hole,E:u1,866.0,530.0,8.5,-1.0,0.0,0.0,8.0,34.0,0,cam,ABF-DSIDE-8
+mod_toa5xo79660002/top,top>side_R:1:cam,drill,cam_housing,B,842.0,530.0,0.0,0.0,0.0,1.0,15.0,13.0,0,cam,ABF-D15
+mod_toa5xo79660002/bottom,bottom:back_groove,groove,back_groove,A,0.0,557.0,0.0,,,,,9.0,0,back_groove,ABF_SOI HAU
+mod_toa5xo79660002/bottom,bottom>side_L:0:edge,drill,cam_edge_hole,E:u0,0.0,50.0,8.5,1.0,0.0,0.0,8.0,34.0,0,cam,ABF-DSIDE-8
+mod_toa5xo79660002/bottom,bottom>side_L:0:cam,drill,cam_housing,A,24.0,50.0,17.0,0.0,0.0,-1.0,15.0,13.0,0,cam,ABF-D15
+mod_toa5xo79660002/bottom,bottom>side_L:1:edge,drill,cam_edge_hole,E:u0,0.0,530.0,8.5,1.0,0.0,0.0,8.0,34.0,0,cam,ABF-DSIDE-8
+mod_toa5xo79660002/bottom,bottom>side_L:1:cam,drill,cam_housing,A,24.0,530.0,17.0,0.0,0.0,-1.0,15.0,13.0,0,cam,ABF-D15
+mod_toa5xo79660002/bottom,bottom>side_R:0:edge,drill,cam_edge_hole,E:u1,866.0,50.0,8.5,-1.0,0.0,0.0,8.0,34.0,0,cam,ABF-DSIDE-8
+mod_toa5xo79660002/bottom,bottom>side_R:0:cam,drill,cam_housing,A,842.0,50.0,17.0,0.0,0.0,-1.0,15.0,13.0,0,cam,ABF-D15
+mod_toa5xo79660002/bottom,bottom>side_R:1:edge,drill,cam_edge_hole,E:u1,866.0,530.0,8.5,-1.0,0.0,0.0,8.0,34.0,0,cam,ABF-DSIDE-8
+mod_toa5xo79660002/bottom,bottom>side_R:1:cam,drill,cam_housing,A,842.0,530.0,17.0,0.0,0.0,-1.0,15.0,13.0,0,cam,ABF-D15
+mod_toa5xo79660002/dot_toa5xob0000003,dot_toa5xob0000003>side_L:0:edge,drill,cam_edge_hole,E:u0,0.0,50.0,8.5,1.0,0.0,0.0,8.0,34.0,0,cam,ABF-DSIDE-8
+mod_toa5xo79660002/dot_toa5xob0000003,dot_toa5xob0000003>side_L:0:cam,drill,cam_housing,A,24.0,50.0,17.0,0.0,0.0,-1.0,15.0,13.0,0,cam,ABF-D15
+mod_toa5xo79660002/dot_toa5xob0000003,dot_toa5xob0000003>side_L:1:edge,drill,cam_edge_hole,E:u0,0.0,508.0,8.5,1.0,0.0,0.0,8.0,34.0,0,cam,ABF-DSIDE-8
+mod_toa5xo79660002/dot_toa5xob0000003,dot_toa5xob0000003>side_L:1:cam,drill,cam_housing,A,24.0,508.0,17.0,0.0,0.0,-1.0,15.0,13.0,0,cam,ABF-D15
+mod_toa5xo79660002/dot_toa5xob0000003,dot_toa5xob0000003>side_R:0:edge,drill,cam_edge_hole,E:u1,866.0,50.0,8.5,-1.0,0.0,0.0,8.0,34.0,0,cam,ABF-DSIDE-8
+mod_toa5xo79660002/dot_toa5xob0000003,dot_toa5xob0000003>side_R:0:cam,drill,cam_housing,A,842.0,50.0,17.0,0.0,0.0,-1.0,15.0,13.0,0,cam,ABF-D15
+mod_toa5xo79660002/dot_toa5xob0000003,dot_toa5xob0000003>side_R:1:edge,drill,cam_edge_hole,E:u1,866.0,508.0,8.5,-1.0,0.0,0.0,8.0,34.0,0,cam,ABF-DSIDE-8
+mod_toa5xo79660002/dot_toa5xob0000003,dot_toa5xob0000003>side_R:1:cam,drill,cam_housing,A,842.0,508.0,17.0,0.0,0.0,-1.0,15.0,13.0,0,cam,ABF-D15
+mod_toa5xo79660002/door:side_L|side_R:0,door:side_L|side_R:0:hinge:0,drill,hinge_cup,B,22.5,100.0,0.0,0.0,0.0,1.0,35.0,12.5,0,hinge,ABF_D35
+mod_toa5xo79660002/door:side_L|side_R:0,door:side_L|side_R:0:hinge:1,drill,hinge_cup,B,22.5,581.5,0.0,0.0,0.0,1.0,35.0,12.5,0,hinge,ABF_D35
+mod_toa5xo79660002/door:side_L|side_R:0,door:side_L|side_R:0:hinge:2,drill,hinge_cup,B,22.5,1046.0,0.0,0.0,0.0,1.0,35.0,12.5,0,hinge,ABF_D35
+mod_toa5xo79660002/door:side_L|side_R:1,door:side_L|side_R:1:hinge:0,drill,hinge_cup,B,424.5,100.0,0.0,0.0,0.0,1.0,35.0,12.5,0,hinge,ABF_D35
+mod_toa5xo79660002/door:side_L|side_R:1,door:side_L|side_R:1:hinge:1,drill,hinge_cup,B,424.5,581.5,0.0,0.0,0.0,1.0,35.0,12.5,0,hinge,ABF_D35
+mod_toa5xo79660002/door:side_L|side_R:1,door:side_L|side_R:1:hinge:2,drill,hinge_cup,B,424.5,1046.0,0.0,0.0,0.0,1.0,35.0,12.5,0,hinge,ABF_D35
+mod_toa5xo24a80007/top,end_B>top:0:bolt,drill,cam_bolt,B,50.0,8.5,0.0,0.0,0.0,1.0,5.0,13.0,0,cam,ABF-D5
+mod_toa5xo24a80007/top,end_B>top:1:bolt,drill,cam_bolt,B,350.0,8.5,0.0,0.0,0.0,1.0,5.0,13.0,0,cam,ABF-D5
+mod_toa5xo24a80007/top,end_A>top:0:bolt,drill,cam_bolt,B,1591.5,850.0,0.0,0.0,0.0,1.0,5.0,13.0,0,cam,ABF-D5
+mod_toa5xo24a80007/top,end_A>top:1:bolt,drill,cam_bolt,B,1591.5,1150.0,0.0,0.0,0.0,1.0,5.0,13.0,0,cam,ABF-D5
+mod_toa5xo24a80007/bottom,end_B>bottom:0:bolt,drill,cam_bolt,A,50.0,8.5,17.0,0.0,0.0,-1.0,5.0,13.0,0,cam,ABF-D5
+mod_toa5xo24a80007/bottom,end_B>bottom:1:bolt,drill,cam_bolt,A,350.0,8.5,17.0,0.0,0.0,-1.0,5.0,13.0,0,cam,ABF-D5
+mod_toa5xo24a80007/bottom,end_A>bottom:0:bolt,drill,cam_bolt,A,1591.5,850.0,17.0,0.0,0.0,-1.0,5.0,13.0,0,cam,ABF-D5
+mod_toa5xo24a80007/bottom,end_A>bottom:1:bolt,drill,cam_bolt,A,1591.5,1150.0,17.0,0.0,0.0,-1.0,5.0,13.0,0,cam,ABF-D5
+mod_toa5xo24a80007/end_A,end_A>top:0:edge,drill,cam_edge_hole,E:v1,50.0,766.0,8.5,0.0,-1.0,0.0,8.0,34.0,0,cam,ABF-DSIDE-8
+mod_toa5xo24a80007/end_A,end_A>top:0:cam,drill,cam_housing,B,50.0,742.0,0.0,0.0,0.0,1.0,15.0,13.0,0,cam,ABF-D15
+mod_toa5xo24a80007/end_A,end_A>top:1:edge,drill,cam_edge_hole,E:v1,350.0,766.0,8.5,0.0,-1.0,0.0,8.0,34.0,0,cam,ABF-DSIDE-8
+mod_toa5xo24a80007/end_A,end_A>top:1:cam,drill,cam_housing,B,350.0,742.0,0.0,0.0,0.0,1.0,15.0,13.0,0,cam,ABF-D15
+mod_toa5xo24a80007/end_A,end_A>bottom:0:edge,drill,cam_edge_hole,E:v0,50.0,0.0,8.5,0.0,1.0,0.0,8.0,34.0,0,cam,ABF-DSIDE-8
+mod_toa5xo24a80007/end_A,end_A>bottom:0:cam,drill,cam_housing,B,50.0,24.0,0.0,0.0,0.0,1.0,15.0,13.0,0,cam,ABF-D15
+mod_toa5xo24a80007/end_A,end_A>bottom:1:edge,drill,cam_edge_hole,E:v0,350.0,0.0,8.5,0.0,1.0,0.0,8.0,34.0,0,cam,ABF-DSIDE-8
+mod_toa5xo24a80007/end_A,end_A>bottom:1:cam,drill,cam_housing,B,350.0,24.0,0.0,0.0,0.0,1.0,15.0,13.0,0,cam,ABF-D15
+mod_toa5xo24a80007/end_B,end_B>top:0:edge,drill,cam_edge_hole,E:v1,50.0,766.0,8.5,0.0,-1.0,0.0,8.0,34.0,0,cam,ABF-DSIDE-8
+mod_toa5xo24a80007/end_B,end_B>top:0:cam,drill,cam_housing,B,50.0,742.0,0.0,0.0,0.0,1.0,15.0,13.0,0,cam,ABF-D15
+mod_toa5xo24a80007/end_B,end_B>top:1:edge,drill,cam_edge_hole,E:v1,350.0,766.0,8.5,0.0,-1.0,0.0,8.0,34.0,0,cam,ABF-DSIDE-8
+mod_toa5xo24a80007/end_B,end_B>top:1:cam,drill,cam_housing,B,350.0,742.0,0.0,0.0,0.0,1.0,15.0,13.0,0,cam,ABF-D15
+mod_toa5xo24a80007/end_B,end_B>bottom:0:edge,drill,cam_edge_hole,E:v0,50.0,0.0,8.5,0.0,1.0,0.0,8.0,34.0,0,cam,ABF-DSIDE-8
+mod_toa5xo24a80007/end_B,end_B>bottom:0:cam,drill,cam_housing,B,50.0,24.0,0.0,0.0,0.0,1.0,15.0,13.0,0,cam,ABF-D15
+mod_toa5xo24a80007/end_B,end_B>bottom:1:edge,drill,cam_edge_hole,E:v0,350.0,0.0,8.5,0.0,1.0,0.0,8.0,34.0,0,cam,ABF-DSIDE-8
+mod_toa5xo24a80007/end_B,end_B>bottom:1:cam,drill,cam_housing,B,350.0,24.0,0.0,0.0,0.0,1.0,15.0,13.0,0,cam,ABF-D15
+mod_toa5xo9c540009/side_R,sec:mod_toa5xo95c1000a/side_L~mod_toa5xo9c540009/side_R,pocket,section,A,0.0,0.0,0.0,,,,,7.0,0,section,ABF_SOI HAU
+mod_toa5xo95c1000a/side_L,side_L:back_groove,groove,back_groove,A,327.0,0.0,0.0,,,,,9.0,0,back_groove,ABF_SOI HAU
+mod_toa5xo95c1000a/side_R,side_R:back_groove,groove,back_groove,B,327.0,0.0,0.0,,,,,9.0,0,back_groove,ABF_SOI HAU
+mod_toa5xo95c1000a/top,top:back_groove,groove,back_groove,B,0.0,327.0,0.0,,,,,9.0,0,back_groove,ABF_SOI HAU
+mod_toa5xo95c1000a/bottom,bottom:back_groove,groove,back_groove,A,0.0,327.0,0.0,,,,,9.0,0,back_groove,ABF_SOI HAU
+mod_toa5xo2bf0000c/side_L,side_L:back_groove,groove,back_groove,A,477.0,0.0,0.0,,,,,9.0,0,back_groove,ABF_SOI HAU
+mod_toa5xo2bf0000c/side_R,side_R:back_groove,groove,back_groove,B,477.0,0.0,0.0,,,,,9.0,0,back_groove,ABF_SOI HAU
+mod_toa5xo2bf0000c/top,top:back_groove,groove,back_groove,B,0.0,477.0,0.0,,,,,9.0,0,back_groove,ABF_SOI HAU
+mod_toa5xo2bf0000c/bottom,bottom:back_groove,groove,back_groove,A,0.0,477.0,0.0,,,,,9.0,0,back_groove,ABF_SOI HAU
