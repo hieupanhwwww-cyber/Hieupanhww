@@ -49,6 +49,7 @@
     },
     // Ảnh minh họa dựng bằng SVG theo loại hình học (dùng ngoại tuyến).
     thumb(c) {
+      if (c.thumb) return `<img class="thumb" src="${HL.esc(c.thumb)}" alt="">`;
       const S = (inner) => `<svg viewBox="0 0 100 80" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="80" fill="#f6efe4"/>${inner}</svg>`;
       const box = (x, y, w, h) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="#fffaf2" stroke="#7a5230" stroke-width="2"/>`;
       const line = (x1, y1, x2, y2) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#7a5230" stroke-width="1.5"/>`;

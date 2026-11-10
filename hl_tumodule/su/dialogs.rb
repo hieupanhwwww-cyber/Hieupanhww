@@ -65,6 +65,15 @@ module HungLoan
 
         def cfg; Prefs.library; end
 
+        # Ảnh thật trích từ file SKP nguồn (nếu có trong gói); không có thì JS vẽ hình minh họa.
+        def thumb_for(tid)
+          File.exist?(File.join(TuModule::DIR, 'thumbs', "#{tid}.png")) ? "../thumbs/#{tid}.png" : nil
+        end
+
+        def with_thumbs(cards)
+          cards.map { |c| c.merge('thumb' => thumb_for(c['id'])) }
+        end
+
         def state(extra = {})
           {
             'folders' => cfg['folders'], 'types' => Core::Templates::MODULE_TYPES,
@@ -76,8 +85,8 @@ module HungLoan
         def handle(action, d)
           case action
           when 'init' then state
-          when 'list' then { 'cards' => L.list_folder(cfg, d['folder']), 'scope' => d['folder'] }
-          when 'filter' then { 'cards' => L.filter_type(cfg, d['type']), 'scope' => 'type' }
+          when 'list' then { 'cards' => with_thumbs(L.list_folder(cfg, d['folder'])), 'scope' => d['folder'] }
+          when 'filter' then { 'cards' => with_thumbs(L.filter_type(cfg, d['type'])), 'scope' => 'type' }
           when 'place'
             Commands.start_place(d['tid'])
             {}
@@ -148,7 +157,7 @@ module HungLoan
           { 'kind' => 'template', 'tid' => @tid, 'name' => tpl['name'], 'geometry' => tpl['geometry'], 'module_type' => tpl['module_type'],
             'type_label' => Core::Templates.type_label(tpl['module_type']), 'fields' => tpl['fields'],
             'values' => L.settings_for(Prefs.library, @tid), 'customized' => Prefs.library['settings'].key?(@tid),
-            'anchor' => tpl['anchor']['label'] }
+            'anchor' => tpl['anchor']['label'], 'thumb' => LibraryDialog.thumb_for(@tid) }
         end
 
         def handle(action, d)

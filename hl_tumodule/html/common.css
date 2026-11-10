@@ -36,3 +36,4 @@ h3 { font-size: 13px; margin: 0 0 8px; color: var(--brown); text-transform: uppe
 .ctx .head:hover { background: none; }
 .ctx hr { border: 0; border-top: 1px solid var(--line); margin: 4px 0; }
 .badge { display: inline-block; background: var(--milk); color: var(--brown); border-radius: 10px; padding: 1px 8px; font-size: 11px; }
+img.thumb { width: 100%; aspect-ratio: 5 / 4; object-fit: contain; background: #fff; display: block; }

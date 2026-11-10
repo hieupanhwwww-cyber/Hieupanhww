@@ -8,7 +8,7 @@
 <style>
   body { padding: 10px; }
   .head { display: flex; gap: 10px; align-items: center; background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 8px; margin-bottom: 10px; }
-  .head svg { width: 84px; flex: none; border-radius: 6px; }
+  .head svg, .head img.thumb { width: 84px; flex: none; border-radius: 6px; }
   .head .meta { font-size: 12px; color: var(--muted); }
   .head .nm { font-weight: 700; font-size: 14px; color: var(--text); }
   .note { font-size: 12px; color: var(--muted); margin: 0 0 10px; }
@@ -34,7 +34,7 @@ let cur = null, errors = {}, dirty = false;
 const $ = (s) => document.querySelector(s);
 
 function render(values) {
-  $('#head').innerHTML = `${HL.thumb({ module_type: cur.type_key || '', geometry: cur.geometry })}
+  $('#head').innerHTML = `${HL.thumb({ module_type: cur.type_key || '', geometry: cur.geometry, thumb: cur.thumb })}
     <div><div class="meta">Mẫu đang chỉnh</div><div class="nm">${HL.esc(cur.name)}</div>
     <div class="meta">${HL.esc(cur.type_label)} · ID ${HL.esc(cur.tid)}<br>Điểm bám: ${HL.esc(cur.anchor)}${cur.customized ? ' · <b>đã có setting riêng</b>' : ' · đang dùng thông số gốc'}</div></div>`;
   $('#form').innerHTML = cur.fields.map(fd => HL.fieldHtml(fd, values[fd.key], errors[fd.key])).join('');

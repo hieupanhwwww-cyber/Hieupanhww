@@ -6,7 +6,7 @@
 | SketchUp | **KHÔNG CÓ** (Linux, không có host). Plugin **chưa chạy trong SketchUp thật**. |
 | ABF / ABF Nesting | **KHÔNG CÓ**. Trang `getabf.net` bị chặn (DNS ENOTFOUND). **Chưa kiểm chứng tương thích.** |
 | Ruby | 3.3.6 (cú pháp giữ tương thích Ruby 2.7 của SketchUp 2021–2023) |
-| Bộ SKP `DC_17MM_Model_Thuong(1).zip` | **Không có** trong môi trường → chưa khảo sát hình học 111 file |
+| Bộ SKP `DC_17MM_Model_Thuong.zip` | Có (111 file). Khảo sát sơ bộ ngoài SketchUp xong (`docs/khao_sat/`); hình học thật chưa đọc được — cần lệnh “Khảo sát bộ mẫu SKP” trên máy có SketchUp |
 
 Ba mức kiểm thử, phân biệt rõ:
 - **Thuần Ruby (lõi)** — kiểm thử thật công thức, ràng buộc, thuật toán.
@@ -17,7 +17,7 @@ Ba mức kiểm thử, phân biệt rõ:
 | Bộ kiểm thử | Lệnh | Kết quả |
 |---|---|---|
 | Lõi | `ruby -Itests tests/test_core.rb` | **41 phép thử, 292 kiểm tra, 0 lỗi** |
-| Luồng SketchUp (giả lập) | `ruby tests/test_su_flow.rb` | **10 phép thử, 118 kiểm tra, 0 lỗi** (chạy lặp 6 lần ổn định) |
+| Luồng SketchUp (giả lập) | `ruby tests/test_su_flow.rb` | **11 phép thử, 126 kiểm tra, 0 lỗi** |
 | Công cụ tương tác (view giả lập) | `ruby tests/test_su_tools.rb` | **4 phép thử, 12 kiểm tra, 0 lỗi** |
 | Cú pháp mọi file `.rb` | `tools/build_rbz.sh` | Đạt |
 | Gói RBZ | giải nén + nạp loader `hl_tumodule.rb` → `hl_tumodule/main` | Nạp được (trên giả lập); không chứa đường dẫn máy phát triển |
@@ -34,7 +34,7 @@ Ký hiệu: **R** = kiểm thử thuần Ruby đạt · **M** = chạy đạt tr
 | Đóng/Hủy không ghi; giá trị sai không lưu | R + M |
 | Khôi phục setting gốc: chưa lưu cho tới khi bấm Lưu | R + M |
 | Xuất/nhập sao lưu: thay toàn bộ, không gộp; file lỗi giữ nguyên | R + M |
-| Mẫu từ ZIP | — (không có ZIP; dùng template Ruby, xem ASSUMPTIONS A1) |
+| Mẫu từ ZIP | Khảo sát sơ bộ (tên chi tiết, số đo, thumbnail): xong ngoài SketchUp. Hình học/quy tắc đổi kích thước theo model gốc: — (cần JSON từ lệnh Khảo sát) |
 | Cây thư mục/thư mục con, một mẫu nhiều thư mục, lọc toàn thư viện một kết quả/ID | R + M |
 | Menu chuột phải thêm/bỏ khỏi thư mục | R (lõi), giao diện JS — — |
 | Xoay 90° khi rê, điểm bám khớp preview/kết quả, đặt xong kết thúc lệnh | M (Tab xoay, đặt xong `select_tool(nil)`) |
@@ -81,3 +81,8 @@ Ký hiệu: **R** = kiểm thử thuần Ruby đạt · **M** = chạy đạt tr
 | ABF / ABF Nesting | Chưa xác định | Bộ ca: lệnh *Dựng bộ ca kiểm thử ABF*; dữ liệu mong đợi `docs/abf_samples/` | **Chưa chạy — chưa kiểm chứng** |
 
 Bảng so sánh mong đợi/thực tế: `docs/ABF_HANDOFF.md` mục 5 (cột thực tế để trống).
+
+## 6. Lỗi đã sửa sau khi chạy trên SketchUp thật (báo cáo của người dùng)
+| Ngày | Lỗi | Nguyên nhân | Sửa |
+|---|---|---|---|
+| 08/11 | `undefined method 'entityID' for Sketchup::Entities` khi đặt module | Dùng `entityID` làm khóa gắn observer cho `Entities`/`Selection` — API thật không có; bản giả lập có nên không bắt được | Khóa theo loại đối tượng (`Observers.ident`); bỏ `entityID` khỏi giả lập để không che lỗi |

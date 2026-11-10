@@ -7,9 +7,9 @@ Các điểm dưới đây là **lựa chọn tạm để có bản chạy đư�
 
 | # | Đặc tả | Thực tế triển khai | Lý do |
 |---|---|---|---|
-| A1 | Làm thông minh mẫu từ bộ `DC_17MM_Model_Thuong(1).zip` | 10 template **sinh bằng Ruby**; ghi tên SKP ứng viên trong catalog (`source_candidate`) | File ZIP không có trong môi trường. Đặc tả mục 3 cho phép phương án bổ sung khi tài nguyên không có. 111 file SKP: chưa khảo sát, không đưa vào thư viện. |
+| A1 | Làm thông minh mẫu từ bộ `DC_17MM_Model_Thuong.zip` | 10 template **sinh bằng Ruby**; 6 mẫu gắn thumbnail thật; khảo sát sơ bộ 111 file ở `docs/khao_sat/` | ZIP nhận ngày 08/11 nhưng môi trường không có SketchUp để đọc hình học SKP (định dạng nhị phân riêng). Đã thêm lệnh “Khảo sát bộ mẫu SKP” chạy trong SketchUp để lấy số đo thật ở bước sau. |
 | A2 | Phím xoay tạm R | **Tab** hoặc **← / →** | Trong SketchUp, R là phím tắt mặc định của Rectangle — dễ bị SketchUp bắt trước công cụ. Tab và phím mũi tên không xung đột trong công cụ đặt. |
-| A3 | Bộ chuyển đổi ABF/Nesting đã kiểm chứng | “Bản gia công” trung lập (tấm phẳng một cấp, lỗ/rãnh khoét thật, metadata `HungLoan_MFG`) + JSON/CSV. **Chưa kiểm chứng ABF** | Không có ABF/Nesting; trang `getabf.net` bị chặn mạng trong môi trường xây dựng (DNS không phân giải). Không tự đặt khóa/tag “giống ABF”. |
+| A3 | Bộ chuyển đổi ABF/Nesting đã kiểm chứng | “Bản gia công” trung lập (tấm phẳng một cấp, lỗ/rãnh khoét thật, metadata `HungLoan_MFG`) + JSON/CSV. **Chưa kiểm chứng ABF** | Không có ABF/Nesting; `getabf.net` bị chặn mạng. Bộ mẫu ZIP có dấu vết quy ước ABF (tag `ABF_RANH_HAU`, `ABF_D35`, `ABF_POCKET_Z6_*`, dictionary `abf_object_data` — xem `docs/khao_sat/ABF_TAGS.md`) nhưng mới là tên, chưa đọc được hình học/nội dung; chưa đủ để viết bộ chuyển đổi chắc chắn. |
 | A4 | Bo đầu hồi theo chiều cao | Đầu tủ bo bán kính R chạy suốt chiều cao: nóc/đáy/đợt bo, hồi phải rút ngắn, thêm **tấm uốn** | Tấm uốn được đánh dấu **chưa hỗ trợ gia công** (chưa có quy tắc trải phẳng), theo mục 10C-A. |
 | A5 | Vách/đợt trong tủ chữ L | Chưa hỗ trợ công cụ vách/đợt/thùng cho module chữ L | Khoang chữ L không phải hình chữ nhật; để đợt sau. |
 

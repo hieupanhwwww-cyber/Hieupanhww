@@ -76,6 +76,7 @@ module HungLoan
           when 'mfg_files' then Export.cmd_export_files
           when 'mfg_snapshot' then Export.cmd_snapshot
           when 'abf_cases' then TestCases.build_all
+          when 'survey' then Survey.run
           end
         rescue C::ValidationError, OpError => e
           UI.messagebox(e.message)
@@ -105,7 +106,9 @@ module HungLoan
           ['mfg_check', 'Kiểm tra dữ liệu sản xuất', 'Kiểm tra tấm/feature, báo lỗi theo mã', 'check'],
           ['mfg_files', 'Xuất dữ liệu gia công (JSON/CSV)…', 'Dữ liệu trung lập mm', 'export'],
           ['mfg_snapshot', 'Tạo bản gia công (bàn giao ABF/Nesting)', 'Tấm phẳng một cấp, lỗ/rãnh khoét thật — ABF chưa kiểm chứng', 'export'],
-          ['abf_cases', 'Dựng bộ ca kiểm thử ABF', 'Dựng các ca chuẩn để nạp thử trên ABF/Nesting', nil]
+          ['abf_cases', 'Dựng bộ ca kiểm thử ABF', 'Dựng các ca chuẩn để nạp thử trên ABF/Nesting', nil],
+          nil,
+          ['survey', 'Khảo sát bộ mẫu SKP…', 'Đo cấu tạo từng file .skp mẫu, ghi ra JSON (model đang mở không bị đổi)', nil]
         ].freeze
 
         def install

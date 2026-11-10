@@ -253,6 +253,22 @@ class TestSUFlow < Minitest::Test
     assert File.exist?($mock_save_path)
   end
 
+  def test_survey_writes_json_and_rolls_back
+    dir = Dir.mktmpdir('skp')
+    File.write(File.join(dir, 'a.skp'), 'x')
+    $mock_dir = dir
+    $mock_save_path = File.join(dir, 'ks.json')
+    S::Commands.run('survey')
+    js = JSON.parse(File.read($mock_save_path))
+    assert_equal 'HLTM-SURVEY', js['format']
+    f = js['files'][0]
+    assert_nil f['error']
+    assert_equal 1, f['nodes'].size
+    assert_equal 1, f['nodes'][0]['loose']['faces']
+    assert_equal 1, f['nodes'][0]['children'].size
+    assert_equal :abort, model.ops.last[0], 'model đang mở không bị thay đổi'
+  end
+
   def test_tools_construct
     S::Commands.start_place('hl.khung_tu.v1')
     assert_kind_of S::PlaceTool, model.tool

@@ -114,7 +114,9 @@ Mở **Thư viện module** (biểu tượng 4 ô).
 - Gán vật liệu bằng **Paint Bucket** lên tấm; vật liệu được giữ khi tủ tái sinh.
 
 ## 15. Mẫu đã hỗ trợ & giới hạn
-Bộ SKP nguồn `DC_17MM_Model_Thuong(1).zip` **không có trong môi trường xây dựng**, nên 10 mẫu hiện tại là **template sinh bằng Ruby** theo quy tắc tham số (không phải model SKP gốc):
+Bộ SKP nguồn `DC_17MM_Model_Thuong.zip` (111 file) đã nhận được và **khảo sát sơ bộ ngoài SketchUp** (`docs/khao_sat/`): tên chi tiết,
+số đo mm xuất hiện trong file, ảnh thumbnail, dấu vết tag ABF. Môi trường này không có SketchUp nên **chưa đọc được hình học thật**;
+10 mẫu hiện tại vẫn là **template sinh bằng Ruby** theo quy tắc tham số. 6 mẫu dùng ảnh thumbnail thật của file SKP tương ứng:
 
 | Mẫu | Loại | Đối chiếu SKP nguồn khi có ZIP |
 |---|---|---|
@@ -129,7 +131,9 @@ Bộ SKP nguồn `DC_17MM_Model_Thuong(1).zip` **không có trong môi trường
 | Thùng ngăn kéo ray bi | thùng | 05B - Thùng ngăn kéo có ray.skp |
 | Tủ đầu bo | bo cong | — |
 
-Cả 111 file SKP của bộ ZIP: **chưa khảo sát** (không có file) → không có trong thư viện. Giới hạn khác: xem `ASSUMPTIONS.md` mục “Giới hạn”.
+Để làm thông minh đúng theo model gốc: trên máy có SketchUp chạy **Extensions › Tủ Module Hùng Loan › Khảo sát bộ mẫu SKP…**,
+chọn thư mục `Model_17MM`, lưu `khao_sat_mau.json` rồi gửi lại. Lệnh này chỉ nạp tạm từng file để đo, model đang mở không bị thay đổi.
+Giới hạn khác: xem `ASSUMPTIONS.md` mục “Giới hạn”.
 
 ## Phát triển
 - Kiểm thử: `ruby -Itests tests/test_core.rb`, `ruby tests/test_su_flow.rb`, `ruby tests/test_su_tools.rb`

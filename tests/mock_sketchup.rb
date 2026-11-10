@@ -85,6 +85,8 @@ module Geom
   end
 
   class BoundingBox
+    def empty?; @pts.empty?; end
+    def corner(i) m = max; Point3d.new(i & 1 == 0 ? 0 : m.x, i & 2 == 0 ? 0 : m.y, i & 4 == 0 ? 0 : m.z) end
     def initialize; @pts = []; end
     def add(p); @pts << p; self; end
     def max; Point3d.new(@pts.map(&:x).max || 0, @pts.map(&:y).max || 0, @pts.map(&:z).max || 0); end
@@ -121,6 +123,11 @@ module Sketchup
       @attrs = {}
       @valid = true
     end
+    def attribute_dictionaries; nil; end
+    def hidden?; false; end
+    def locked?; false; end
+    def layer; nil; end
+    def curve; nil; end
     def get_attribute(d, k, default = nil) (@attrs[d] || {}).fetch(k, default) end
     def set_attribute(d, k, v) (@attrs[d] ||= {})[k] = v.is_a?(Array) ? v.dup : v; v end
     def attrs_copy; Marshal.load(Marshal.dump(@attrs)); end
@@ -176,6 +183,8 @@ module Sketchup
     attr_accessor :instances_list
     def initialize; super; @entities = Entities.new(self); @instances_list = []; end
     def instances; @instances_list; end
+    def name; 'def'; end
+    def bounds; b = Geom::BoundingBox.new; b.add(Geom::Point3d.new(10, 20, 30)); b; end
     def count_instances; @instances_list.size; end
     def group?; true; end
   end
@@ -232,6 +241,9 @@ module Sketchup
     end
   end
 
+  class ComponentInstance < Group; end
+  class ArcCurve < Entity; end
+
   class Layers
     def initialize; @h = {}; end
     def [](n) @h[n] end
@@ -261,6 +273,14 @@ module Sketchup
       @depth = 0
     end
     def active_entities; @entities; end
+    def definitions; self; end
+    def load(_path)
+      d = ComponentDefinition.new
+      g = d.entities.add_group
+      g.entities.add_face(Geom::Point3d.new(0, 0, 0), Geom::Point3d.new(1, 0, 0), Geom::Point3d.new(1, 1, 0))
+      g.entities.add_group
+      d
+    end
     def guid; "guid-#{object_id}"; end
     def edit_transform; Geom::Transformation.new; end
     def start_operation(name, *_a)
@@ -291,6 +311,7 @@ module Sketchup
   def self.reset_model!; @model = Model.new; end
   def self.status_text=(s) $mock_log << [:status, s] end
   def self.vcb_label=(s) end
+  def self.version; 'mock'; end
   def self.vcb_value=(s) end
   def self.add_observer(_o) true end
   def self.register_extension(*_a) true end
@@ -312,6 +333,7 @@ module UI
   def self.savepanel(*_a) $mock_save_path end
   def self.openpanel(*_a) $mock_open_path end
   def self.inputbox(*_a) $mock_input end
+  def self.select_directory(*_a) $mock_dir end
   class Menu
     def add_submenu(_n) Menu.new end
     def add_item(*_a) 1 end

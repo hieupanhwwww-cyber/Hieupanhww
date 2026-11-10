@@ -3,7 +3,7 @@ require 'json'
 
 module HungLoan
   module TuModule
-    VERSION = '1.0.0'.freeze unless const_defined?(:VERSION)
+    VERSION = '1.0.1'.freeze unless const_defined?(:VERSION)
     DIR = File.dirname(__FILE__).freeze
   end
 end
@@ -12,7 +12,7 @@ end
   require File.join(HungLoan::TuModule::DIR, 'core', f)
 end
 %w[units prefs store render manager actions observers tools/pick tools/place_tool tools/divider_tool
-   tools/drawer_tool tools/feature_tools export dialogs props testcases commands].each do |f|
+   tools/drawer_tool tools/feature_tools export dialogs props testcases survey commands].each do |f|
   require File.join(HungLoan::TuModule::DIR, 'su', f)
 end
 

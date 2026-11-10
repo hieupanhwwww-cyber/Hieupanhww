@@ -1,0 +1,3867 @@
+[
+ {
+  "file": "0. Két Ngăn Kéo.skp",
+  "model_name": "1Q - Két Ngăn Kéo",
+  "parts": [
+   "Đình Két",
+   "Hồi Két Trái",
+   "Hồi Két Phải",
+   "Cột Phải két",
+   "Cột Trái Két",
+   "Xà két 1",
+   "QNl",
+   "Xà két 2",
+   "Xà NK",
+   "Xà nk 2",
+   "yiX",
+   "lkR"
+  ],
+  "large_mm": [
+   433.0,
+   450.0,
+   483.0,
+   500.0,
+   533.0,
+   1587.5
+  ],
+  "thin_mm": [
+   6.0,
+   8.0,
+   11.0,
+   17.0,
+   19.0,
+   31.0,
+   32.0,
+   37.0
+  ],
+  "thumb": "thumbs/000_0_Kt_Ngn_Ko.png"
+ },
+ {
+  "file": "0. Ngăn Kéo.skp",
+  "model_name": "1P - Ngăn Kéo",
+  "parts": [
+   "y;3aX",
+   "Thành Trước",
+   "Comp_Drawer_Front#1",
+   "Thành Trái NK",
+   "Thành Phải NK",
+   "Tấm Đáy NK",
+   "Thành Sau NK",
+   "Hộc kéo - Ray",
+   "Single_Drawer#1",
+   "Hidden#1",
+   "Ngăn Kéo",
+   "Copy_Drawer#1",
+   "yiX",
+   "lkR"
+  ],
+  "large_mm": [
+   450.0,
+   600.0,
+   664.5,
+   736.0,
+   993.0,
+   1450.0
+  ],
+  "thin_mm": [
+   7.0,
+   13.0,
+   17.0,
+   18.0
+  ],
+  "thumb": "thumbs/001_0_Ngn_Ko.png"
+ },
+ {
+  "file": "0. Thùng ngăn kéo cơ bản.skp",
+  "model_name": "05A - Thùng ngăn kéo cơ bản#1",
+  "parts": [
+   "Thành Trước",
+   "Comp_Drawer_Front#4",
+   "Thành Trái NK",
+   "Thành Phải NK",
+   "Tấm Đáy NK",
+   "Thành Sau NK",
+   "Single_Drawer#4",
+   "Hidden#1",
+   "Ngăn Kéo",
+   "Copy_Drawer#4",
+   "yiX",
+   "lkR"
+  ],
+  "large_mm": [
+   336.0,
+   350.0,
+   400.0,
+   450.0,
+   600.0,
+   736.0
+  ],
+  "thin_mm": [
+   7.0,
+   17.0,
+   18.0
+  ],
+  "thumb": "thumbs/002_0_Thng_ngn_ko_c_bn.png"
+ },
+ {
+  "file": "001A Khung bao.skp",
+  "model_name": "001A Khung bao#1",
+  "parts": [
+   "yiX",
+   "lkR"
+  ],
+  "large_mm": [
+   350.0,
+   400.0,
+   1000.0,
+   1200.0
+  ],
+  "thin_mm": [],
+  "thumb": "thumbs/003_001A_Khung_bao.png"
+ },
+ {
+  "file": "01F - Mộng xương chó.skp",
+  "model_name": "01F - Mộng xương chó#2",
+  "parts": [
+   "<hfffffɼ",
+   "NaX",
+   "Rz*b",
+   "M A copy 001f",
+   "M B copy 001f",
+   "ABF_ICON Df",
+   "ABF_ICON Cf",
+   "ABF_ICON Af",
+   "ABF_ICON Bf",
+   "ABF_ICON Xf",
+   "yiY",
+   "lkS"
+  ],
+  "large_mm": [
+   225.0,
+   250.0,
+   300.0,
+   425.0,
+   500.0,
+   510.0
+  ],
+  "thin_mm": [
+   3.0,
+   4.0,
+   6.0,
+   8.0,
+   10.0,
+   17.0,
+   30.0,
+   38.1
+  ],
+  "thumb": "thumbs/004_01F_Mng_xng_ch.png"
+ },
+ {
+  "file": "05B - Thùng ngăn kéo có ray.skp",
+  "model_name": "05B - Thùng ngăn kéo có ray#3",
+  "parts": [
+   "Ngăn kéo - Thành trái",
+   "ABF_sf",
+   "Ngăn kéo - Thành trái#4",
+   "Ngăn kéo - Thành phải",
+   "ABF_f",
+   "Ngăn kéo - Thành phải#4",
+   "Ray phaif",
+   "VBL",
+   "Ray traif",
+   "Ngăn kéo - Thành trước",
+   "Ngăn kéo - Tấm đáy",
+   "Ngăn kéo - Thành sau",
+   "Ngan keo don#4",
+   "Viền",
+   "yiX",
+   "lkR"
+  ],
+  "large_mm": [
+   338.0,
+   373.0,
+   383.0,
+   400.0,
+   403.0,
+   406.0
+  ],
+  "thin_mm": [
+   3.0,
+   7.0,
+   13.5,
+   17.0,
+   17.5
+  ],
+  "thumb": "thumbs/005_05B_Thng_ngn_ko_c_ray.png"
+ },
+ {
+  "file": "05E - Bàn uốn cong 1 đầu.skp",
+  "model_name": "05E - Bàn uốn cong 1 đầu",
+  "parts": [
+   "hUV",
+   "GAh",
+   "Đáy",
+   "Đáy C",
+   "Đáy#8",
+   "Mặt",
+   "Mặt C",
+   "Mặt#5",
+   "Hồi trái",
+   "TTTTTT",
+   "Hồi phải",
+   "Hậu",
+   "yiX",
+   "lkR"
+  ],
+  "large_mm": [
+   883.5,
+   1642.5,
+   1680.0,
+   1763.0,
+   1783.0,
+   1800.0
+  ],
+  "thin_mm": [
+   17.0,
+   17.5,
+   20.0
+  ],
+  "thumb": "thumbs/006_05E_Bn_un_cong_1_u.png"
+ },
+ {
+  "file": "05G - Bàn cong 2 đầu.skp",
+  "model_name": "05G - Bàn cong 2 đầu#1",
+  "parts": [
+   "ABF_RANH_UONCONGf",
+   "EX_RANH_UONCONG#3",
+   "ABF_RANH_BAOVE copy 001f",
+   "ABF_RANH_BAOVEf",
+   "EX_RANH_BAOVE#1",
+   "EX_RANH_UONCONG#4",
+   "EX_RANH_BAOVE#2",
+   "EX_Tam#1",
+   "pUV",
+   "Len#3",
+   "Len#4",
+   "lћ_X",
+   "DEL_Lenphu#1",
+   "Duong trai#1",
+   "Canh copy 001f",
+   "Canh copy 002f",
+   "Canh copy 003f",
+   "Canh copy 004f",
+   "Canh copy 005f",
+   "Canh copy 006f",
+   "Canh copy 007f",
+   "Canh copy 008f",
+   "Canh copy 009f",
+   "Canh copy 010f",
+   "Canh copy 011f",
+   "Canh copy 012f",
+   "Canh copy 013f",
+   "Canh copy 014f",
+   "Canh copy 015f",
+   "Canh copy 016f",
+   "09D - Tấm uốn cong M1#3",
+   "Duong phai#2",
+   "Duong trai#2",
+   "Mặt#1",
+   "Duong phai#1",
+   "09D - Tấm uốn cong M1#2",
+   "Mặt",
+   "ZKd",
+   "Duong trai copy 001f",
+   "Duong phai copy 001f"
+  ],
+  "large_mm": [
+   481.0,
+   582.5,
+   599.0,
+   600.0,
+   725.0,
+   1000.0
+  ],
+  "thin_mm": [
+   10.0,
+   17.0,
+   17.5,
+   18.0,
+   20.0
+  ],
+  "thumb": "thumbs/007_05G_Bn_cong_2_u.png"
+ },
+ {
+  "file": "06A - Két tủ quần áo.skp",
+  "model_name": "06A - Két tủ quần áo",
+  "parts": [
+   "Thành Trước",
+   "Comp_Drawer_Front#16",
+   "Comp_Drawer_Front#15",
+   "Thành Trái NK",
+   "Thành Phải NK",
+   "Tấm Đáy NK",
+   "Thành Sau NK",
+   "Single_Drawer#16",
+   "Single_Drawer#15",
+   "Ngăn Kéo",
+   "Copy_Drawer#15",
+   "Hidden#4",
+   "Copy_Drawer#16",
+   "Copy_Drawers copy 001f",
+   "05A - Thùng ngăn kéo cơ bả",
+   "Đình Két",
+   "Hồi Két Trái",
+   "Hồi Két Phải",
+   "Cột Phải két",
+   "Cột Trái Két",
+   "Xà két 1",
+   "QNl",
+   "Xà két 2",
+   "Xà NK",
+   "Xà nk 2",
+   "yiX",
+   "lkR",
+   "ǩ{iF"
+  ],
+  "large_mm": [
+   608.0,
+   643.0,
+   670.0,
+   735.0,
+   736.0,
+   2540.0
+  ],
+  "thin_mm": [
+   6.0,
+   8.0,
+   11.0,
+   15.0,
+   17.0,
+   17.5,
+   18.0,
+   19.0,
+   31.0,
+   32.0,
+   37.0
+  ],
+  "thumb": "thumbs/008_06A_Kt_t_qun_o.png"
+ },
+ {
+  "file": "06B - Ô rượu chéo.skp",
+  "model_name": "06B - Ô rượu chéo",
+  "parts": [
+   "VachX01f",
+   "Vienf",
+   "VachXZf",
+   "VachX02f",
+   "VachZ0f",
+   "VachX01 copy 001f",
+   "VachXZ copy 001f",
+   "VachXZ copy 002f",
+   "VachXZ copy 003f",
+   "VachX02 copy 001f",
+   "VachZ0 copy 001f",
+   "VachZ0 copy 002f",
+   "VachZ0 copy 003f",
+   "yiX",
+   "lkR"
+  ],
+  "large_mm": [
+   300.0,
+   500.0,
+   600.0,
+   640.0
+  ],
+  "thin_mm": [
+   17.0
+  ],
+  "thumb": "thumbs/009_06B_ru_cho.png"
+ },
+ {
+  "file": "06F - Tủ quần áo cánh lùa.skp",
+  "model_name": "06F - Tủ quần áo cánh lùa",
+  "parts": [
+   "Dãy 2",
+   "Dãy 1",
+   "04A - Ray cửa lù",
+   "04A - Ray cửa lùa#1",
+   "Chân Sau",
+   "Đáy",
+   "Chân trước",
+   "Hậu",
+   "c'vb'v",
+   "Hồi Trái",
+   "Hồi Phải",
+   "Đình",
+   "Chân phải",
+   "Chân trái",
+   "Chân giữa",
+   "Nẹp che cánh dọc",
+   "Nẹp che cánh dọc copy 001",
+   "Cánh copy 001",
+   "Thanh che ray trên",
+   "yiX",
+   "lkR"
+  ],
+  "large_mm": [
+   1483.0,
+   1500.0,
+   1865.0,
+   1966.0,
+   1983.0,
+   2000.0
+  ],
+  "thin_mm": [
+   7.0,
+   9.0,
+   10.0,
+   17.0,
+   17.5,
+   18.5,
+   34.0,
+   37.0
+  ],
+  "thumb": "thumbs/010_06F_T_qun_o_cnh_la.png"
+ },
+ {
+  "file": "06G - Bàn uốn cong 1 đầu.skp",
+  "model_name": "06G - Bàn uốn cong 1 đầu",
+  "parts": [
+   "hUV",
+   "gUV",
+   "GAh",
+   "Hồi trái",
+   "TTTTTT",
+   "Hồi phải",
+   "Hậu",
+   "Đáy",
+   "Đáy C",
+   "Mặt",
+   "Mặt C",
+   "yiX",
+   "lkR"
+  ],
+  "large_mm": [
+   431.0,
+   450.0,
+   883.5,
+   1680.0,
+   1783.0,
+   1800.0
+  ],
+  "thin_mm": [
+   17.5,
+   20.0
+  ],
+  "thumb": "thumbs/011_06G_Bn_un_cong_1_u.png"
+ },
+ {
+  "file": "06G - Tủ khấu cột.skp",
+  "model_name": "06G - Tủ khấu cột#1",
+  "parts": [
+   "Đáy#4",
+   "Nóc#1",
+   "Chân Sau",
+   "Chân trước",
+   "Hậu",
+   "Hồi Trái",
+   "Hồi Phải",
+   "Chân phải",
+   "Chân trái",
+   "Chân giữa",
+   "Cột X",
+   "Cột Y",
+   "yiX",
+   "lkR"
+  ],
+  "large_mm": [
+   1466.0,
+   1483.0,
+   1500.0,
+   1920.0,
+   1983.0,
+   2000.0
+  ],
+  "thin_mm": [
+   7.0,
+   17.0,
+   17.5,
+   18.5,
+   36.0
+  ],
+  "thumb": "thumbs/012_06G_T_khu_ct.png"
+ },
+ {
+  "file": "06H - Táp đầu giường.skp",
+  "model_name": "06H - Táp đầu giường#2",
+  "parts": [
+   "Thành Trước",
+   "Comp_Drawer_Front#4",
+   "lBl",
+   "D=cX",
+   "Comp_Drawer_Front#5",
+   "Mặt Ngăn Kéo",
+   "Cabinet_Door_Flat#3",
+   "Thành Trái NK",
+   "Thành Phải NK",
+   "Tấm Đáy NK",
+   "Thành Sau NK",
+   "Single_Drawer#3",
+   "Cabinet_Door_Flat#4",
+   "Single_Drawer#5",
+   "Ngăn Kéo",
+   "Copy_Drawer#3",
+   "Copy_Doors_Flat#1",
+   "Copy_Doors_Flat#4",
+   "Copy_Drawer#5",
+   "ºz^X",
+   "Hidden#4",
+   "Hidden#5",
+   "Copy_Drawers copy 001f",
+   "05A - Thùng ngăn kéo cơ bản#3",
+   "Nhieu_mat_nk copy 001f",
+   "02F - Mặt ngăn kéo#3",
+   "vienf",
+   "Xaf",
+   "03K - Thanh xà#3",
+   "Chân Sau",
+   "Đáy",
+   "Chân trước",
+   "Hậu",
+   "Hồi Trái",
+   "Hồi Phải",
+   "Đình",
+   "yiX",
+   "lkR"
+  ],
+  "large_mm": [
+   600.0,
+   700.0,
+   736.0,
+   1481.0,
+   1500.0,
+   4851.4
+  ],
+  "thin_mm": [
+   7.0,
+   17.0,
+   17.5,
+   18.0,
+   19.0
+  ],
+  "thumb": "thumbs/013_06H_Tp_u_ging.png"
+ },
+ {
+  "file": "06L - Tủ cầu thang cơ bản.skp",
+  "model_name": "06L - Tủ cầu thang cơ bản",
+  "parts": [
+   "Hậu chéo",
+   "Hậu vuông",
+   "Hậu#4",
+   "Nóc",
+   "OQL",
+   "Phào nóc",
+   "Hồi cao",
+   "Hồi thấp",
+   "m~pL",
+   "Chân sau",
+   "Đáy",
+   "Chân trước",
+   "Phào thấp",
+   "Phào cao",
+   "Hồi giữa",
+   "Hồi giữa copy 001",
+   "yiX",
+   "lkR"
+  ],
+  "large_mm": [
+   1111.5,
+   1382.5,
+   1465.0,
+   1483.0,
+   1500.0,
+   2060.0
+  ],
+  "thin_mm": [
+   7.0,
+   17.0,
+   17.5
+  ],
+  "thumb": "thumbs/014_06L_T_cu_thang_c_bn.png"
+ },
+ {
+  "file": "06M - Bậc cầu thang.skp",
+  "model_name": "06M - Bậc cầu thang#1",
+  "parts": [
+   "Thành Trước",
+   "Comp_Drawer_Front#7",
+   "Comp_Drawer_Front#12",
+   "Comp_Drawer_Front#11",
+   "Comp_Drawer_Front#5",
+   "Thành Trái NK",
+   "Thành Phải NK",
+   "Tấm Đáy NK",
+   "Thành Sau NK",
+   "Single_Drawer#5",
+   "Single_Drawer#7",
+   "Single_Drawer#12",
+   "Single_Drawer#11",
+   "ayQ",
+   "Ngăn Kéo",
+   "Copy_Drawer#11",
+   "Copy_Drawer#7",
+   "ћɁH",
+   "Copy_Drawer#12",
+   "Hidden#4",
+   "Copy_Drawer#5",
+   "Mặt bậc#3",
+   "Phoi vai copy 001f",
+   "Phoi vai copy 002f",
+   "ffffff",
+   "Phoi vai copy 003f",
+   "Vai trai#3",
+   "Mặt bậc#4",
+   "05A - Thùng ngăn kéo cơ bản#3",
+   "&hŋT",
+   "05A - Thùng ngăn kéo cơ bản#4",
+   "05A - Thùng ngăn kéo cơ bản#5",
+   "Vai trai#1",
+   "05A - Thùng ngăn kéo cơ bản#10",
+   "Mặt bậc#6",
+   "Mặt bậc#5",
+   "Vai trai copy 001f",
+   "Mặt bậc copy 001",
+   "Mặt bậc copy 002",
+   "NKeo copy 001f"
+  ],
+  "large_mm": [
+   1263.0,
+   1280.0,
+   1370.0,
+   1390.0,
+   1450.0,
+   1467.0
+  ],
+  "thin_mm": [
+   7.0,
+   8.0,
+   8.5,
+   10.0,
+   13.5,
+   15.0,
+   17.0,
+   17.5,
+   18.0,
+   20.0
+  ],
+  "thumb": "thumbs/015_06M_Bc_cu_thang.png"
+ },
+ {
+  "file": "07C - Giường cơ bản.skp",
+  "model_name": "07C - Giường cơ bản",
+  "parts": [
+   "xdX",
+   "ǵzdX",
+   ";$xdX",
+   "#xdX",
+   "n}|dX",
+   "AQ9ɉK",
+   "Thang#9",
+   "Thang#8",
+   "$xdX",
+   "nQgL",
+   "2A copy 001f",
+   "2A copy 002f",
+   "Thang giữa#2",
+   "lh@>t",
+   "Thang copy 001f",
+   "Chân trong",
+   "Chân ngoài",
+   "Vai ngoài",
+   "Vai trongf",
+   "Dát",
+   "Dát copy 001",
+   "Thanh ốp ngang",
+   "Thanh ốp dọc",
+   "Đầu cao",
+   "Đỡ dát ngang",
+   "Đỡ dát ngang copy 001",
+   "Đỡ dát dọc",
+   "w/?DL",
+   "Đỡ dát dọc copy 001",
+   "yiX",
+   "lkR"
+  ],
+  "large_mm": [
+   2008.0,
+   2010.0,
+   2027.0,
+   2044.0,
+   2061.0,
+   2078.0
+  ],
+  "thin_mm": [
+   17.0,
+   17.5,
+   18.5,
+   19.0,
+   34.0,
+   36.0
+  ],
+  "thumb": "thumbs/016_07C_Ging_c_bn.png"
+ },
+ {
+  "file": "07D - Giường 2 ngăn kéo.skp",
+  "model_name": "07D - Giường 2 ngăn kéo",
+  "parts": [
+   "lBl",
+   "Thành Trước",
+   "Comp_Drawer_Front#1",
+   "Comp_Drawer_Front#3",
+   "Thành Trái NK",
+   "Thành Phải NK",
+   "Tấm Đáy NK",
+   "Thành Sau NK",
+   "Single_Drawer#3",
+   "Single_Drawer#1",
+   "Mặt Ngăn Kéo",
+   "YUUUUUǼ",
+   "Cabinet_Door_Flat#5",
+   "Cabinet_Door_Flat#4",
+   "Ngăn Kéo",
+   "Copy_Drawer#1",
+   "Copy_Drawer#3",
+   "Copy_Doors_Flat#4",
+   "Hidden#3",
+   "xdX",
+   "ǵzdX",
+   ";$xdX",
+   "#xdX",
+   "Copy_Doors_Flat#5",
+   "ҷ}dX",
+   "Hidden#5",
+   "AQ9ɉK",
+   "1P - Ngăn Kéo#3",
+   "ݨ~dX",
+   "1J - Nhiều mặt NK#4",
+   "Thang#17",
+   "nQgL",
+   "2A copy 001f",
+   "2A copy 002f",
+   "Thang giữa#7",
+   "lh@>t",
+   "Vai ngoài - NK#2",
+   "1P - Ngăn Kéo#4",
+   "Thang#18",
+   "1J - Nhiều mặt NK#5"
+  ],
+  "large_mm": [
+   2008.0,
+   2010.0,
+   2027.0,
+   2044.0,
+   2061.0,
+   2078.0
+  ],
+  "thin_mm": [
+   15.0,
+   17.0,
+   17.5,
+   18.0,
+   18.5,
+   19.0,
+   34.0,
+   36.0
+  ],
+  "thumb": "thumbs/017_07D_Ging_2_ngn_ko.png"
+ },
+ {
+  "file": "08D - Khung tủ bếp trên.skp",
+  "model_name": "08D - Khung tủ bếp trên",
+  "parts": [
+   "Đáy",
+   "Hậu",
+   "Hồi Trái",
+   "Hồi Phải",
+   "Đình",
+   "Xà treo ( gắn lên tủ )",
+   "Xà treo ( gắn lên tường )",
+   "Xà treo  gắn lên tủ  copy 001",
+   "Xà treo  gắn lên tường copy 001",
+   "yiX",
+   "lkR"
+  ],
+  "large_mm": [
+   523.0,
+   603.0,
+   683.0,
+   700.0,
+   809.9,
+   1009.9
+  ],
+  "thin_mm": [
+   7.0,
+   17.0,
+   17.5
+  ],
+  "thumb": "thumbs/018_08D_Khung_t_bp_trn.png"
+ },
+ {
+  "file": "08F - Khung tủ lạnh.skp",
+  "model_name": "08F - Khung tủ lạnh",
+  "parts": [
+   "Hậu C2",
+   "Xà Sau C1",
+   "Xà Trước C1",
+   "Hồi Trái C1",
+   "Hồi Phải C1",
+   "Hồi Trai C2",
+   "Hồi Phải C2",
+   "Đình C2",
+   "i+a'L",
+   "Đáy C2",
+   "Đình C1",
+   "xa ngangf",
+   "Xà sau",
+   "Xà sau copy 001",
+   "yiX",
+   "lkR"
+  ],
+  "large_mm": [
+   1000.0,
+   1766.0,
+   1833.0,
+   1850.0,
+   2583.0,
+   2600.0
+  ],
+  "thin_mm": [
+   7.0,
+   17.0,
+   17.5,
+   19.0
+  ],
+  "thumb": "thumbs/019_08F_Khung_t_lnh.png"
+ },
+ {
+  "file": "09C - Vách nan.skp",
+  "model_name": "09C - Vách nan",
+  "parts": [
+   "Tấm nền",
+   "Nanf",
+   "Tấm xẻ lấy nan",
+   "Nan copy 001f",
+   "Nan copy 002f",
+   "Nan copy 003f",
+   "Nan copy 004f",
+   "vDL",
+   "Nan copy 005f",
+   "Nan copy 006f",
+   "Nan copy 007f",
+   "Nan copy 008f",
+   "Nan copy 009f",
+   "Nan copy 010f",
+   "Nan copy 011f",
+   "Nan copy 012f",
+   "Nan copy 013f",
+   "Nan copy 014f",
+   "Nan copy 015f",
+   "Nan copy 016f",
+   "Nan copy 017f",
+   "Nan copy 018f",
+   "Nan copy 019f",
+   "Nan copy 020f",
+   "Nan copy 021f",
+   "Nan copy 022f",
+   "Nan copy 023f",
+   "Nan copy 024f",
+   "yiX",
+   "lkR",
+   "ߚ{iF"
+  ],
+  "large_mm": [
+   1277.5,
+   1460.0,
+   1500.0,
+   1524.0,
+   2000.0,
+   2220.0
+  ],
+  "thin_mm": [
+   17.5,
+   20.0
+  ],
+  "thumb": "thumbs/020_09C_Vch_nan.png"
+ },
+ {
+  "file": "09D - Tấm uốn cong M1.skp",
+  "model_name": "09D - Tấm uốn cong M1#1",
+  "parts": [
+   "EX_Tam#1",
+   "ABF_RANH_UONCONGf",
+   "EX_RANH_UONCONG#2",
+   "DEL_Lenphu#1",
+   "Jzh",
+   "vzh",
+   "Cong#8",
+   "lћ_X",
+   "Cong#5",
+   "Cong#1",
+   "ABF_BAOVEf",
+   "Len#2",
+   "Cong#2",
+   "Cong#4",
+   "Cong#7",
+   "Cong#3",
+   "Cong#6",
+   "Cong#9",
+   "Canh copy 001f",
+   "Canh copy 002f",
+   "Canh copy 003f",
+   "Canh copy 004f",
+   "Canh copy 005f",
+   "IAd",
+   "Canh copy 006f",
+   "Canh copy 007f",
+   "Canh copy 008f",
+   "Canh copy 009f",
+   "Canh copy 010f",
+   "Canh copy 011f",
+   "Canh copy 012f",
+   "Canh copy 013f",
+   "yiX",
+   "lkR"
+  ],
+  "large_mm": [
+   200.0,
+   250.0,
+   599.0,
+   2743.2
+  ],
+  "thin_mm": [
+   17.0,
+   18.0
+  ],
+  "thumb": "thumbs/021_09D_Tm_un_cong_M1.png"
+ },
+ {
+  "file": "1. KHUNG TỦ.skp",
+  "model_name": "6A - KHUNG TỦ#1",
+  "parts": [
+   "Chân Sau",
+   "Đáy",
+   "Chân trước",
+   "Hậu",
+   "Hồi Trái",
+   "Hồi Phải",
+   "Đình",
+   "yiY",
+   "lkS"
+  ],
+  "large_mm": [
+   573.0,
+   580.0,
+   583.0,
+   600.0,
+   1183.0,
+   1200.0
+  ],
+  "thin_mm": [
+   7.0,
+   17.0
+  ],
+  "thumb": "thumbs/022_1_KHUNG_T.png"
+ },
+ {
+  "file": "1. TỦ TRÊN.skp",
+  "model_name": "5C - TỦ TRÊN#1",
+  "parts": [
+   "MEdX",
+   "Đáy",
+   "Thanh cột",
+   "Hồi Phải",
+   "Đỉnh",
+   "yiY",
+   "lkS"
+  ],
+  "large_mm": [
+   665.0,
+   683.0,
+   700.0,
+   988.0,
+   1005.0,
+   1465.0
+  ],
+  "thin_mm": [
+   17.0,
+   17.5
+  ],
+  "thumb": "thumbs/023_1_T_TRN.png"
+ },
+ {
+  "file": "1.1 TỦ QUÁ KHỔ (XÀ DƯỚI).skp",
+  "model_name": "6B - TỦ QUÁ KHỔ (XÀ DƯỚI)",
+  "parts": [
+   "Hậu C2",
+   "Hậu C1",
+   "Đáy C1",
+   "Chân Trước",
+   "Xà Sau C1",
+   "Chân Sau",
+   "Xà Trước C1",
+   "Hồi Trái C1",
+   "Hồi Phải C1",
+   "Hồi Trai C2",
+   "Hồi Phải C2",
+   "Đình C2",
+   "i+a'L",
+   "Đáy C2",
+   "Đình C1",
+   "yiY",
+   "lkS"
+  ],
+  "large_mm": [
+   593.0,
+   600.0,
+   850.0,
+   900.0,
+   1183.0,
+   1200.0
+  ],
+  "thin_mm": [
+   7.0,
+   17.0
+  ],
+  "thumb": "thumbs/024_1_1_T_QU_KH_X_DI.png"
+ },
+ {
+  "file": "1.2 TỦ QUÁ KHỔ (XÀ TRÊN).skp",
+  "model_name": "6C - TỦ QUÁ KHỔ (XÀ TRÊN)",
+  "parts": [
+   "Hậu C2",
+   "Hậu C1",
+   "Đáy C1",
+   "Chân Trước",
+   "Xà Sau C1",
+   "Chân Sau",
+   "Xà Trước C1",
+   "Hồi Trái C1",
+   "Hồi Phải C1",
+   "Hồi Trai C2",
+   "Hồi Phải C2",
+   "Đình C2",
+   "i+a'L",
+   "Đáy C2",
+   "Đình C1",
+   "xa ngangf",
+   "yiY",
+   "lkS"
+  ],
+  "large_mm": [
+   833.0,
+   850.0,
+   1183.0,
+   1200.0,
+   1766.0,
+   4428.8
+  ],
+  "thin_mm": [
+   7.0,
+   17.0
+  ],
+  "thumb": "thumbs/025_1_2_T_QU_KH_X_TRN.png"
+ },
+ {
+  "file": "1.CucTuTren.skp",
+  "model_name": "06- Cục Tủ Trên",
+  "parts": [
+   "Hồi Phải 2",
+   "Hồi Trái 2",
+   "Đình 2",
+   "Đáy 2",
+   "Hậu Cục Trên",
+   "yiX",
+   "lkR"
+  ],
+  "large_mm": [
+   573.0,
+   580.0,
+   583.0,
+   600.0,
+   1183.0,
+   1200.0
+  ],
+  "thin_mm": [
+   7.0
+  ],
+  "thumb": "thumbs/026_1_CucTuTren.png"
+ },
+ {
+  "file": "1.Tu Dinh Lot.skp",
+  "model_name": "04- Tủ Đình Lọt",
+  "parts": [
+   "0Xyv",
+   "VUUUUU",
+   "Đáy 1",
+   "{QbL",
+   "Hồi Trái 1",
+   "Hồi Phải 1",
+   "Đình 1",
+   "Chân Trước",
+   "Hậu",
+   "yiX",
+   "lkR"
+  ],
+  "large_mm": [
+   775.0,
+   841.0,
+   883.0,
+   900.0,
+   1438.0,
+   1584.0
+  ],
+  "thin_mm": [
+   17.0,
+   25.0
+  ],
+  "thumb": "thumbs/027_1_Tu_Dinh_Lot.png"
+ },
+ {
+  "file": "1.Tu Dinh Phu HAU LUA.skp",
+  "model_name": "05- Tủ Đình Phủ#2",
+  "parts": [
+   "0Xyv",
+   "VUUUUU",
+   "Đáy 1",
+   "{QbL",
+   "Hồi Trái 1",
+   "Hồi Phải 1",
+   "Đình 1",
+   "Chân Trước",
+   "Hậu",
+   "yiX",
+   "lkR"
+  ],
+  "large_mm": [
+   775.0,
+   841.0,
+   883.0,
+   900.0,
+   1438.0,
+   1584.0
+  ],
+  "thin_mm": [
+   25.0
+  ],
+  "thumb": "thumbs/028_1_Tu_Dinh_Phu_HAU_LUA.png"
+ },
+ {
+  "file": "111111111111111.skp",
+  "model_name": "1_1_2_ Khung Nóc Lọt#1",
+  "parts": [
+   "Hậu",
+   "HauComp#1",
+   "Nóc",
+   "Hông Phải",
+   "Hông Trái",
+   "Đáy",
+   "Len Chân Trước",
+   "Len Nóc Trước",
+   "yiX",
+   "lkR"
+  ],
+  "large_mm": [
+   1206.7,
+   1412.3,
+   1621.0,
+   1920.0,
+   1983.0,
+   2000.0
+  ],
+  "thin_mm": [
+   9.0,
+   17.0
+  ],
+  "thumb": "thumbs/029_111111111111111.png"
+ },
+ {
+  "file": "1A - Tấm Hồi.skp",
+  "model_name": "1A- TẤM HỒI",
+  "parts": [
+   "Viền",
+   "Hồi-",
+   "yiX",
+   "lkR"
+  ],
+  "large_mm": [
+   200.0,
+   330.0,
+   500.0
+  ],
+  "thin_mm": [
+   17.0
+  ],
+  "thumb": "thumbs/030_1A_Tm_Hi.png"
+ },
+ {
+  "file": "1B - Tấm Đợt.skp",
+  "model_name": "1B - TẤM ĐỢT",
+  "parts": [
+   "Đợt",
+   "vaCMC",
+   "Viền",
+   "yiX",
+   "lkR"
+  ],
+  "large_mm": [
+   200.0,
+   330.0,
+   500.0
+  ],
+  "thin_mm": [
+   17.0
+  ],
+  "thumb": "thumbs/031_1B_Tm_t.png"
+ },
+ {
+  "file": "1B1- THANH XÀ.skp",
+  "model_name": "3G - THANH XÀ",
+  "parts": [
+   "ºz^X",
+   "vienf",
+   "Xaf",
+   "yiY",
+   "lkS"
+  ],
+  "large_mm": [
+   300.0
+  ],
+  "thin_mm": [
+   17.0
+  ],
+  "thumb": "thumbs/032_1B1_THANH_X.png"
+ },
+ {
+  "file": "1B2 - ĐỢT RÃNH LED x.skp",
+  "model_name": "1B2 - ĐỢT LED",
+  "parts": [
+   "ABF_TayCof",
+   "Vien#1",
+   "0CDcX",
+   "Đợt LED",
+   "yiX",
+   "lkR"
+  ],
+  "large_mm": [
+   218.0,
+   277.0,
+   330.0,
+   550.0
+  ],
+  "thin_mm": [
+   17.5
+  ],
+  "thumb": "thumbs/033_1B2_T_RNH_LED_x.png"
+ },
+ {
+  "file": "1B3 - TẤM ĐA NĂNG.skp",
+  "model_name": "1B3 - TẤM ĐA NĂNG#1",
+  "parts": [
+   "VDuoiPhai",
+   "WNdX",
+   "offfff",
+   "oޥٿ",
+   "CDuoiPhai",
+   "]fffff",
+   "CTrenPhai",
+   "XNdX",
+   "hfffff༮",
+   "VTrenTrai",
+   "*XNdX",
+   "_fffff",
+   "CongTrenTrai",
+   "oXNdX",
+   "ifffff༮",
+   "ifffff",
+   "VTrenPhai",
+   "CDuoiTrai",
+   "tWNdX",
+   "VDuoiTrai",
+   "Tren",
+   "Giua#1",
+   "GocTrenTrai#2",
+   "ЙNdX",
+   "GocDuoiPhai#2",
+   "Duoi",
+   "GocDuoiTrai#2",
+   "GocTrenPhai#2",
+   "TamTongHop_Com#1",
+   "!`NdX",
+   "yiX",
+   "lkR"
+  ],
+  "large_mm": [
+   273.0,
+   289.0,
+   440.0,
+   600.0
+  ],
+  "thin_mm": [
+   10.0,
+   17.0,
+   17.5,
+   18.0
+  ],
+  "thumb": "thumbs/034_1B3_TM_A_NNG.png"
+ },
+ {
+  "file": "1C - CHIA HỒI.skp",
+  "model_name": "1C - CHIA HỒI",
+  "parts": [
+   "z1Db",
+   "?RdX",
+   "Viền",
+   "MA@s",
+   "Group copy 001f",
+   "yiY",
+   "lkS"
+  ],
+  "large_mm": [
+   400.0,
+   502.0,
+   548.7,
+   900.0,
+   2344.0
+  ],
+  "thin_mm": [],
+  "thumb": "thumbs/035_1C_CHIA_HI.png"
+ },
+ {
+  "file": "1C - CHIA ĐỢT.skp",
+  "model_name": "1D - CHIA ĐỢT",
+  "parts": [
+   "Viền",
+   "yiY",
+   "lkS"
+  ],
+  "large_mm": [
+   235.4,
+   299.4,
+   462.0,
+   600.0,
+   913.6
+  ],
+  "thin_mm": [],
+  "thumb": "thumbs/036_1C_CHIA_T.png"
+ },
+ {
+  "file": "1C.  CÁNH PHẢI.skp",
+  "model_name": "2B - CÁNH PHẢI",
+  "parts": [
+   "lBl",
+   "Viền",
+   "Cánh phải-",
+   "yiX",
+   "lkR"
+  ],
+  "large_mm": [
+   326.0,
+   389.0,
+   426.0,
+   710.0,
+   799.0,
+   959.0
+  ],
+  "thin_mm": [],
+  "thumb": "thumbs/037_1C_CNH_PHI.png"
+ },
+ {
+  "file": "1C.  CÁNH TRÁI PHẢI.skp",
+  "model_name": "2D - CÁNH TRÁI PHẢI",
+  "parts": [
+   "lBl",
+   "Viền",
+   "Cánh Trái-",
+   "Cánh Phải-",
+   "yiX",
+   "lkR"
+  ],
+  "large_mm": [
+   426.0,
+   599.0,
+   600.0,
+   710.0,
+   799.0,
+   959.0
+  ],
+  "thin_mm": [],
+  "thumb": "thumbs/038_1C_CNH_TRI_PHI.png"
+ },
+ {
+  "file": "1C.  CÁNH TRÁI.skp",
+  "model_name": "2C - CÁNH TRÁI",
+  "parts": [
+   "lBl",
+   "Viền",
+   "Cánh Trái-",
+   "yiX",
+   "lkR"
+  ],
+  "large_mm": [
+   326.0,
+   389.0,
+   426.0,
+   710.0,
+   799.0,
+   959.0
+  ],
+  "thin_mm": [],
+  "thumb": "thumbs/039_1C_CNH_TRI.png"
+ },
+ {
+  "file": "1C.  Cánh Kính Hèm .skp",
+  "model_name": "2G - CÁNH KÍNH HÈM",
+  "parts": [
+   "Viền#1",
+   "Ԧ,cX",
+   "ABF_CutInSidef",
+   "ABF_PoketOutf",
+   "ABF_BaoInf",
+   "ABF_BanLef",
+   "ABF_BanLeDuoi copy 001f",
+   "CuaHemKinh#2",
+   "Cửa Hèm Kính",
+   "Cánh Kính Hèm",
+   "yiY",
+   "lkS"
+  ],
+  "large_mm": [
+   780.0,
+   931.1,
+   1143.0,
+   1778.0,
+   1928.0,
+   1930.0
+  ],
+  "thin_mm": [
+   17.0
+  ],
+  "thumb": "thumbs/040_1C_Cnh_Knh_Hm.png"
+ },
+ {
+  "file": "1C. MẶT NGĂN KÉO.skp",
+  "model_name": "2E - MẶT NGĂN KÉO",
+  "parts": [
+   "Rotate_Cross_Open_Note#5",
+   "Mặt Ngăn Kéo",
+   "Cabinet_Door_Flat#2",
+   "Cross_Open_Note#2",
+   "Copy_Doors_Flat#2",
+   "Hidden#2",
+   "yiX",
+   "lkR"
+  ],
+  "large_mm": [
+   397.0,
+   400.0,
+   401.0,
+   450.0,
+   600.0,
+   700.0
+  ],
+  "thin_mm": [
+   17.0,
+   18.0
+  ],
+  "thumb": "thumbs/041_1C_MT_NGN_KO.png"
+ },
+ {
+  "file": "1C. Nhiều mặt NK.skp",
+  "model_name": "1J - Nhiều mặt NK",
+  "parts": [
+   "Rotate_Cross_Open_Note#4",
+   "Cross_Open_Note#40",
+   "Mặt Ngăn Kéo",
+   "Cabinet_Door_Flat#62",
+   "Hidden#5",
+   "Copy_Doors_Flat#36",
+   "yiX",
+   "lkR"
+  ],
+  "large_mm": [
+   400.0,
+   401.0,
+   448.0,
+   450.0,
+   600.0,
+   700.0
+  ],
+  "thin_mm": [
+   17.0,
+   18.0
+  ],
+  "thumb": "thumbs/042_1C_Nhiu_mt_NK.png"
+ },
+ {
+  "file": "1K - Cột Trái.skp",
+  "model_name": "1K - Cột Trái#1",
+  "parts": [
+   "Cột Trái",
+   "Cột Phụ",
+   "yiX",
+   "lkR"
+  ],
+  "large_mm": [
+   237.0,
+   456.0
+  ],
+  "thin_mm": [],
+  "thumb": "thumbs/043_1K_Ct_Tri.png"
+ },
+ {
+  "file": "1L - Cột Phải.skp",
+  "model_name": "1L - Cột Phải#1",
+  "parts": [
+   "Cột Trái",
+   "Cột Phụ",
+   "yiX",
+   "lkR"
+  ],
+  "large_mm": [
+   237.0,
+   456.0,
+   500.0
+  ],
+  "thin_mm": [],
+  "thumb": "thumbs/044_1L_Ct_Phi.png"
+ },
+ {
+  "file": "1L1 - Thanh Cột.skp",
+  "model_name": "1L1 - Thanh Cột#1",
+  "parts": [
+   "Thanh cột-",
+   "yiX",
+   "lkR"
+  ],
+  "large_mm": [
+   200.0,
+   500.0
+  ],
+  "thin_mm": [
+   17.0
+  ],
+  "thumb": "thumbs/045_1L1_Thanh_Ct.png"
+ },
+ {
+  "file": "1M - Phào Tủ.skp",
+  "model_name": "1M - Phào Tủ",
+  "parts": [
+   "Phào",
+   "Chân Phào",
+   "yiX",
+   "lkR"
+  ],
+  "large_mm": [
+   279.0,
+   321.0,
+   387.0,
+   774.0
+  ],
+  "thin_mm": [],
+  "thumb": "thumbs/046_1M_Pho_T.png"
+ },
+ {
+  "file": "1N - Nẹp Hồi.skp",
+  "model_name": "1N - Nẹp Hồi",
+  "parts": [
+   "Hồi",
+   "Nẹp 34",
+   "yiX",
+   "lkR",
+   "Έ{iF"
+  ],
+  "large_mm": [
+   200.0,
+   459.0,
+   524.0,
+   582.0,
+   674.0
+  ],
+  "thin_mm": [],
+  "thumb": "thumbs/047_1N_Np_Hi.png"
+ },
+ {
+  "file": "1O -Nẹp Đợt.skp",
+  "model_name": "1O -Nẹp Đợt",
+  "parts": [
+   "Đợt",
+   "Đợt phụ",
+   "yiX",
+   "lkR"
+  ],
+  "large_mm": [
+   223.0,
+   325.0,
+   400.0,
+   952.0
+  ],
+  "thin_mm": [],
+  "thumb": "thumbs/048_1O_Np_t.png"
+ },
+ {
+  "file": "1R - Ray Cửa Lùa (phụ).skp",
+  "model_name": "1R - Ray Cửa Lùa (phụ)",
+  "parts": [
+   "Dãy 2",
+   "Dãy 1",
+   "yiX",
+   "lkR"
+  ],
+  "large_mm": [
+   400.0
+  ],
+  "thin_mm": [
+   9.0,
+   10.0
+  ],
+  "thumb": "thumbs/049_1R_Ray_Ca_La_ph.png"
+ },
+ {
+  "file": "1R1- Hố Tay móc âm.skp",
+  "model_name": "1R1- Hố Tay móc âm#3",
+  "parts": [
+   "Thanh Phụ",
+   "yiX",
+   "lkR"
+  ],
+  "large_mm": [],
+  "thin_mm": [
+   6.0,
+   35.0
+  ],
+  "thumb": "thumbs/050_1R1_H_Tay_mc_m.png"
+ },
+ {
+  "file": "1U - Ô Rượu.skp",
+  "model_name": "1U - Ô Rượu",
+  "parts": [
+   "VachX01f",
+   "Vienf",
+   "VachXZf",
+   "VachX02f",
+   "VachZ0f",
+   "VachX01 copy 001f",
+   "VachXZ copy 001f",
+   "VachXZ copy 002f",
+   "VachXZ copy 003f",
+   "VachX02 copy 001f",
+   "VachZ0 copy 001f",
+   "VachZ0 copy 002f",
+   "VachZ0 copy 003f",
+   "yiX",
+   "lkR"
+  ],
+  "large_mm": [
+   300.0,
+   500.0,
+   600.0,
+   640.0
+  ],
+  "thin_mm": [
+   17.0
+  ],
+  "thumb": "thumbs/051_1U_Ru.png"
+ },
+ {
+  "file": "2A - CÁNH LẬT.skp",
+  "model_name": "2A - CÁNH LẬT",
+  "parts": [
+   "Rotate_Rotate_Open_Note#5",
+   "Cánh Lật",
+   "Cabinet_Door_Flat#6",
+   "Rotate_Open_Note#7",
+   "Copy_Door_Flat#7",
+   "Gap#4",
+   "Lifting_Doors_Flat#2",
+   "yiX",
+   "lkR"
+  ],
+  "large_mm": [
+   401.0,
+   568.0,
+   570.0,
+   596.0,
+   598.0,
+   692.0
+  ],
+  "thin_mm": [
+   17.0,
+   18.0
+  ],
+  "thumb": "thumbs/052_2A_CNH_LT.png"
+ },
+ {
+  "file": "2E2 Cánh Soi Khung.skp",
+  "model_name": "2D1 - CÁNH SOI KHUNG",
+  "parts": [
+   "ABF_PoketOutf",
+   "CuaHemKinh#3",
+   "Viền#1",
+   "Ԧ,cX",
+   "Cửa Hèm Kính",
+   "Cánh Soi Khung",
+   "yiX",
+   "lkR"
+  ],
+  "large_mm": [
+   698.0,
+   699.0,
+   700.0,
+   780.0,
+   931.1,
+   1143.0
+  ],
+  "thin_mm": [
+   17.0
+  ],
+  "thumb": "thumbs/053_2E2_Cnh_Soi_Khung.png"
+ },
+ {
+  "file": "2F1 - CÁNH LÙA 2.skp",
+  "model_name": "2F1 - CÁNH LÙA 2",
+  "parts": [
+   "ABF_TayCof",
+   "AKdX",
+   "Vien#3",
+   "Cánh Lùa T",
+   "Canhlua#5",
+   "Cánh Lùa P",
+   "Canhlua#6",
+   "yiX",
+   "lkR"
+  ],
+  "large_mm": [
+   1155.0,
+   1200.0,
+   1515.0,
+   2085.0,
+   2100.0,
+   3030.0
+  ],
+  "thin_mm": [
+   11.6,
+   17.0,
+   17.5
+  ],
+  "thumb": "thumbs/054_2F1_CNH_LA_2.png"
+ },
+ {
+  "file": "2F1 - CÁNH LÙA 3.skp",
+  "model_name": "2F1 - CÁNH LÙA 3",
+  "parts": [
+   "CuaPhai#1",
+   "CuaGiua#1",
+   "CuaT#1",
+   "SFdX",
+   "ABF_TayCof",
+   "TFdX",
+   "Vien#3",
+   "Cánh Lùa P",
+   "Canhlua#8",
+   "AcX",
+   "Cánh Lùa G",
+   "Canhlua#4",
+   "Cánh Lùa T",
+   "Canhlua#3",
+   "yiX",
+   "lkR"
+  ],
+  "large_mm": [
+   974.0,
+   1155.0,
+   1515.0,
+   2085.0,
+   2100.0,
+   3030.0
+  ],
+  "thin_mm": [
+   7.5,
+   11.6,
+   17.0,
+   17.5
+  ],
+  "thumb": "thumbs/055_2F1_CNH_LA_3.png"
+ },
+ {
+  "file": "3. TB DƯỚI (NỐI).skp",
+  "model_name": "5A1 - T.B Dưới (nối cục)",
+  "parts": [
+   "ToS",
+   "TEdX",
+   "BeS",
+   "#TEdX",
+   "ToT",
+   "Ψc$F",
+   "BeT",
+   "UEdX",
+   "ETEdX",
+   "Rotate_Double_Cutting_Panel#3",
+   "Cột Trước",
+   "CotTruoc#6",
+   "S/cX",
+   "0Xyv",
+   "30Xyv",
+   "Yyv",
+   "Cột Sau",
+   "CotSau#6",
+   "\"S/cX",
+   "L/cX",
+   "VUUUUU",
+   "Hồi Phải",
+   "TamHoi#3",
+   "Chân 2",
+   "Đáy",
+   "Chân 1",
+   "Vzh",
+   "qzh",
+   "ALL",
+   "Xà Nối",
+   "yiX",
+   "lkR"
+  ],
+  "large_mm": [
+   790.0,
+   841.0,
+   983.0,
+   1438.0,
+   1584.0,
+   2183.0
+  ],
+  "thin_mm": [
+   17.0,
+   17.5,
+   18.0
+  ],
+  "thumb": "thumbs/056_3_TB_DI_NI.png"
+ },
+ {
+  "file": "3. TỦ BẾP DƯỚI (THẲNG).skp",
+  "model_name": "5A - TỦ BẾP DƯỚI (THẲNG)",
+  "parts": [
+   "0Xyv",
+   "Rotate_Double_Cutting_Panel#5",
+   "VUUUUU",
+   "Đáy",
+   "{QbL",
+   "Hồi Trái",
+   "Hồi Phải",
+   "Chân Trước",
+   "Hậu",
+   "Chân Sau",
+   "Xà Sau",
+   "yiX",
+   "lkR"
+  ],
+  "large_mm": [
+   841.0,
+   1438.0,
+   1584.0,
+   1646.0,
+   1663.0,
+   1680.0
+  ],
+  "thin_mm": [
+   17.0,
+   18.0,
+   25.0
+  ],
+  "thumb": "thumbs/057_3_T_BP_DI_THNG.png"
+ },
+ {
+  "file": "3. TỦ BẾP TRÊN (HÚTMÙI).skp",
+  "model_name": "5D1 - TỦ BẾP TRÊN (HÚTMÙI)#1",
+  "parts": [
+   "Đỉnh",
+   "Đáy HM",
+   "Hồi Phải",
+   "Hồi Trái",
+   "Hồi HM Trái",
+   "Đáy Trái",
+   "Hồi HM Phải",
+   "Đáy Phải",
+   "yiY",
+   "lkS"
+  ],
+  "large_mm": [
+   1130.0,
+   1147.0,
+   1166.0,
+   1200.0,
+   1813.0,
+   1830.0
+  ],
+  "thin_mm": [
+   17.0
+  ],
+  "thumb": "thumbs/058_3_T_BP_TRN_HTMI.png"
+ },
+ {
+  "file": "3. Tủ Bếp Dưới L.skp",
+  "model_name": "5B - TBếp Dưới Góc L",
+  "parts": [
+   "QEdX",
+   "0Xyv",
+   "30Xyv",
+   "Yyv",
+   "L/cX",
+   "VUUUUU",
+   "Cột Trước",
+   "CotTruoc#3",
+   "Rotate_Double_Cutting_Panel#4",
+   "Cột Sau",
+   "CotSau#3",
+   "Đáy",
+   "Hồi Ngoài",
+   "Chân 1",
+   "Vzh",
+   "Chân 2",
+   "qzh",
+   "Xà Nối",
+   "yiX",
+   "lkR"
+  ],
+  "large_mm": [
+   841.0,
+   1438.0,
+   1584.0,
+   1783.0,
+   1800.0,
+   2183.0
+  ],
+  "thin_mm": [
+   17.0,
+   17.5,
+   18.0
+  ],
+  "thumb": "thumbs/059_3_T_Bp_Di_L.png"
+ },
+ {
+  "file": "3.1Gia giảm bếp dưới.skp",
+  "model_name": "Gia giảm bếp dưới",
+  "parts": [
+   "Gia giảm",
+   "Bạ cánh",
+   "D=ДH",
+   "yiX",
+   "lkR"
+  ],
+  "large_mm": [
+   622.5,
+   672.5,
+   675.0,
+   690.0,
+   818.7,
+   1225.9
+  ],
+  "thin_mm": [
+   17.5
+  ],
+  "thumb": "thumbs/060_3_1Gia_gim_bp_di.png"
+ },
+ {
+  "file": "3.1Gia giảm bếp trên.skp",
+  "model_name": "Gia giảm bếp trên",
+  "parts": [
+   "Gia giảm",
+   "Bạ cánh",
+   "yiX",
+   "lkR"
+  ],
+  "large_mm": [
+   382.5,
+   672.5,
+   675.0,
+   818.7,
+   1225.9
+  ],
+  "thin_mm": [
+   17.5
+  ],
+  "thumb": "thumbs/061_3_1Gia_gim_bp_trn.png"
+ },
+ {
+  "file": "3.CỤC TỦ GÓC.skp",
+  "model_name": "5B1 - CỤC TỦ GÓC",
+  "parts": [
+   "Day#7",
+   "Chân Trước",
+   "Xà Sau",
+   "Chân Sau",
+   "Hồi Trái",
+   "Cột Sau",
+   "Hồi Phải",
+   "Xaf",
+   "yiY",
+   "lkS"
+  ],
+  "large_mm": [
+   530.0,
+   670.0,
+   692.5,
+   693.0,
+   720.0,
+   790.0
+  ],
+  "thin_mm": [
+   17.0,
+   17.5
+  ],
+  "thumb": "thumbs/062_3_CC_T_GC.png"
+ },
+ {
+  "file": "3.CỤC TỦ LẠNH.skp",
+  "model_name": "5E - CỤC TỦ LẠNH#1",
+  "parts": [
+   "Rotate_Rotate_Open_Note#1",
+   "Cánh Lật",
+   "Cabinet_Door_Flat#3",
+   "E/cX",
+   "Rotate_Open_Note#1",
+   "Copy_Door_Flat#1",
+   "F/cX",
+   "Lifting_Doors_Flat#1",
+   "Hồi Phải",
+   "Hồi Trái",
+   "Nóc",
+   "Tấm Hậu",
+   "Xà Tăng Cứng",
+   "Đợt",
+   "yiY",
+   "lkS"
+  ],
+  "large_mm": [
+   983.0,
+   1000.0,
+   1835.0,
+   1843.5,
+   2133.0,
+   2150.0
+  ],
+  "thin_mm": [
+   7.0,
+   17.0,
+   18.0
+  ],
+  "thumb": "thumbs/063_3_CC_T_LNH.png"
+ },
+ {
+  "file": "3.TỦ BẾP TRÊN (HÚTMÙI).skp",
+  "model_name": "5D - TỦ BẾP TRÊN (HÚTMÙI)",
+  "parts": [
+   "DdX",
+   "Hồi Phải",
+   "Đáy Phải",
+   "Hoi_Traif",
+   "ffffff",
+   "Thanh cột-",
+   "Hồi HM Phải",
+   "Đỉnh",
+   "Đáy HM",
+   "yiY",
+   "lkS"
+  ],
+  "large_mm": [
+   727.0,
+   766.0,
+   1166.0,
+   1200.0,
+   1583.0,
+   1600.0
+  ],
+  "thin_mm": [
+   17.0,
+   17.5
+  ],
+  "thumb": "thumbs/064_3_T_BP_TRN_HTMI.png"
+ },
+ {
+  "file": "3.TỦ BẾP TRÊN.skp",
+  "model_name": "5C - TỦ BẾP TRÊN",
+  "parts": [
+   "Chân Sau",
+   "Đáy",
+   "Chân trước",
+   "Hậu",
+   "Hồi Trái",
+   "Hồi Phải",
+   "Đình",
+   "yiY",
+   "lkS"
+  ],
+  "large_mm": [
+   466.0,
+   500.0,
+   703.0,
+   720.0,
+   1483.0,
+   1500.0
+  ],
+  "thin_mm": [
+   7.0,
+   17.0
+  ],
+  "thumb": "thumbs/065_3_T_BP_TRN.png"
+ },
+ {
+  "file": "3444f868c3dce2c0051166d8c211a14b526429bd.skp",
+  "model_name": "5_1_4_ Mặt Hộc",
+  "parts": [
+   "lBl",
+   "Explode#5",
+   "ABF_Xóa3#2",
+   "ABF_Xóa4#2",
+   "Top_combinef",
+   "Bot_combinef",
+   "Right_combinef",
+   "Left_combinef",
+   "CompHemKinhExplode#30",
+   "CompHemKinhExplode#29",
+   "ABF_Xóa2#2",
+   "Explode#7",
+   "CompHemKinhExplode#32",
+   "ABF_Xóa#2",
+   "Explode#3",
+   "Explode#4",
+   "CompHemKinhExplode#31",
+   "Explode#6",
+   "ףp=ڿ",
+   "ABF_Hèm kÍnh Trong",
+   "ABF_Hèm kÍnh Ngoài",
+   "Cánh Kính Phải#3",
+   "ellll,",
+   "Cánh Kính Đôi Phải#3",
+   "Viền Ngoài Xóa#2",
+   "Cánh Kính Trái#3",
+   "ABF_Huynhf",
+   "ABF_vbitf",
+   "ABF_vienTrongf",
+   "ABF_vienNgoaif",
+   "Pano2Phai#8",
+   "Pano2Trai#8",
+   "Cánh Kính Đôi Trái#3",
+   "PWWWWW",
+   "xZD",
+   "PanoMatHoc#8",
+   "PanoPhai#8",
+   "PanoTrai#8",
+   "Cửa - Phải",
+   "Cửa - Trái"
+  ],
+  "large_mm": [
+   1008.8,
+   1072.0,
+   1143.0,
+   1147.0,
+   1148.5,
+   1150.0
+  ],
+  "thin_mm": [
+   17.0,
+   36.5
+  ],
+  "thumb": "thumbs/066_3444f868c3dce2c0051166d8c211a14b526429bd.png"
+ },
+ {
+  "file": "3H - RAY CỬA LÙA (PHỤ).skp",
+  "model_name": "3H - RAY CỬA LÙA (PHỤ)",
+  "parts": [
+   "Dãy 2",
+   "Dãy 1",
+   "yiY",
+   "lkS"
+  ],
+  "large_mm": [
+   400.0
+  ],
+  "thin_mm": [
+   9.0,
+   10.0
+  ],
+  "thumb": "thumbs/067_3H_RAY_CA_LA_PH.png"
+ },
+ {
+  "file": "3L1 - TẤM CẮT NHẢ.skp",
+  "model_name": "3L - TẤM CẮT NHẢ 1#1",
+  "parts": [
+   "DdX",
+   "CCEE#7",
+   "CCEE#1",
+   "CCEE#3",
+   "CCEE#5",
+   "CCEE#6",
+   "CCEE#4",
+   "tam_cong#1",
+   "CCEE#2",
+   "CCEE#8",
+   "CCEE#9",
+   "ABF_Baof",
+   "CCEED copy 001f",
+   "CCEED copy 002f",
+   "CCEED copy 003f",
+   "CCEED copy 004f",
+   "CCEED copy 005f",
+   "CCEED copy 006f",
+   "CCEED copy 007f",
+   "CCEED copy 008f",
+   "CCEED copy 009f",
+   "CCEED copy 010f",
+   "CCEED copy 011f",
+   "CCEED copy 012f",
+   "CCEED copy 013f",
+   "CCEED copy 014f",
+   "CCEED copy 015f",
+   "CCEED copy 016f",
+   "CCEED copy 017f",
+   "CCEED copy 018f",
+   "CCEED copy 019f",
+   "CCEED copy 020f",
+   "CCEED copy 021f",
+   "CCEED copy 022f",
+   "CCEED copy 023f",
+   "CCEED copy 024f",
+   "CCEED copy 025f",
+   "CCEED copy 026f",
+   "CCEED copy 027f",
+   "CCEED copy 028f"
+  ],
+  "large_mm": [
+   600.0,
+   656.0,
+   662.0,
+   686.0,
+   914.0,
+   919.0
+  ],
+  "thin_mm": [
+   6.0,
+   17.0,
+   17.5
+  ],
+  "thumb": "thumbs/068_3L1_TM_CT_NH.png"
+ },
+ {
+  "file": "3L2 - TẤM CẮT NHẢ.skp",
+  "model_name": "3L - TẤM CẮT NHẢ 2C.skp#1",
+  "parts": [
+   "Trapezium_End#88",
+   "uqpM",
+   "Trapezium_Center#88",
+   "Trapezium_Begin#88",
+   "Trapezium#60",
+   "Trapezium#59",
+   "Trapezium#47",
+   "Trapezium#49",
+   "SQdX",
+   "Trapezium#46",
+   "Trapezium#48",
+   "Trapezium#50",
+   "Trapezium#45",
+   "Trapezium#51",
+   "Trapezium#52",
+   "Trapezium#54",
+   "Trapezium#55",
+   "Trapezium#53",
+   "Trapezium#56",
+   "Trapezium#57",
+   "Trapezium#58",
+   "Trapezium#68",
+   "Trapezium#72",
+   "Trapezium#76",
+   "Trapezium#78",
+   "Trapezium#79",
+   "Trapezium#80",
+   "Trapezium#71",
+   "Trapezium#63",
+   "Trapezium#74",
+   "Trapezium#82",
+   "Trapezium#84",
+   "Trapezium#85",
+   "Trapezium#66",
+   "Trapezium#64",
+   "Trapezium#69",
+   "Trapezium#62",
+   "Trapezium#77",
+   "Trapezium#86",
+   "Trapezium#65"
+  ],
+  "large_mm": [
+   1000.0,
+   1183.0,
+   1200.0,
+   1600.0,
+   1727.2,
+   2000.0
+  ],
+  "thin_mm": [
+   17.0,
+   18.0
+  ],
+  "thumb": "thumbs/069_3L2_TM_CT_NH.png"
+ },
+ {
+  "file": "498c88a39d2d626c3719e022e6b3ba1a77296edc.skp",
+  "model_name": "Cửa Trái#1",
+  "parts": [
+   "CZ@x",
+   "Left_combinef",
+   "Bot_combinef",
+   "Right_combinef",
+   "Top_combinef",
+   "CompHemKinhExplode#1",
+   "lBl",
+   "Explode#2",
+   "Explode#1",
+   "CompHemKinhExplode#4",
+   "RTP",
+   "CompHemKinhExplode#3",
+   "CompHemKinhExplode#2",
+   "ABF_Huynhf",
+   "ABF_vbitf",
+   "ABF_vienTrongf",
+   "ABF_vienNgoaif",
+   "PanoMatHoc#1",
+   "ABF_Hèm kÍnh Trong",
+   "ABF_Hèm kÍnh Ngoài",
+   "ABF_Xóa",
+   "Cửa Kính Đôi Phải#1",
+   "PanoPhai#1",
+   "Cửa Kính Trái#1",
+   "efffff",
+   "PanoTrai#1",
+   "gfffff",
+   "YWWWWW",
+   "Cửa Kính Đôi Trái#1",
+   "Pano2Phai#1",
+   "Pano2Trai#1",
+   "Cửa Kính Phải#1",
+   "Cửa - Phải",
+   "Cửa - Trái",
+   "Viền",
+   "Cửa Đôi - Trái",
+   "Cửa Đôi - Phải",
+   "Mặt Hộc",
+   "Cửa - Mở Trên",
+   "yiX"
+  ],
+  "large_mm": [
+   1008.8,
+   1037.0,
+   1112.0,
+   1113.5,
+   1115.0,
+   1143.0
+  ],
+  "thin_mm": [
+   17.0,
+   36.5
+  ],
+  "thumb": "thumbs/070_498c88a39d2d626c3719e022e6b3ba1a77296edc.png"
+ },
+ {
+  "file": "4B - KÉT NGĂN KÉO M1.skp",
+  "model_name": "4B - KÉT NGĂN KÉO M1",
+  "parts": [
+   "Đình Két",
+   "Hồi Két Trái",
+   "Hồi Két Phải",
+   "Cột Phải két",
+   "Cột Trái Két",
+   "Xà két 1",
+   "QNl",
+   "Xà két 2",
+   "Xà NK",
+   "Xà nk 2",
+   "yiY",
+   "lkS"
+  ],
+  "large_mm": [
+   433.0,
+   450.0,
+   483.0,
+   500.0,
+   533.0,
+   1587.5
+  ],
+  "thin_mm": [
+   6.0,
+   8.0,
+   11.0,
+   17.0,
+   31.0,
+   32.0,
+   37.0
+  ],
+  "thumb": "thumbs/071_4B_KT_NGN_KO_M1.png"
+ },
+ {
+  "file": "4C - KÉT NGĂN KÉO M2.skp",
+  "model_name": "4C - KÉT NGĂN KÉO M2",
+  "parts": [
+   "zbX",
+   "Hồi Phải",
+   "Cột Trái",
+   "xxxxxx9",
+   "Hồi Trái",
+   "Cột Phải",
+   "Nóc",
+   "Xà Đáy Trước",
+   "Xà Đáy Sau",
+   "JeT",
+   "Hồi Giữa",
+   "Xà Đón",
+   "yiY",
+   "lkS"
+  ],
+  "large_mm": [
+   450.0,
+   483.0,
+   700.0,
+   750.0,
+   977.0,
+   1100.0
+  ],
+  "thin_mm": [
+   17.0,
+   19.0
+  ],
+  "thumb": "thumbs/072_4C_KT_NGN_KO_M2.png"
+ },
+ {
+  "file": "4D - Ô RƯỢU M1.skp",
+  "model_name": "4D - Ô RƯỢU M1",
+  "parts": [
+   "X/cX",
+   "Z/cX",
+   "VachX01f",
+   "Vienf",
+   "VachXZf",
+   "VachX02f",
+   "VachZ0f",
+   "VachXZ copy 001f",
+   "VachZ0 copy 001f",
+   "VachX01 copy 001f",
+   "^UUݿ",
+   "VachX02 copy 001f",
+   "VachXZ copy 002f",
+   "VachZ0 copy 002f",
+   "yiY",
+   "lkS"
+  ],
+  "large_mm": [
+   275.0,
+   300.0,
+   500.0,
+   550.0,
+   600.0
+  ],
+  "thin_mm": [
+   17.0
+  ],
+  "thumb": "thumbs/073_4D_RU_M1.png"
+ },
+ {
+  "file": "54ccee0d517cf454f8e8395d649cc7ceb6e495b7.skp",
+  "model_name": "Cửa Trái#9",
+  "parts": [
+   "lBl",
+   "Explode#2",
+   "Explode#1",
+   "Top_combinef",
+   "Bot_combinef",
+   "Right_combinef",
+   "Left_combinef",
+   "CompHemKinhExplode#84",
+   "CompHemKinhExplode#81",
+   "CompHemKinhExplode#82",
+   "CompHemKinhExplode#83",
+   "efffff",
+   "gfffff",
+   "YWWWWW",
+   "ABF_Huynhf",
+   "ABF_vbitf",
+   "ABF_vienTrongf",
+   "ABF_vienNgoaif",
+   "PanoPhai#20",
+   "PanoTrai#20",
+   "Pano2Trai#20",
+   "ABF_Hèm kÍnh Trong",
+   "ABF_Hèm kÍnh Ngoài",
+   "ABF_Xóa",
+   "Cửa Kính Trái#21",
+   "Cửa Kính Đôi Trái#21",
+   "Pano2Phai#20",
+   "PanoMatHoc#20",
+   "Cửa Kính Đôi Phải#21",
+   "Cửa Kính Phải#21",
+   "Cửa - Phải",
+   "Cửa - Trái",
+   "Viền",
+   "Cửa Đôi - Trái",
+   "Cửa Đôi - Phải",
+   "Mặt Hộc",
+   "Cửa - Mở Trên",
+   "yiX",
+   "lkR"
+  ],
+  "large_mm": [
+   684.3,
+   780.0,
+   798.5,
+   931.1,
+   1008.8,
+   1143.0
+  ],
+  "thin_mm": [
+   17.0,
+   36.5
+  ],
+  "thumb": "thumbs/074_54ccee0d517cf454f8e8395d649cc7ceb6e495b7.png"
+ },
+ {
+  "file": "7A - ĐẦU GIƯỜNG.skp",
+  "model_name": "7A - ĐẦU GIƯỜNG M1",
+  "parts": [
+   "PLb",
+   "Tấm Đầu Giường",
+   "Nẹp Trái",
+   "Nẹp Trên",
+   "Nẹp Phải",
+   "Nẹp Giữa",
+   "yiY",
+   "lkS"
+  ],
+  "large_mm": [
+   940.0,
+   1051.0,
+   1810.0,
+   1878.0,
+   1880.0,
+   2304.0
+  ],
+  "thin_mm": [
+   17.0
+  ],
+  "thumb": "thumbs/075_7A_U_GING.png"
+ },
+ {
+  "file": "7A1 - ĐẦU GIƯỜNG.skp",
+  "model_name": "7A1 - ĐẦU GIƯỜNG M2",
+  "parts": [
+   "oޥٿ",
+   "&DdX",
+   "Đầu Giường",
+   "Dau#2",
+   "Nẹp Góc",
+   "Nẹp Giữa",
+   "Nẹp Trai",
+   "HЁL",
+   "Nẹp Trên",
+   "Nẹp Phải",
+   "yiY",
+   "lkS"
+  ],
+  "large_mm": [
+   1683.0,
+   1730.0,
+   1783.0,
+   1800.0,
+   1880.0,
+   1883.0
+  ],
+  "thin_mm": [
+   17.0,
+   17.5,
+   38.1
+  ],
+  "thumb": "thumbs/076_7A1_U_GING.png"
+ },
+ {
+  "file": "7A2 - GIÁT GIƯỜNG.skp",
+  "model_name": "7A2 - GIÁT GIƯỜNG",
+  "parts": [
+   "Ҷ1cX",
+   "Viền",
+   "Giát",
+   "Giat copy 001f",
+   "yiY",
+   "lkS"
+  ],
+  "large_mm": [
+   531.0,
+   906.0,
+   918.0,
+   1810.0,
+   2010.0
+  ],
+  "thin_mm": [
+   17.0
+  ],
+  "thumb": "thumbs/077_7A2_GIT_GING.png"
+ },
+ {
+  "file": "7A2 - ĐẦU GIƯỜNG.skp",
+  "model_name": "7A12 - ĐẦU GIƯỜNG M3",
+  "parts": [
+   "BeP",
+   "XEdX",
+   "ToP",
+   "BeT#2",
+   "]YEdX",
+   "@GudI",
+   "dDY",
+   "CongTren",
+   "OYEdX",
+   "ToT#2",
+   "dYEdX",
+   "kYEdX",
+   "LdX",
+   "Hồi Phải",
+   "Viền",
+   "Hồi",
+   "Group copy 001f",
+   "1C - CHIA HỒI#3",
+   "Hồi Trái",
+   "Đợt",
+   "Mặt Trước",
+   "Hậu",
+   "XàĐáy",
+   "Đáy",
+   "yiY",
+   "lkS"
+  ],
+  "large_mm": [
+   1225.0,
+   1845.0,
+   1846.0,
+   1863.0,
+   1880.0,
+   2344.0
+  ],
+  "thin_mm": [
+   17.0,
+   17.5
+  ],
+  "thumb": "thumbs/078_7A2_U_GING.png"
+ },
+ {
+  "file": "7A3 - TAB Mẫu 1.skp",
+  "model_name": "7A3 - TAB Mẫu 1",
+  "parts": [
+   "RdX",
+   "Thành Trước",
+   "Comp_Drawer_Front#11",
+   "Thành Trái NK",
+   "Thành Phải NK",
+   "Tấm Đáy NK",
+   "Thành Sau NK",
+   "Single_Drawer#11",
+   "Rotate_Cross_Open_Note#1",
+   "Mặt Ngăn Kéo",
+   "Cabinet_Door_Flat#62",
+   "Cross_Open_Note#40",
+   "Hidden#11",
+   "Ngăn Kéo",
+   "Copy_Drawer#11",
+   "1P - Ngăn Kéo#2",
+   "Hidden#12",
+   "Copy_Doors_Flat#36",
+   "1J - Nhiều mặt NK",
+   "Chân Sau",
+   "Đáy",
+   "Chân trước",
+   "Hậu",
+   "Hồi Trái",
+   "Hồi Phải",
+   "Đình",
+   "Đợt",
+   "Xaf",
+   "yiY",
+   "lkS"
+  ],
+  "large_mm": [
+   480.0,
+   483.0,
+   500.0,
+   600.0,
+   700.0,
+   736.0
+  ],
+  "thin_mm": [
+   7.0,
+   17.0,
+   18.0,
+   19.0
+  ],
+  "thumb": "thumbs/079_7A3_TAB_Mu_1.png"
+ },
+ {
+  "file": "7A4 - TAB Mẫu 2.skp",
+  "model_name": "7A4 - TAB Mẫu 2",
+  "parts": [
+   "RdX",
+   "Thành Trước",
+   "Comp_Drawer_Front#12",
+   "Thành Trái NK",
+   "Thành Phải NK",
+   "Tấm Đáy NK",
+   "Thành Sau NK",
+   "Single_Drawer#12",
+   "Rotate_Cross_Open_Note#1",
+   "Mặt Ngăn Kéo",
+   "Cabinet_Door_Flat#7",
+   "Cross_Open_Note#4",
+   "Ngăn Kéo",
+   "Copy_Drawer#12",
+   "BeP",
+   "XEdX",
+   "ToP",
+   "BeT#2",
+   "]YEdX",
+   "@GudI",
+   "dDY",
+   "CongTren",
+   "OYEdX",
+   "ToT#2",
+   "dYEdX",
+   "Hidden#11",
+   "Copy_Doors_Flat#1",
+   "1P - Ngăn Kéo#5",
+   "kYEdX",
+   "Hidden#12",
+   "Hồi Trái",
+   "Hồi Phải",
+   "1J - Nhiều mặt NK#3",
+   "Chân Sau",
+   "Đáy",
+   "Chân trước",
+   "Hậu",
+   "Đình",
+   "Đợt",
+   "Xà NK"
+  ],
+  "large_mm": [
+   500.0,
+   556.8,
+   600.0,
+   700.0,
+   736.0,
+   823.5
+  ],
+  "thin_mm": [
+   7.0,
+   17.0,
+   17.5,
+   18.0,
+   19.0
+  ],
+  "thumb": "thumbs/080_7A4_TAB_Mu_2.png"
+ },
+ {
+  "file": "7B - GIƯỜNG KO NK-MỘNG.skp",
+  "model_name": "7B1 - GIƯỜNG VAI MỘNG",
+  "parts": [
+   "VaiTrai#2",
+   "Vai Phải2#3",
+   "jCCu",
+   "eCăE",
+   "*Gkd",
+   "x/qJF",
+   "rid",
+   "RdX",
+   "ވgB",
+   "VaiP#4",
+   "Xà Trái",
+   "Xà Phải",
+   "Xà Sau",
+   "Xà Trước",
+   "XaDonG#4",
+   "Vai_Trai#2",
+   "Đuôi Giường1",
+   "Vai Phải1",
+   "Vai Trái1",
+   "Đuôi Giường2",
+   "yiY",
+   "lkS"
+  ],
+  "large_mm": [
+   1878.0,
+   1992.0,
+   2010.0,
+   2024.0,
+   2038.0,
+   2058.0
+  ],
+  "thin_mm": [
+   3.0,
+   4.0,
+   4.5,
+   5.5,
+   6.0,
+   7.0,
+   8.0,
+   8.5,
+   9.5,
+   11.0,
+   12.5,
+   14.0,
+   17.0,
+   17.5,
+   18.0,
+   34.0
+  ],
+  "thumb": "thumbs/081_7B_GING_KO_NK_MNG.png"
+ },
+ {
+  "file": "7B - GIƯỜNG KO NK.skp",
+  "model_name": "7B - GIƯỜNG KO NK",
+  "parts": [
+   "Xà Trái",
+   "Xà Phải",
+   "Xà Sau",
+   "Xà Trước",
+   "XaDonG",
+   "Đuôi Giường1",
+   "Vai Phải2",
+   "Vai Phải1",
+   "Vai Trái1",
+   "Đuôi Giường2",
+   "Vai Trái2",
+   "yiY",
+   "lkS"
+  ],
+  "large_mm": [
+   1844.0,
+   1861.0,
+   1878.0,
+   1993.0,
+   2010.0,
+   2044.0
+  ],
+  "thin_mm": [
+   17.0,
+   34.0
+  ],
+  "thumb": "thumbs/082_7B_GING_KO_NK.png"
+ },
+ {
+  "file": "7C - GIƯỜNG CÓ NK.skp",
+  "model_name": "7C - GIƯỜNG CÓ NK",
+  "parts": [
+   "vrVM",
+   "Dau#1",
+   "Duoi#1",
+   "Tren#1",
+   "Thang Đầu",
+   "Thang Giữa P",
+   "Thang Đuôi",
+   "Thang Giữa",
+   "VaiP-Trongf",
+   "ThanhGiuongP#1",
+   "VaiP-Ngoài",
+   "VaiPhaiNgoai#1",
+   "Giua#2",
+   "Ốp Đuôi",
+   "Đuôi",
+   "Ốp Đuôi Ngang",
+   "DuoiGiuong#1",
+   "Thang Dọc",
+   "Doc#1",
+   "Duoi#2",
+   "Vai Trái 1",
+   "Vai Trái 2",
+   "VaiTrai#1",
+   "VaiPhai#1",
+   "Tren#2",
+   "Xà Đỡ Giát-Ngang",
+   "Xà Đỡ Giát-Dọc",
+   "KhungDoGiat#1",
+   "yiY",
+   "lkS"
+  ],
+  "large_mm": [
+   2000.0,
+   2010.0,
+   2027.0,
+   2027.5,
+   2044.0,
+   4840.0
+  ],
+  "thin_mm": [
+   17.0,
+   17.5,
+   34.0
+  ],
+  "thumb": "thumbs/083_7C_GING_C_NK.png"
+ },
+ {
+  "file": "8A - Bàn Học M1.skp",
+  "model_name": "8A - Bàn Học M1",
+  "parts": [
+   "_Zs]X",
+   "fs]X",
+   "MZs]X",
+   "vZs]X",
+   "iZs]X",
+   "Hồi Giữa",
+   "Viền",
+   "thành trước",
+   "hậu",
+   "thành phải",
+   "thành trái",
+   "thành sau",
+   "09-Thùng Ngăn Kéo#3",
+   "09-Thùng Ngăn Kéo#5",
+   "NganKeo copy 001f",
+   "Mặt Bàn",
+   "Nẹp Mặt 34 Tr",
+   "Nẹp Mặt 34 S",
+   "Nẹp Mặt 34 T",
+   "Đợt NK",
+   "Hậu 17",
+   "Nẹp Mặt 34 P",
+   "Hồi Phải",
+   "Hồi Trái",
+   "yiY",
+   "lkS"
+  ],
+  "large_mm": [
+   959.0,
+   983.0,
+   1000.0,
+   1094.0,
+   1166.0,
+   1200.0
+  ],
+  "thin_mm": [
+   13.0,
+   17.0,
+   20.0,
+   30.0,
+   33.0
+  ],
+  "thumb": "thumbs/084_8A_Bn_Hc_M1.png"
+ },
+ {
+  "file": "8B - Bàn Học M2.skp",
+  "model_name": "8B - Bàn Học M2",
+  "parts": [
+   "Mặt Bàn",
+   "Nẹp Mặt 34 Tr",
+   "Nẹp Mặt 34 S",
+   "Nẹp Mặt 34 T",
+   "Đợt NK",
+   "Hậu 17",
+   "Nẹp Mặt 34 P",
+   "Hồi Phải",
+   "Hồi Trái",
+   "Hồi Giữa",
+   "đáy",
+   "chân bệ",
+   "hậu",
+   "yiY",
+   "lkS"
+  ],
+  "large_mm": [
+   733.0,
+   750.0,
+   1130.0,
+   1166.0,
+   1183.0,
+   1200.0
+  ],
+  "thin_mm": [
+   7.0,
+   17.0,
+   19.0
+  ],
+  "thumb": "thumbs/085_8B_Bn_Hc_M2.png"
+ },
+ {
+  "file": "8B - Bàn Phấn.skp",
+  "model_name": "8B - Bàn Phấn",
+  "parts": [
+   ".gMdX",
+   "Component_Top_Mirror#1",
+   "cMdX",
+   "4UMdX",
+   "Ốp Trước",
+   "Storage_Box_Face#2",
+   "Mặt Dán Gương",
+   "Top_Mirror_Panel_Directions#2",
+   "bMdX",
+   "Hồi TD Trái",
+   "Storage_Box_Side#2",
+   "Đáy",
+   "Makeup_Bottom_Panel_Directions#2",
+   "Hồi Phải",
+   "Right_Panel_Directions#2",
+   "Hồi Trái",
+   "Left_Panel_Directions#2",
+   "Table_Storage_Box#2",
+   "Mặt Bàn",
+   "Hồi Trong",
+   "Makeup_Side_Cabinet#2",
+   "Hauf",
+   "Makeup_Back_Panel_Full#2",
+   "yiY",
+   "lkS"
+  ],
+  "large_mm": [
+   780.0,
+   780.5,
+   1165.0,
+   1166.0,
+   1200.0,
+   1300.0
+  ],
+  "thin_mm": [
+   5.0,
+   17.0,
+   17.5,
+   18.0,
+   22.0
+  ],
+  "thumb": "thumbs/086_8B_Bn_Phn.png"
+ },
+ {
+  "file": "8C - MẶT BÀN M1.skp",
+  "model_name": "8C - MẶT BÀN M1",
+  "parts": [
+   "liE0",
+   "Gzڷ",
+   "fӫR9",
+   "yiY",
+   "lkS"
+  ],
+  "large_mm": [
+   300.0
+  ],
+  "thin_mm": [
+   17.0
+  ],
+  "thumb": "thumbs/087_8C_MT_BN_M1.png"
+ },
+ {
+  "file": "8D - KỆ GÓC CONG.skp",
+  "model_name": "8D - KỆ GÓC CONG",
+  "parts": [
+   "(udI",
+   "4Mwܟ",
+   "`Mwܟ",
+   "JudI",
+   "'bJJ",
+   "HXM",
+   "dDY",
+   "@HudI",
+   "oޥٿ",
+   "1B1 - TẤM ĐỢTCONG#29",
+   "1B1 - TẤM ĐỢTCONG#7",
+   "1B1 - TẤM ĐỢTCONG#2",
+   "CanhTrai#1",
+   "CanhP#1",
+   "KeCong copy 001f",
+   "KeCong copy 002f",
+   "yiY",
+   "lkS"
+  ],
+  "large_mm": [
+   350.0,
+   367.0,
+   391.5,
+   600.0,
+   633.0,
+   650.0
+  ],
+  "thin_mm": [
+   17.0,
+   17.5
+  ],
+  "thumb": "thumbs/088_8D_K_GC_CONG.png"
+ },
+ {
+  "file": "91A - Chữ Thọ.skp",
+  "model_name": "9E1 - Chữ Thọ",
+  "parts": [
+   "p;zi,",
+   "DDz",
+   "dTv",
+   "ڂtA",
+   "Uaa",
+   "yiY",
+   "lkS"
+  ],
+  "large_mm": [],
+  "thin_mm": [
+   17.5
+  ],
+  "thumb": "thumbs/089_91A_Ch_Th.png"
+ },
+ {
+  "file": "9C - ĐỢT MỘNG 4C.skp",
+  "model_name": "9A1 - ĐỢTMỘNG GÓC CONG",
+  "parts": [
+   "oޥٿ",
+   "-4MdX",
+   "14MdX",
+   "\"MdX",
+   "Sau#2",
+   "NaX",
+   "Tam#2",
+   "M D copy 001f",
+   "M A copy 001f",
+   "ABF_ICON Xf",
+   "Đợt Mộng Cong",
+   "yiY",
+   "lkS"
+  ],
+  "large_mm": [
+   347.0,
+   358.5,
+   420.0,
+   458.5,
+   467.0,
+   500.0
+  ],
+  "thin_mm": [
+   3.0,
+   4.0,
+   4.5,
+   5.5,
+   6.0,
+   7.0,
+   8.5,
+   17.0,
+   17.5,
+   30.0
+  ],
+  "thumb": "thumbs/090_9C_T_MNG_4C.png"
+ },
+ {
+  "file": "9C - ĐỢT MỘNG Full.skp",
+  "model_name": "9A1 - ĐỢT MỘNG GÓC 4C",
+  "parts": [
+   "\"MdX",
+   "Tam#3",
+   "NaX",
+   "Sau#3",
+   "M D copy 001f",
+   "M A copy 001f",
+   "M C copy 001f",
+   "ABF_ICON Xf",
+   "Đợt Mộng",
+   "yiY",
+   "lkS"
+  ],
+  "large_mm": [
+   420.0,
+   440.0,
+   500.0,
+   540.0,
+   548.5,
+   557.0
+  ],
+  "thin_mm": [
+   3.0,
+   4.0,
+   4.5,
+   5.5,
+   6.0,
+   7.0,
+   8.5,
+   17.0,
+   17.5,
+   30.0
+  ],
+  "thumb": "thumbs/091_9C_T_MNG_Full.png"
+ },
+ {
+  "file": "9C1 - ĐỢT MỘNG Full.skp",
+  "model_name": "9A1 - ĐỢT MỘNG GÓC 4C1#2",
+  "parts": [
+   "\"MdX",
+   "Sau#2",
+   "NaX",
+   "Tam#2",
+   "ABF_ICON Xf",
+   "Đợt Mộng",
+   "yiY",
+   "lkS"
+  ],
+  "large_mm": [
+   300.0,
+   330.0,
+   420.0,
+   500.0
+  ],
+  "thin_mm": [
+   3.0,
+   4.0,
+   4.5,
+   5.5,
+   6.0,
+   7.0,
+   8.5,
+   17.0,
+   17.5,
+   30.0
+  ],
+  "thumb": "thumbs/092_9C1_T_MNG_Full.png"
+ },
+ {
+  "file": "9D - DƯỠNG GÓC MÉO.skp",
+  "model_name": "9D - DƯỠNG GÓC MÉO",
+  "parts": [
+   ".l9cX",
+   "q9cX",
+   "al9cX",
+   "yiY",
+   "lkS"
+  ],
+  "large_mm": [
+   1000.0
+  ],
+  "thin_mm": [],
+  "thumb": "thumbs/093_9D_DNG_GC_MO.png"
+ },
+ {
+  "file": "9F1 - Chữ Phúc.skp",
+  "model_name": "9F1 - Chữ Phúc",
+  "parts": [
+   "Tmg",
+   "rjh",
+   "T=Vaޓ1",
+   "T=lId",
+   "4EII",
+   "T=xB",
+   "T=Xy",
+   "T=P*p",
+   "ksg",
+   "T=ܖW",
+   "jOʿf",
+   "Pt&n0Jj",
+   "J'-Hj",
+   "ton",
+   "Owp",
+   "ZmFjK%s",
+   "j#HFt",
+   "9COy",
+   "fhy",
+   "T=L*p",
+   "Xny",
+   "̈SJy{",
+   "adu",
+   "aD?ķ",
+   "uen",
+   "O[>xn",
+   "fjn",
+   "qX5Nn",
+   "T=XE",
+   "UVw",
+   "~H@鵣q",
+   "qnq",
+   "zfq",
+   "MZq",
+   "(nyV",
+   "T CȔg",
+   "Kwm",
+   "T=xd",
+   "tO 횔i",
+   "T=Hnj"
+  ],
+  "large_mm": [
+   550.0,
+   558.8,
+   1016.0,
+   1244.6,
+   1422.4,
+   1524.0
+  ],
+  "thin_mm": [],
+  "thumb": "thumbs/094_9F1_Ch_Phc.png"
+ },
+ {
+  "file": "9G - GHẾ MỘNG.skp",
+  "model_name": "9G - GHẾ GHÉP MỘNG",
+  "parts": [
+   "\"MdX",
+   "MongT#1",
+   "?MdX",
+   "Tam#2",
+   "8@MdX",
+   "P޸HW_",
+   "Sw2C",
+   "vob",
+   "A4bЖ",
+   "hs俫CDE",
+   "YBI",
+   "hWR",
+   "AG]q",
+   "KcH",
+   "FXlr",
+   "@Syi",
+   "z1J@и",
+   "eDop",
+   "»gaSʿE",
+   "ΤhS",
+   "M B copy 001f",
+   "M A copy 001f",
+   "AMdX",
+   "wHhD",
+   "FϿT",
+   "dlI",
+   ">MdX",
+   "6KMdX",
+   "Thành Trái",
+   "Xà Trước",
+   "Mặt Ghế",
+   "Thành Phải",
+   "Xà Sau",
+   "Mặt Đệm",
+   "yiY",
+   "lkS"
+  ],
+  "large_mm": [
+   609.6,
+   660.4,
+   1473.2,
+   1524.0,
+   1828.8,
+   1930.4
+  ],
+  "thin_mm": [
+   3.0,
+   4.0,
+   4.5,
+   5.5,
+   6.0,
+   7.0,
+   8.5,
+   10.0,
+   17.0,
+   17.5,
+   18.0,
+   25.0,
+   30.0
+  ],
+  "thumb": "thumbs/095_9G_GH_MNG.png"
+ },
+ {
+  "file": "CANH DON PANO.skp",
+  "model_name": "Cửa Trái#9",
+  "parts": [
+   "lBl",
+   "Explode#2",
+   "Explode#1",
+   "Top_combinef",
+   "Bot_combinef",
+   "Right_combinef",
+   "Left_combinef",
+   "CompHemKinhExplode#84",
+   "CompHemKinhExplode#81",
+   "CompHemKinhExplode#82",
+   "CompHemKinhExplode#83",
+   "efffff",
+   "gfffff",
+   "YWWWWW",
+   "ABF_Huynhf",
+   "ABF_vbitf",
+   "ABF_vienTrongf",
+   "ABF_vienNgoaif",
+   "PanoPhai#20",
+   "PanoTrai#20",
+   "Pano2Trai#20",
+   "ABF_Hèm kÍnh Trong",
+   "ABF_Hèm kÍnh Ngoài",
+   "ABF_Xóa",
+   "Cửa Kính Trái#21",
+   "Cửa Kính Đôi Trái#21",
+   "Pano2Phai#20",
+   "PanoMatHoc#20",
+   "Cửa Kính Đôi Phải#21",
+   "Cửa Kính Phải#21",
+   "Cửa - Phải",
+   "Cửa - Trái",
+   "Viền",
+   "Cửa Đôi - Trái",
+   "Cửa Đôi - Phải",
+   "Mặt Hộc",
+   "Cửa - Mở Trên",
+   "yiX",
+   "lkR"
+  ],
+  "large_mm": [
+   684.3,
+   780.0,
+   798.5,
+   931.1,
+   1008.8,
+   1143.0
+  ],
+  "thin_mm": [
+   17.0,
+   36.5
+  ],
+  "thumb": "thumbs/096_CANH_DON_PANO.png"
+ },
+ {
+  "file": "Cánh Lật.skp",
+  "model_name": "1F - Cánh Lật",
+  "parts": [
+   "Rotate_Rotate_Open_Note#1",
+   "Cánh Lật",
+   "tzh",
+   "Cabinet_Door_Flat#2",
+   "Rotate_Open_Note#2",
+   "Copy_Door_Flat#2",
+   "Gap#1",
+   "kcpA",
+   "Lifting_Doors_Flat#2",
+   "yiX",
+   "lkR"
+  ],
+  "large_mm": [
+   401.0,
+   568.0,
+   570.0,
+   596.0,
+   598.0,
+   692.0
+  ],
+  "thin_mm": [
+   17.0,
+   18.0
+  ],
+  "thumb": "thumbs/097_Cnh_Lt.png"
+ },
+ {
+  "file": "Cánh lùa.skp",
+  "model_name": "",
+  "parts": [
+   "Del_Scalef",
+   "Del_Grv_TBf",
+   "Del_Grv_TFf",
+   "Del_Grv_BFf",
+   "Cánh lùa",
+   "Del_Grv_BBf",
+   "Del_Arrayf",
+   "yiX",
+   "lkR"
+  ],
+  "large_mm": [
+   696.5,
+   717.5,
+   886.1,
+   966.0,
+   980.0,
+   984.0
+  ],
+  "thin_mm": [
+   8.0,
+   9.0,
+   10.0,
+   12.0,
+   17.0
+  ],
+  "thumb": "thumbs/098_Cnh_la.png"
+ },
+ {
+  "file": "Cột lam.skp",
+  "model_name": "Cột lam",
+  "parts": [
+   "Thanh Lamf",
+   "yiX",
+   "lkR"
+  ],
+  "large_mm": [
+   200.0,
+   406.4,
+   2400.0
+  ],
+  "thin_mm": [],
+  "thumb": "thumbs/099_Ct_lam.png"
+ },
+ {
+  "file": "Ngan Keo CỢ.skp",
+  "model_name": "03-THÙNG NGĂN KÉO CỢ",
+  "parts": [
+   "_Zs]X",
+   "iZs]X",
+   "vZs]X",
+   "MZs]X",
+   "thành trước sau",
+   "hậu",
+   "thành trái phải",
+   "yiX",
+   "lkR"
+  ],
+  "large_mm": [
+   537.0,
+   616.0,
+   682.0,
+   799.0,
+   916.0,
+   1094.0
+  ],
+  "thin_mm": [
+   20.0,
+   33.0
+  ],
+  "thumb": "thumbs/100_Ngan_Keo_C.png"
+ },
+ {
+  "file": "RÃNH LE.skp",
+  "model_name": "RÃNH LED",
+  "parts": [
+   "Viền",
+   "hST",
+   "yiX",
+   "lkR"
+  ],
+  "large_mm": [
+   400.0,
+   500.0
+  ],
+  "thin_mm": [
+   17.0
+  ],
+  "thumb": "thumbs/101_RNH_LE.png"
+ },
+ {
+  "file": "Rãnh cắt nhả (phụ).skp",
+  "model_name": "Rãnh cắt nhả (phụ)",
+  "parts": [
+   "Group copy 001f",
+   "Group copy 002f",
+   "Group copy 003f",
+   "Group copy 004f",
+   "Group copy 005f",
+   "Group copy 006f",
+   "Group copy 007f",
+   "Group copy 008f",
+   "Group copy 009f",
+   "Group copy 010f",
+   "Group copy 011f",
+   "Group copy 012f",
+   "Group copy 013f",
+   "Group copy 014f",
+   "Group copy 015f",
+   "Group copy 016f",
+   "Group copy 017f",
+   "Group copy 018f",
+   "Group copy 019f",
+   "Group copy 020f",
+   "Group copy 021f",
+   "Group copy 022f",
+   "Group copy 023f",
+   "VoL",
+   "Group copy 024f",
+   "Group copy 025f",
+   "Group copy 026f",
+   "Group copy 027f",
+   "Group copy 028f",
+   "Group copy 029f",
+   "Group copy 030f",
+   "Group copy 031f",
+   "Group copy 032f",
+   "Group copy 033f",
+   "Group copy 034f",
+   "Group copy 035f",
+   "Group copy 036f",
+   "8ህEDL",
+   "Group copy 037f",
+   "Group copy 038f"
+  ],
+  "large_mm": [
+   460.0,
+   470.0,
+   480.0,
+   490.0,
+   496.1,
+   675.0
+  ],
+  "thin_mm": [],
+  "thumb": "thumbs/102_Rnh_ct_nh_ph.png"
+ },
+ {
+  "file": "THÙNG NGĂN KÉO LÙA.skp",
+  "model_name": "04-THÙNG NGĂN KÉO LÙA",
+  "parts": [
+   "_Zs]X",
+   "iZs]X",
+   "vZs]X",
+   "MZs]X",
+   "thành trước sau",
+   "hậu",
+   "thành trái phải",
+   "yiX",
+   "lkR"
+  ],
+  "large_mm": [
+   537.0,
+   616.0,
+   682.0,
+   799.0,
+   916.0,
+   1094.0
+  ],
+  "thin_mm": [
+   30.0,
+   33.0
+  ],
+  "thumb": "thumbs/103_THNG_NGN_KO_LA.png"
+ },
+ {
+  "file": "Tạo xà.skp",
+  "model_name": "Tạo xà",
+  "parts": [
+   "Viền",
+   "wxxxxx",
+   "hST",
+   "yiX",
+   "lkR",
+   "ѧ{iF"
+  ],
+  "large_mm": [
+   400.0,
+   472.5,
+   500.0
+  ],
+  "thin_mm": [
+   17.0
+  ],
+  "thumb": "thumbs/104_To_x.png"
+ },
+ {
+  "file": "Tủ Lạnh.skp",
+  "model_name": "06- Cục Tủ Trên#1",
+  "parts": [
+   "Đợt",
+   "vaCMC",
+   "Viền",
+   "Hồi Phải 2",
+   "Hồi Trái 2",
+   "Đình 2",
+   "Đáy 2",
+   "Hậu Cục Trên",
+   "canh latf",
+   "xa sauf",
+   "themkhauf",
+   "yiX",
+   "lkR",
+   "ˁ{iF"
+  ],
+  "large_mm": [
+   1000.0,
+   1204.2,
+   1666.0,
+   1668.0,
+   2183.0,
+   2200.0
+  ],
+  "thin_mm": [
+   7.0,
+   17.0
+  ],
+  "thumb": "thumbs/105_T_Lnh.png"
+ },
+ {
+  "file": "UC_DC.skp",
+  "model_name": "Tấm cong#2",
+  "parts": [
+   "fn|{V",
+   "@U,SGE",
+   "kVҿ",
+   "JIū",
+   "@iMM",
+   "cLл",
+   "MOff6",
+   "Tấm Uốn Cong",
+   "ABF_CUTonz15f",
+   "ABF_Cutonf",
+   "yiX",
+   "lkR"
+  ],
+  "large_mm": [
+   350.0,
+   400.0,
+   483.0,
+   500.0,
+   1000.0,
+   1270.0
+  ],
+  "thin_mm": [
+   17.4
+  ],
+  "thumb": "thumbs/106_UC_DC.png"
+ },
+ {
+  "file": "Vách Lam DC.skp",
+  "model_name": "",
+  "parts": [
+   "Hậu vách Lam",
+   "XUONGf",
+   "LAMf",
+   "LAM copy 001f",
+   "LAM copy 002f",
+   "LAM copy 003f",
+   "LAM copy 004f",
+   "LAM copy 005f",
+   "LAM copy 006f",
+   "LAM copy 007f",
+   "LAM copy 008f",
+   "LAM copy 009f",
+   "LAM copy 010f",
+   "LAM copy 011f",
+   "LAM copy 012f",
+   "LAM copy 013f",
+   "LAM copy 014f",
+   "LAM copy 015f",
+   "LAM copy 016f",
+   "LAM copy 017f",
+   "LAM copy 018f",
+   "LAM copy 019f",
+   "yiX",
+   "lkR"
+  ],
+  "large_mm": [
+   480.0,
+   510.0,
+   540.0,
+   570.0,
+   600.0,
+   2000.0
+  ],
+  "thin_mm": [
+   10.0,
+   17.5,
+   20.0
+  ],
+  "thumb": "thumbs/107_Vch_Lam_DC.png"
+ },
+ {
+  "file": "canh bo cong 2 dau.skp",
+  "model_name": "Cánh Sơn Hạ Nền#6",
+  "parts": [
+   "gz9J",
+   "ez<J",
+   "ruuuuu",
+   "lBl",
+   "kHOInGUYENsINHnORA#6",
+   "sKߥܑ?nB",
+   "kHOInGUYENsINHnORA#5",
+   "Azh",
+   "Kzh",
+   "Uzh",
+   "VungBao#16",
+   "VungBao#15",
+   "VungBao#14",
+   "Viền Cánh Sơn Xó",
+   "CanhCuaChuan#6",
+   "MatNganKeoChuanSon#5",
+   "CanhCuaChuan#7",
+   "CanhCuaChuan copy 001f",
+   "yiY",
+   "lkS"
+  ],
+  "large_mm": [
+   599.0,
+   600.0,
+   780.0,
+   931.1,
+   1000.0,
+   1143.0
+  ],
+  "thin_mm": [
+   17.0,
+   25.0
+  ],
+  "thumb": "thumbs/108_canh_bo_cong_2_dau.png"
+ },
+ {
+  "file": "canh bo cong.skp",
+  "model_name": "Cánh Sơn Hạ Nền#5",
+  "parts": [
+   "1Z*og",
+   "VungBao#10",
+   "ruuuuu",
+   "lBl",
+   "kHOInGUYENsINHnORA#6",
+   "sKߥܑ?nB",
+   "kHOInGUYENsINHnORA#5",
+   "VungBao#9",
+   "CanhCuaChuan#5",
+   "Viền Cánh Sơn Xó",
+   "MatNganKeoChuanSon#4",
+   "yiY",
+   "lkS"
+  ],
+  "large_mm": [
+   598.0,
+   600.0,
+   780.0,
+   931.1,
+   1000.0,
+   1143.0
+  ],
+  "thin_mm": [
+   17.0,
+   25.0
+  ],
+  "thumb": "thumbs/109_canh_bo_cong.png"
+ },
+ {
+  "file": "canh pano bo cong.skp",
+  "model_name": "Cánh Offset 7 Đường Cong#3",
+  "parts": [
+   "Vu9J",
+   "Su<J",
+   "Duoif",
+   "Huh",
+   "Trenf",
+   "Ruh",
+   "ABF_OffsetCong#1",
+   "ABF_OffsetCong#2",
+   "ABF_OffsetCong#3",
+   "ABF_OffsetCong#4",
+   "KhoiNguyenSinhC#2",
+   "ABF_OffsetCong#5",
+   "lBl",
+   "ABF_Xóa Hướng Mở CửaC#2",
+   "ABF_OffsetCong#6",
+   "ABF_OffsetCong#7",
+   "ABF_OffsetC copy 001f",
+   "ABF_OffsetC copy 002f",
+   "ABF_OffsetC copy 003f",
+   "jXd",
+   "ABF_OffsetC copy 004f",
+   "ABF_OffsetC copy 005f",
+   "ABF_OffsetC copy 006f",
+   "NewGroupDoorCong#1",
+   "Viền",
+   "yiY",
+   "lkS"
+  ],
+  "large_mm": [
+   498.0,
+   598.0,
+   600.0,
+   780.0,
+   931.1,
+   1143.0
+  ],
+  "thin_mm": [
+   17.0
+  ],
+  "thumb": "thumbs/110_canh_pano_bo_cong.png"
+ }
+]
