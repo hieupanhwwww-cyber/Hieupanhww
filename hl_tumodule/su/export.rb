@@ -145,8 +145,10 @@ module HungLoan
             root.name = "Bản gia công #{Time.now.strftime('%d/%m %H:%M')} (ABF: chưa kiểm chứng)"
             root.set_attribute(DICT, 'kind', 'snapshot')
             root.set_attribute(DICT, 'status', plan['status'])
+            made = {}
             plan['items'].each do |it|
               g = root.entities.add_group
+              made[it['part']] = g
               g.transformation = offset * U.frame_tf(it['frame'])
               g.name = "#{it['label']} #{it['part']}"
               draw_part(g, it, failed)
@@ -159,9 +161,21 @@ module HungLoan
                 g.material = mat
               end
             end
+            # Lượt 2: đối tượng gia công kiểu ABF (cần ID tấm đối tác nên vẽ sau khi đủ tấm)
+            cam_groups = {}
+            plan['items'].each do |it|
+              next if it['ops'].empty?
+              mid = it['part'].split('/').first
+              resolve = lambda do |k|
+                gg = made[k.to_s] || made["#{mid}/#{k}"]
+                gg && Render.abf_id(gg)
+              end
+              Render.draw_marks(made[it['part']], { 't' => it['thickness'].to_f, 'frame' => it['frame'] }, it['ops'],
+                                'resolve' => resolve, 'world' => nil, 'cam_groups' => cam_groups)
+            end
             true
           end
-          msg = "Đã tạo bản gia công: #{plan['items'].size} chi tiết phẳng một cấp, lỗ/rãnh là nhóm dấu trên tag ABF_… nằm ngay trong tấm.\n" \
+          msg = "Đã tạo bản gia công: #{plan['items'].size} chi tiết phẳng một cấp, cam/chốt, bản lề, rãnh hậu là đối tượng kiểu ABF (_ABF_minifix…, _ABF_Intersect) nằm ngay trong tấm.\n" \
                 "Bỏ qua (chưa hỗ trợ): #{plan['skipped'].size}\nTương thích ABF/Nesting: CHƯA KIỂM CHỨNG — xem docs/ABF_HANDOFF.md."
           msg += "\n\nKhông khoét được #{failed.size} thao tác (đã ghi trong thuộc tính):\n" + failed.first(8).join("\n") if failed.any?
           UI.messagebox(msg, MB_MULTILINE)
@@ -191,7 +205,6 @@ module HungLoan
               failed << "• #{it['part']} / #{op['feature']}" unless ok
             end
           end
-          Render.draw_marks(g, { 't' => t }, it['ops']) if it['ops'].any?
         end
 
         def carve_hole(ents, op, _t)

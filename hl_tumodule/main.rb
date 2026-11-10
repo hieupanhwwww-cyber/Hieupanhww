@@ -3,7 +3,7 @@ require 'json'
 
 module HungLoan
   module TuModule
-    VERSION = '1.3.0'.freeze unless const_defined?(:VERSION)
+    VERSION = '1.4.0'.freeze unless const_defined?(:VERSION)
     DIR = File.dirname(__FILE__).freeze
   end
 end

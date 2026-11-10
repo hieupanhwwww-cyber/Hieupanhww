@@ -119,6 +119,11 @@ Mở **Thư viện module** (biểu tượng 4 ô).
 - Chọn module: mục “Gia công CNC” tổng hợp số thao tác theo tag ABF.
 - Trong model, dấu gia công nằm trên các tag `ABF_D35`, `ABF_D15`, `ABF_RANH_HAU`… (bật/tắt ở bảng Tags của SketchUp).
 
+### Đối tượng gia công kiểu ABF (từ 1.4.0)
+Cam, chốt, lỗ cạnh, bản lề và rãnh hậu do plugin tạo mang **đúng tên nhóm, layer và thuộc tính** như khi bạn dùng công cụ của ABF
+(`_ABF_minifixPlasticBase`, `_ABF_minifixBolts`, `_ABF_sideDrill`, `_ABF_Intersect`, `ABF_D35`…). ABF lấy dao/độ sâu theo **tên setting**,
+nên ba tên setting trong *Cài đặt chung › Tên setting trong ABF* phải trùng tên setting đang có trong ABF của bạn.
+
 ### Cài đặt chung (từ 1.3.0)
 - **Extensions › Tủ Module Hùng Loan › Cài đặt chung** (hoặc nút bánh răng trên thanh công cụ).
 - Bảng **Tên layer và instance gia công**: mỗi dòng một loại thao tác (cốc cam, lỗ cạnh, chốt cam, lỗ bản lề, rãnh hậu, tiết diện).

@@ -86,7 +86,7 @@ class TestCarcass < Minitest::Test
         g = side['features'].find { |f| f['op'] == 'back_groove' }
         assert g, 'hồi có rãnh soi'
         assert_equal 'A', g['face']
-        assert_in_delta 8.0, g['depth'], 1e-6
+        assert_in_delta 9.0, g['depth'], 1e-6
         rows = Sections.scan([back, side])
         assert_equal 'covered', rows[0]['status'], 'hậu ăn vào rãnh đã soi'
       end
@@ -647,12 +647,44 @@ class TestLibrary < Minitest::Test
 end
 
 class TestAbfRules < Minitest::Test
-  def test_tags_follow_observed_shop_convention
-    assert_equal 'ABF_D35', AbfRules.tag_for('type' => 'drill', 'op' => 'hinge_cup', 'diameter' => 35.0, 'depth' => 12.5)
-    assert_equal 'ABF_D15', AbfRules.tag_for('type' => 'drill', 'op' => 'cam_housing', 'diameter' => 15.0)
-    assert_equal 'ABF_RANH_HAU', AbfRules.tag_for('type' => 'groove', 'op' => 'back_groove', 'depth' => 8.0)
-    assert_equal 'ABF_POCKET_Z7', AbfRules.tag_for('type' => 'pocket', 'op' => 'section', 'depth' => 7.0, 'through' => false)
-    assert_equal 'ABF_CatTrong', AbfRules.tag_for('type' => 'pocket', 'op' => 'section', 'depth' => 17.0, 'through' => true)
+  def test_names_match_real_abf_project
+    cam = { 'type' => 'drill', 'op' => 'cam_housing', 'diameter' => 15.0, 'depth' => 13.0 }
+    assert_equal 'ABF-D15', AbfRules.tag_for(cam)
+    assert_equal '_ABF_minifixPlasticBase', AbfRules.instance_for(cam)
+    bolt = { 'type' => 'drill', 'op' => 'cam_bolt', 'diameter' => 5.0 }
+    assert_equal ['ABF-D5', '_ABF_minifixBolts'], [AbfRules.tag_for(bolt), AbfRules.instance_for(bolt)]
+    side = { 'type' => 'drill', 'op' => 'cam_edge_hole', 'diameter' => 8.0, 'depth' => 34.0, 'pos' => [0.0, 100.0, 8.5], 'dir' => [1.0, 0.0, 0.0] }
+    assert_equal ['ABF-DSIDE-8', '_ABF_sideDrill'], [AbfRules.tag_for(side), AbfRules.instance_for(side)]
+    assert_equal '_ABF_sideDrillDepth', AbfRules.instance_for(side, 'cam_side_depth')
+    r = AbfRules.side_depth_rect(side)
+    assert_equal [[0.0, 104.0, 8.5], [34.0, 104.0, 8.5], [34.0, 96.0, 8.5], [0.0, 96.0, 8.5]], r, 'chữ nhật 34 × 8 ở giữa độ dày'
+    hinge = { 'type' => 'drill', 'op' => 'hinge_cup', 'diameter' => 35.0 }
+    assert_equal %w[ABF_D35 ABF_D35], [AbfRules.tag_for(hinge), AbfRules.instance_for(hinge)]
+    g = { 'type' => 'groove', 'op' => 'back_groove', 'depth' => 9.0 }
+    assert_equal ['ABF_SOI HAU', '_ABF_Intersect'], [AbfRules.tag_for(g), AbfRules.instance_for(g)]
+  end
+
+  def test_abf_attributes_like_real_project
+    a = AbfRules.attrs_for({}, 'cam_housing', 'a' => 11, 'b' => 22)
+    assert_equal({ 'is-minifix-part-a' => true, 'minifix-group-b-id' => 22, 'setting-name' => 'CAM_17MM' }, a)
+    b = AbfRules.attrs_for({}, 'cam_bolt', 'a' => 11, 'b' => 22)
+    assert_equal({ 'is-minifix-part-b' => true, 'minifix-group-a-id' => 11, 'setting-name' => 'CAM_17MM' }, b)
+    s = AbfRules.attrs_for({}, 'cam_edge_hole', 'a' => 11, 'face_group' => 33)
+    assert_equal({ 'face-drill-group-id' => 33, 'is-side-drill' => true, 'minifix-group-a-id' => 11, 'setting-name' => 'CAM_17MM' }, s)
+    h = AbfRules.attrs_for({}, 'hinge_cup')
+    assert_equal true, h['is-hinge-part-b']
+    assert_equal 'BẢN LỀ A - Loại A', h['setting-name']
+    i = AbfRules.attrs_for({}, 'back_groove', 'other' => 44)
+    assert_equal({ 'intersect-group-b-id' => 44, 'intersect-offset' => 0.0, 'intersect-x' => 2.0, 'is-intersect' => true,
+                   'setting-name' => 'SOI ÂM 9MM - RÃNH HẬU' }, i)
+  end
+
+  def test_saved_legacy_defaults_migrate_to_real_names
+    old = { 'cam_housing' => { 'layer' => 'ABF_D{D}', 'instance' => 'ABF_Cam' }, 'back_groove' => { 'layer' => 'XUONG', 'instance' => 'RanhHau' } }
+    m = AbfRules.migrate_ops(old)
+    assert_equal '_ABF_minifixPlasticBase', m['cam_housing']['instance'], 'ô còn tên mặc định cũ → đổi sang tên ABF thật'
+    assert_equal 'XUONG', m['back_groove']['layer'], 'ô người dùng đã tự đặt → giữ nguyên'
+    assert_equal 'ABF-DSIDE-{D}', m['cam_side_depth']['layer']
   end
 
   def test_parts_and_csv_carry_abf_tag
@@ -661,10 +693,10 @@ class TestAbfRules < Minitest::Test
     r = Builder.build(p)
     parts = Mfg.parts(r['panels'])
     feats = parts.flat_map { |x| x['features'] }
-    assert(feats.all? { |f| f['abf_tag'].to_s.start_with?('ABF_') })
-    assert_includes feats.map { |f| f['abf_tag'] }, 'ABF_RANH_HAU'
+    assert(feats.all? { |f| f['abf_tag'].to_s.start_with?('ABF') })
+    assert_includes feats.map { |f| f['abf_tag'] }, 'ABF_SOI HAU'
     assert_includes Mfg.to_csv_ops(parts).lines.first, 'tag_abf'
-    assert_match(/Ø15 sâu 12.5 mm/, AbfRules.describe(feats.find { |f| f['op'] == 'cam_housing' }))
+    assert_match(/Ø15 sâu 13 mm/, AbfRules.describe(feats.find { |f| f['op'] == 'cam_housing' }))
   end
 
   def test_suppressed_feature_not_regenerated

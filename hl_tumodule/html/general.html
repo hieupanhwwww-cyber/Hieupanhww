@@ -32,6 +32,12 @@
     Đặt tên trùng với tên đã khai báo trong ABF của xưởng để ABF nhận đúng.</p>
 </div>
 <div class="section">
+  <h3>Tên setting trong ABF</h3>
+  <div id="sets"></div>
+  <p class="note">ABF lấy dao và độ sâu theo <b>tên setting</b> gắn trên từng lỗ/rãnh. Gõ đúng tên setting đang có trong ABF của xưởng
+    (mặc định lấy từ dự án ABF mẫu: <code>CAM_17MM</code>, <code>BẢN LỀ A - Loại A</code>, <code>SOI ÂM 9MM - RÃNH HẬU</code>).</p>
+</div>
+<div class="section">
   <h3>Thông số cam Minifix + chốt (mm)</h3>
   <div class="grid" id="cam"></div>
   <p class="note" id="camnote"></p>
@@ -52,26 +58,29 @@ const cell = (op, fld, val) => {
   const e = errors[op + '.' + fld];
   return `<td><input data-op="${HL.esc(op)}" data-fld="${fld}" value="${HL.esc(val)}" class="${e ? 'bad' : ''}">${e ? `<div class="err">${HL.esc(e)}</div>` : ''}</td>`;
 };
-function render(ops, cam) {
+function render(ops, cam, sets) {
+  sets = sets || cur.settings;
+  $('#sets').innerHTML = sets.map(s => HL.fieldHtml({ key: 'set_' + s.key, label: s.label, type: 'text', value: s.value }, undefined, errors['set.' + s.key])).join('');
   $('#ops').innerHTML = ops.map(o => `<tr><td class="nm" title="Mặc định: ${HL.esc(o.def_layer)} / ${HL.esc(o.def_instance)}">${HL.esc(o.title)}</td>${cell(o.key, 'layer', o.layer)}${cell(o.key, 'instance', o.instance)}</tr>`).join('');
   $('#cam').innerHTML = cam.map(c => HL.fieldHtml({ key: 'cam_' + c.key, label: c.label, type: 'mm', value: c.value }, undefined, errors['cam.' + c.key])).join('');
   $('#camnote').textContent = cur.cam_demo ? 'Đang dùng bộ số DEMO — sửa theo phụ kiện của xưởng rồi Lưu.' : 'Bộ đang dùng: ' + cur.cam_name;
 }
 function collect() {
-  const ops = {}, cam = {};
+  const ops = {}, cam = {}, settings = {};
+  document.querySelectorAll('#sets input').forEach(i => { settings[i.dataset.key.replace('set_', '')] = i.value; });
   document.querySelectorAll('#ops input').forEach(i => { (ops[i.dataset.op] = ops[i.dataset.op] || {})[i.dataset.fld] = i.value; });
   document.querySelectorAll('#cam input').forEach(i => { cam[i.dataset.key.replace('cam_', '')] = i.value; });
-  return { ops, cam };
+  return { ops, cam, settings };
 }
 function load(r) {
   if (!r) return;
-  if (r.ok === false) { errors = r.errors || {}; if (cur) { const c = collect(); render(cur.ops.map(o => Object.assign({}, o, c.ops[o.key])), cur.cam.map(x => Object.assign({}, x, { value: c.cam[x.key] }))); } return HL.toast(r.error, true); }
-  errors = {}; cur = r; render(r.ops, r.cam);
+  if (r.ok === false) { errors = r.errors || {}; if (cur) { const c = collect(); render(cur.ops.map(o => Object.assign({}, o, c.ops[o.key])), cur.cam.map(x => Object.assign({}, x, { value: c.cam[x.key] })), cur.settings.map(x => Object.assign({}, x, { value: c.settings[x.key] }))); } return HL.toast(r.error, true); }
+  errors = {}; cur = r; render(r.ops, r.cam, r.settings);
   $('#dirty').textContent = r.dirty ? 'Có thay đổi chưa lưu.' : '';
   if (r.message) HL.toast(r.message);
 }
-document.body.addEventListener('input', (e) => { if (e.target.matches('#ops input, #cam input')) $('#dirty').textContent = 'Có thay đổi chưa lưu.'; });
-$('#save').onclick = async () => { const c = collect(); load(await HL.req('save', { ops: c.ops, cam: c.cam, regen: $('#regen').checked })); };
+document.body.addEventListener('input', (e) => { if (e.target.matches('#ops input, #cam input, #sets input')) $('#dirty').textContent = 'Có thay đổi chưa lưu.'; });
+$('#save').onclick = async () => { const c = collect(); load(await HL.req('save', { ops: c.ops, cam: c.cam, settings: c.settings, regen: $('#regen').checked })); };
 $('#defaults').onclick = async () => load(await HL.req('defaults'));
 HL.req('init').then(load);
 </script>

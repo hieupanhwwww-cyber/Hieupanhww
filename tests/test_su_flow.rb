@@ -279,8 +279,8 @@ class TestSUFlow < Minitest::Test
     desc = S::Props.panel(pan.call('top'))
     sec = desc['sections'].find { |x| x['title'].start_with?('Gia công CNC') }
     assert sec, 'tấm có bảng gia công'
-    assert(sec['fields'].any? { |f| f['value'].to_s.include?('[ABF_D15]') })
-    assert(sec['fields'].any? { |f| f['value'].to_s.include?('[ABF_RANH_HAU]') })
+    assert(sec['fields'].any? { |f| f['value'].to_s.include?('[ABF-D15]') })
+    assert(sec['fields'].any? { |f| f['value'].to_s.include?('[ABF_SOI HAU]') })
     # Xóa một lỗ cam → xóa cả bộ liên kết của cạnh đó (không để lỗ mồ côi)
     cam = feats.call('top').find { |f| f['op'] == 'cam_housing' }
     S::Props.apply_panel(pan.call('top'), "del_feat:#{cam['id']}" => true)
@@ -307,14 +307,14 @@ class TestSUFlow < Minitest::Test
     errs = issues.select { |i| i['level'] == 'error' }
     assert_empty errs, errs.first(3).inspect
     assert(model.layers['ABF_D35'], 'dấu lỗ cốc nằm trên tag ABF_D35')
-    assert(model.layers['ABF_RANH_HAU'])
+    assert(model.layers['ABF_SOI HAU'])
   end
 
   def test_abf_style_marks_plinth_and_stretchers
     g = place('hl.khung_tu.v1')
     side = S::Store.panels_in(g).find { |x| x.get_attribute(S::Store::DICT, 'local_id') == 'side_L' }
     kids = side.entities.items.select { |e| e.is_a?(Sketchup::Group) }
-    assert_equal ['ABF_RANH_HAU'], kids.map(&:name), 'dấu rãnh hậu là nhóm ABF nằm ngay trong tấm (1 cấp)'
+    assert_equal ['_ABF_Intersect'], kids.map(&:name), 'rãnh hậu là nhóm _ABF_Intersect nằm ngay trong tấm (1 cấp)'
     assert_equal 'marks', kids[0].get_attribute(S::Store::DICT, 'kind')
     assert_equal 1, kids[0].entities.items.count { |e| e.is_a?(Sketchup::Face) }, 'dấu là MẶT trên mặt ván'
     assert_equal 1, side.entities.items.count { |e| e.is_a?(Sketchup::Face) }, 'khối tấm không bị khoét (chỉ 1 lần pushpull)'
@@ -369,6 +369,64 @@ class TestSUFlow < Minitest::Test
     CORE::AbfRules.ops = nil
     S::Prefs.load_abf_ops
     assert_equal 'XUONG_RANH_HAU', CORE::AbfRules.ops['back_groove']['layer']
+  end
+
+  def test_abf_native_objects_and_attributes
+    g = place('hl.khung_tu.v1')
+    S::Props.apply_module(g, 'top_joint' => 'inset', 'joints_enabled' => true, 'front_enabled' => true, 'hinges_enabled' => true)
+    pg = lambda { |lid| S::Store.panels_in(g).find { |x| x.get_attribute(S::Store::DICT, 'local_id') == lid } }
+    kids = lambda { |lid, name| pg.call(lid).entities.items.select { |e| e.is_a?(Sketchup::Group) && e.name == name } }
+    abf = lambda { |e, k| e.get_attribute('ABF', k) }
+    top = pg.call('top'); side = pg.call('side_L'); back = pg.call('back')
+    bases = kids.call('top', '_ABF_minifixPlasticBase')
+    assert_equal 4, bases.size, 'mỗi cốc cam là một nhóm riêng như công cụ ABF tạo'
+    b0 = bases.find { |e| abf.call(e, 'minifix-group-b-id') == side.persistent_id }
+    assert b0, 'cốc cam trỏ tới ID tấm nhận chốt'
+    assert_equal true, abf.call(b0, 'is-minifix-part-a')
+    assert_equal 'CAM_17MM', abf.call(b0, 'setting-name')
+    assert_kind_of Geom::Vector3d, abf.call(b0, 'minifix-up-face-normal')
+    assert_equal 'ABF-D15', b0.layer
+    bolts = kids.call('side_L', '_ABF_minifixBolts')
+    assert(bolts.any? { |e| abf.call(e, 'minifix-group-a-id') == top.persistent_id && abf.call(e, 'is-minifix-part-b') == true })
+    assert_equal 'ABF-D5', bolts[0].layer
+    sd = kids.call('top', '_ABF_sideDrill'); sdd = kids.call('top', '_ABF_sideDrillDepth')
+    assert_equal 4, sd.size
+    assert_equal 4, sdd.size
+    assert_equal 'ABF-DSIDE-8', sd[0].layer
+    assert_includes bases.map(&:persistent_id), abf.call(sd[0], 'face-drill-group-id'), 'lỗ cạnh trỏ tới nhóm cốc cam'
+    assert_equal true, abf.call(sdd[0], 'is-side-drill-depth')
+    assert_equal top.persistent_id, abf.call(sdd[0], 'minifix-group-a-id')
+    inter = kids.call('side_L', '_ABF_Intersect').first
+    assert_equal back.persistent_id, abf.call(inter, 'intersect-group-b-id'), 'rãnh hậu trỏ tới tấm hậu'
+    assert_equal true, abf.call(inter, 'is-intersect')
+    assert_in_delta 2.0, abf.call(inter, 'intersect-x'), 1e-9
+    assert_equal 'SOI ÂM 9MM - RÃNH HẬU', abf.call(inter, 'setting-name')
+    assert_equal 'ABF_SOI HAU', inter.layer
+    door = S::Store.panels_in(g).find { |x| x.get_attribute(S::Store::DICT, 'role') == 'door' }
+    cups = door.entities.items.select { |e| e.is_a?(Sketchup::Group) && e.name == 'ABF_D35' }
+    refute_empty cups
+    assert_equal true, abf.call(cups[0], 'is-hinge-part-b')
+    assert_equal 'BẢN LỀ A - Loại A', abf.call(cups[0], 'setting-name')
+    # đổi tên setting trong Cài đặt chung → đối tượng mang tên mới
+    S::Commands.run('general')
+    d = S::GeneralDialog.instance_variable_get(:@d)
+    r = d.js('init')
+    ops = r['ops'].map { |o| [o['key'], { 'layer' => o['layer'], 'instance' => o['instance'] }] }.to_h
+    cam = r['cam'].map { |c| [c['key'], c['value']] }.to_h
+    sets = r['settings'].map { |x| [x['key'], x['value']] }.to_h
+    ok = d.js('save', 'ops' => ops, 'cam' => cam, 'settings' => sets.merge('cam' => 'CAM_18MM'), 'regen' => true)
+    assert ok['ok'], ok['error']
+    nb = kids.call('top', '_ABF_minifixPlasticBase').first
+    assert_equal 'CAM_18MM', nb.get_attribute('ABF', 'setting-name')
+    S::Export.cmd_snapshot
+    snap = model.entities.find { |e| e.is_a?(Sketchup::Group) && e.get_attribute(S::Export::DICT, 'kind') == 'snapshot' }
+    stop = snap.entities.items.find { |e| e.get_attribute(S::Export::DICT, 'part_id').to_s.end_with?('/top') }
+    sb = stop.entities.items.find { |e| e.is_a?(Sketchup::Group) && e.name == '_ABF_minifixPlasticBase' }
+    assert sb, 'bản gia công cũng có đối tượng ABF'
+    sside = snap.entities.items.find { |e| e.get_attribute(S::Export::DICT, 'part_id').to_s.end_with?('/side_L') || e.get_attribute(S::Export::DICT, 'part_id').to_s.end_with?('/side_R') }
+    ids = snap.entities.items.map(&:persistent_id)
+    assert_includes ids, sb.get_attribute('ABF', 'minifix-group-b-id'), 'ID đối tác trong bản gia công trỏ tới tấm của bản gia công'
+    assert sside
   end
 
   def test_tools_construct

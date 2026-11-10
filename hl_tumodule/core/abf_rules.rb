@@ -7,13 +7,15 @@
 #   ABF_Label        : nhãn chi tiết
 # Đây là quy ước QUAN SÁT TỪ TÊN TAG trong file mẫu, CHƯA kiểm chứng bằng cách nạp vào ABF.
 # Mọi chỗ gắn tag (dấu trong model, bản gia công, file xuất) đều đi qua module này.
+require_relative 'util'
+
 module HungLoan
   module TuModule
     module Core
       module AbfRules
         # Màu tag: RANH_HAU và HemKinh lấy đúng material trong file mẫu; còn lại chọn để dễ phân biệt.
         COLORS = {
-          'ABF_RANH_HAU' => [119, 0, 119],
+          'ABF_RANH_HAU' => [119, 0, 119], 'ABF_SOI HAU' => [119, 0, 119],
           'ABF_CatTrong' => [204, 51, 51],
           'ABF_Label' => [60, 60, 60],
           'default_drill' => [0, 102, 204],
@@ -22,22 +24,42 @@ module HungLoan
 
         # BẢNG TÊN GIA CÔNG (sửa trong "Cài đặt chung"): mỗi loại thao tác có tên LAYER (tag) và tên INSTANCE (nhóm).
         # Dùng được {D} = đường kính lỗ, {Z} = độ sâu (mm) trong tên.
-        OP_KEYS = %w[cam_housing cam_edge_hole cam_bolt hinge_cup back_groove section section_through].freeze
+        OP_KEYS = %w[cam_housing cam_edge_hole cam_side_depth cam_bolt hinge_cup back_groove section section_through].freeze
         OP_TITLES = {
-          'cam_housing' => 'Cốc cam Minifix', 'cam_edge_hole' => 'Lỗ cạnh (chốt cam)', 'cam_bolt' => 'Lỗ chốt cam trên mặt',
-          'hinge_cup' => 'Lỗ cốc bản lề', 'back_groove' => 'Rãnh hậu', 'section' => 'Tiết diện (khoét sâu)',
-          'section_through' => 'Tiết diện (cắt xuyên)'
+          'cam_housing' => 'Cốc cam Minifix', 'cam_edge_hole' => 'Lỗ cạnh (khoan ngang)', 'cam_side_depth' => 'Dấu độ sâu lỗ cạnh',
+          'cam_bolt' => 'Lỗ chốt cam trên mặt', 'hinge_cup' => 'Lỗ cốc bản lề', 'back_groove' => 'Rãnh hậu (soi âm)',
+          'section' => 'Tiết diện (khoét sâu)', 'section_through' => 'Tiết diện (cắt xuyên)'
         }.freeze
+        # MẶC ĐỊNH = đúng tên nhóm/layer do công cụ ABF tạo, đọc từ dự án ABF thật của xưởng (CHAU_NAM_CNC/Untitled.skp).
         DEFAULT_OPS = {
+          'cam_housing' => { 'layer' => 'ABF-D{D}', 'instance' => '_ABF_minifixPlasticBase' },
+          'cam_edge_hole' => { 'layer' => 'ABF-DSIDE-{D}', 'instance' => '_ABF_sideDrill' },
+          'cam_side_depth' => { 'layer' => 'ABF-DSIDE-{D}', 'instance' => '_ABF_sideDrillDepth' },
+          'cam_bolt' => { 'layer' => 'ABF-D{D}', 'instance' => '_ABF_minifixBolts' },
+          'hinge_cup' => { 'layer' => 'ABF_D{D}', 'instance' => 'ABF_D{D}' },
+          'back_groove' => { 'layer' => 'ABF_SOI HAU', 'instance' => '_ABF_Intersect' },
+          'section' => { 'layer' => 'ABF_SOI HAU', 'instance' => '_ABF_Intersect' },
+          'section_through' => { 'layer' => 'ABF_CatTrong', 'instance' => 'ABF_CatTrong' }
+        }.freeze
+        # Tên mặc định của các bản 1.1–1.3 (để tự chuyển cấu hình đã lưu sang tên ABF thật).
+        LEGACY_OPS = {
           'cam_housing' => { 'layer' => 'ABF_D{D}', 'instance' => 'ABF_Cam' },
           'cam_edge_hole' => { 'layer' => 'ABF_D{D}', 'instance' => 'ABF_ChotCam_Canh' },
           'cam_bolt' => { 'layer' => 'ABF_D{D}', 'instance' => 'ABF_ChotCam' },
           'hinge_cup' => { 'layer' => 'ABF_D{D}', 'instance' => 'ABF_BanLe' },
           'back_groove' => { 'layer' => 'ABF_RANH_HAU', 'instance' => 'ABF_RANH_HAU' },
-          'section' => { 'layer' => 'ABF_POCKET_Z{Z}', 'instance' => 'ABF_TietDien' },
-          'section_through' => { 'layer' => 'ABF_CatTrong', 'instance' => 'ABF_CatTrong' }
+          'section' => { 'layer' => 'ABF_POCKET_Z{Z}', 'instance' => 'ABF_TietDien' }
         }.freeze
 
+        # TÊN SETTING ABF: ABF lấy độ sâu/dao theo "setting-name" gắn trên từng đối tượng → phải trùng tên setting trong ABF của xưởng.
+        DEFAULT_SETTINGS = {
+          'cam' => 'CAM_17MM', 'hinge' => 'BẢN LỀ A - Loại A', 'groove' => 'SOI ÂM 9MM - RÃNH HẬU', 'intersect_x' => 2.0
+        }.freeze
+        SETTING_TITLES = { 'cam' => 'Setting cam Minifix', 'hinge' => 'Setting bản lề', 'groove' => 'Setting rãnh hậu (Intersect)',
+                           'intersect_x' => 'Nới rộng rãnh hậu — intersect-x (mm)' }.freeze
+        DICT = 'ABF'.freeze
+
+        @settings = nil
         @ops = nil
 
         module_function
@@ -50,9 +72,65 @@ module HungLoan
           @ops = cfg
         end
 
+        def settings
+          @settings || DEFAULT_SETTINGS
+        end
+
+        def settings=(cfg)
+          @settings = cfg
+        end
+
+        def clean_settings(raw)
+          out = {}
+          errs = {}
+          %w[cam hinge groove].each do |k|
+            v = (raw || {}).key?(k) ? raw[k].to_s.strip : DEFAULT_SETTINGS[k]
+            errs["set.#{k}"] = 'Không được để trống' if v.empty?
+            out[k] = v
+          end
+          x = (raw || {}).key?('intersect_x') ? Util.num(raw['intersect_x']) : DEFAULT_SETTINGS['intersect_x']
+          errs['set.intersect_x'] = 'Cần số từ 0 đến 10' if x.nil? || x < 0 || x > 10
+          out['intersect_x'] = x.to_f
+          [out, errs]
+        end
+
+        # Chuyển cấu hình lưu từ bản cũ: ô nào còn nguyên tên mặc định cũ thì đổi sang tên ABF thật.
+        def migrate_ops(raw)
+          out = {}
+          OP_KEYS.each do |k|
+            src = (raw || {})[k]
+            out[k] = if src.nil? || (LEGACY_OPS[k] && src == LEGACY_OPS[k]) then DEFAULT_OPS[k].dup
+                     else src
+                     end
+          end
+          out
+        end
+
         def fmt_num(x)
           x = x.to_f
           (x % 1).abs < 1e-6 ? x.round.to_s : x.round(1).to_s
+        end
+
+        # Thuộc tính dictionary "ABF" cho nhóm dấu của một feature (theo đối tượng do công cụ ABF tạo).
+        # ids: {'a'=>id tấm mang cam, 'b'=>id tấm nhận chốt, 'face_group'=>id nhóm cốc cam, 'other'=>id tấm đối tác rãnh}
+        def attrs_for(f, key, ids = {})
+          st = settings
+          case key
+          when 'cam_housing'
+            { 'is-minifix-part-a' => true, 'minifix-group-b-id' => ids['b'], 'setting-name' => st['cam'] }
+          when 'cam_bolt'
+            { 'is-minifix-part-b' => true, 'minifix-group-a-id' => ids['a'], 'setting-name' => st['cam'] }
+          when 'cam_edge_hole'
+            { 'face-drill-group-id' => ids['face_group'], 'is-side-drill' => true, 'minifix-group-a-id' => ids['a'], 'setting-name' => st['cam'] }
+          when 'cam_side_depth'
+            { 'is-side-drill-depth' => true, 'minifix-group-a-id' => ids['a'], 'setting-name' => st['cam'] }
+          when 'hinge_cup'
+            { 'is-hinge-part-b' => true, 'is-user-nesting-obj' => true, 'setting-name' => st['hinge'] }
+          when 'back_groove', 'section'
+            { 'intersect-group-b-id' => ids['other'], 'intersect-offset' => 0.0, 'intersect-x' => st['intersect_x'].to_f,
+              'is-intersect' => true, 'setting-name' => st['groove'] }
+          else {}
+          end.reject { |_, v| v.nil? }
         end
 
         # Kiểm tra bảng tên người dùng nhập. Trả [bảng sạch, {"op.field" => lỗi}].
@@ -63,8 +141,10 @@ module HungLoan
             src = (raw || {})[k] || {}
             out[k] = {}
             %w[layer instance].each do |fld|
-              v = src[fld].to_s.strip
+              v = src[fld].to_s
+              v = v.strip unless v == ''
               v = DEFAULT_OPS[k][fld] if v.empty? && !src.key?(fld)
+              v = v.strip
               if v.empty? then errs["#{k}.#{fld}"] = 'Không được để trống'
               elsif v.length > 60 then errs["#{k}.#{fld}"] = 'Tối đa 60 ký tự'
               elsif v =~ /[<>"\\\/|?*\x00-\x1f]/ then errs["#{k}.#{fld}"] = 'Có ký tự không dùng được'
@@ -87,13 +167,27 @@ module HungLoan
         end
 
         # Tên layer (tag) cho một feature gia công.
-        def tag_for(f)
-          expand((ops[op_key(f)] || DEFAULT_OPS[op_key(f)])['layer'], f)
+        def tag_for(f, key = nil)
+          key ||= op_key(f)
+          expand((ops[key] || DEFAULT_OPS[key])['layer'], f)
         end
 
         # Tên instance (nhóm dấu) cho một feature gia công.
-        def instance_for(f)
-          expand((ops[op_key(f)] || DEFAULT_OPS[op_key(f)])['instance'], f)
+        def instance_for(f, key = nil)
+          key ||= op_key(f)
+          expand((ops[key] || DEFAULT_OPS[key])['instance'], f)
+        end
+
+        # Chữ nhật dấu độ sâu lỗ cạnh (dài = độ sâu, rộng = đường kính) nằm ở mặt phẳng giữa độ dày tấm.
+        def side_depth_rect(f)
+          p = f['pos']; d = f['dir']
+          l = Math.hypot(d[0], d[1])
+          return nil if l < 1e-9
+          ux = d[0] / l; uy = d[1] / l
+          px = -uy * f['diameter'] / 2.0; py = ux * f['diameter'] / 2.0
+          dep = f['depth'].to_f
+          [[p[0] + px, p[1] + py, p[2]], [p[0] + ux * dep + px, p[1] + uy * dep + py, p[2]],
+           [p[0] + ux * dep - px, p[1] + uy * dep - py, p[2]], [p[0] - px, p[1] - py, p[2]]]
         end
 
         def color_for(tag, f)

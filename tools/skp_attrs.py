@@ -19,7 +19,10 @@ def val(o):
             if q2==q: break
             arr.append(v);q=q2
         return (arr,end)
-    return ('?'+t.hex(),end)
+    if t==b'\xb58' or t==b'\xb48':
+        return (['vec']+[round(x,4) for x in struct.unpack_from('<3d',d,p)],end)
+    if t==b'\xaf8': return (['len',round(struct.unpack_from('<d',d,p)[0]*25.4,3)],end)
+    return ('?'+t.hex()+':'+d[p:p+min(l2,24)].hex(),end)
 out=[]
 for m in re.finditer(rb'\xb66(.)\x00\x00\x00',d):
     n=m.group(1)[0]; k=d[m.end():m.end()+n]

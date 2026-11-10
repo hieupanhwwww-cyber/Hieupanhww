@@ -50,6 +50,9 @@ Các điểm dưới đây là **lựa chọn tạm để có bản chạy đư�
 - **Len chân**: cao 50 (khung tủ) / 100 (bếp) là số đọc từ model nguồn (50) và DEMO (100); lùi trước 50 DEMO; len chân dày bằng ván thân; có chân thì đáy buộc lọt.
 - **Xà thay nóc**: hai xà nằm ngang, bản rộng 100 DEMO, lọt giữa hai hồi; xà sau nhận rãnh hậu.
 
+- **Đối tượng ABF (1.4.0)**: tên nhóm/thuộc tính lấy nguyên văn từ dự án ABF thật của xưởng. Phần suy luận: gán layer cho từng nhóm,
+  ID đối tác = `persistent_id`, `minifix-up-face-normal` theo hệ thế giới, hình là mặt phẳng. Xem `docs/khao_sat/ABF_DU_AN_THAT.md` mục 5.
+
 ## C. Giới hạn đã biết của bản 1.0.0
 
 - Chưa chạy trong SketchUp thật: hình học `pushpull` khoét rãnh/lỗ, observer, HtmlDialog, Undo cần kiểm tra trên host.

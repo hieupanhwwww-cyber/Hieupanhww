@@ -96,14 +96,20 @@ module HungLoan
 
         # ---- Bảng tên layer/instance gia công (Cài đặt chung)
         def load_abf_ops
-          raw = read_json('abf_ops.json', nil)
-          cfg, errs = C::AbfRules.clean_ops(raw || {})
+          raw = read_json('abf_ops.json', nil) || {}
+          ops_raw = raw.key?('ops') ? raw['ops'] : raw # bản 1.3 lưu phẳng
+          ops_raw = C::AbfRules.migrate_ops(ops_raw) unless raw['version'].to_i >= 2
+          cfg, errs = C::AbfRules.clean_ops(ops_raw)
           C::AbfRules.ops = errs.empty? ? cfg : C::AbfRules::DEFAULT_OPS
+          st, serr = C::AbfRules.clean_settings(raw['settings'] || {})
+          C::AbfRules.settings = serr.empty? ? st : C::AbfRules::DEFAULT_SETTINGS
         end
 
-        def save_abf_ops(cfg)
-          write_json('abf_ops.json', cfg)
+        def save_abf_ops(cfg, settings = nil)
+          settings ||= C::AbfRules.settings
+          write_json('abf_ops.json', { 'version' => 2, 'ops' => cfg, 'settings' => settings })
           C::AbfRules.ops = cfg
+          C::AbfRules.settings = settings
         end
 
         # ---- Cấu hình làm việc (chế độ chọn, v.v.)

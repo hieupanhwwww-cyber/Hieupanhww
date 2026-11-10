@@ -1,4 +1,4 @@
-# TEST_REPORT — Tủ Module Hùng Loan 1.3.0 (10/11/2026)
+# TEST_REPORT — Tủ Module Hùng Loan 1.4.0 (10/11/2026)
 
 ## 1. Môi trường thực tế
 | Hạng mục | Trạng thái |
@@ -16,8 +16,8 @@ Ba mức kiểm thử, phân biệt rõ:
 ## 2. Kết quả chạy
 | Bộ kiểm thử | Lệnh | Kết quả |
 |---|---|---|
-| Lõi | `ruby -Itests tests/test_core.rb` | **50 phép thử, 368 kiểm tra, 0 lỗi** |
-| Luồng SketchUp (giả lập) | `ruby tests/test_su_flow.rb` | **14 phép thử, 180 kiểm tra, 0 lỗi** |
+| Lõi | `ruby -Itests tests/test_core.rb` | **52 phép thử, 380 kiểm tra, 0 lỗi** |
+| Luồng SketchUp (giả lập) | `ruby tests/test_su_flow.rb` | **15 phép thử, 213 kiểm tra, 0 lỗi** |
 | Công cụ tương tác (view giả lập) | `ruby tests/test_su_tools.rb` | **4 phép thử, 12 kiểm tra, 0 lỗi** |
 | Cú pháp mọi file `.rb` | `tools/build_rbz.sh` | Đạt |
 | Gói RBZ | giải nén + nạp loader `hl_tumodule.rb` → `hl_tumodule/main` | Nạp được (trên giả lập); không chứa đường dẫn máy phát triển |
@@ -64,6 +64,7 @@ Ký hiệu: **R** = kiểm thử thuần Ruby đạt · **M** = chạy đạt tr
 | Sai mặt, ngoài vùng, cam lệch, tấm uốn chưa hỗ trợ, feature mồ côi → mã lỗi + ID | R |
 | Bảng gia công trong Thuộc tính, xóa/khôi phục thao tác, tag ABF trên dấu và file xuất | R + M |
 | Cài đặt chung: đổi tên layer/instance, thông số cam, cập nhật tủ đã đặt, nhớ qua phiên, chặn tên sai | R + M |
+| Đối tượng ABF: tên nhóm, layer, thuộc tính `ABF`, ID đối tác, dấu độ sâu lỗ cạnh (đối chiếu dự án ABF thật) | R + M |
 | **Bàn giao ABF/Nesting nạp trên phần mềm đích** | **— CHƯA KIỂM CHỨNG** |
 
 ## 4. Bảng bao phủ dữ liệu/feature gia công

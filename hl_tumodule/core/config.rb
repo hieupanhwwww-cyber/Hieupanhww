@@ -19,8 +19,8 @@ module HungLoan
         DOOR_MID_GAP = 2.0
         DEMO_RADIUS = 100.0
         BACK_SETBACK = 15.0        # lùi hậu từ mép sau (kiểu lọt/soi rãnh)
-        GROOVE_DEPTH = 8.0         # sâu rãnh soi hậu
-        GROOVE_TOL = 0.5           # rãnh rộng hơn hậu
+        GROOVE_DEPTH = 9.0         # sâu rãnh soi hậu (setting ABF của xưởng: SOI ÂM 9MM)
+        GROOVE_TOL = 2.0           # rãnh rộng hơn hậu (intersect-x = 2 trong dự án ABF của xưởng)
         GROOVE_CLEAR = 1.0         # hậu ngắn hơn đáy rãnh mỗi phía
         ARC_SEG_PER_QUARTER = 12   # số đoạn hiển thị mỗi cung 90°
         MIN_CELL = 50.0            # lọt lòng tối thiểu một khoang
@@ -38,10 +38,10 @@ module HungLoan
         CAM_PRESET_DEMO = {
           'name' => 'Minifix 15 (DEMO)',
           'demo' => true,
-          'cam_diameter' => 15.0, 'cam_depth' => 12.5,
+          'cam_diameter' => 15.0, 'cam_depth' => 13.0,   # G-code xưởng khoan Z4 trên ván 17 = sâu 13
           'cam_offset' => 24.0,          # tâm cốc cam cách mặt tiếp xúc
           'edge_diameter' => 8.0, 'edge_depth' => 34.0, # lỗ cạnh tấm mang cam
-          'bolt_diameter' => 5.0, 'bolt_depth' => 11.0, # lỗ chốt cam trên mặt tấm kia
+          'bolt_diameter' => 5.0, 'bolt_depth' => 13.0, # lỗ chốt cam trên mặt tấm kia
           'end_setback' => 50.0,
           'count_rules' => [[150.0, 1], [600.0, 2], [1000.0, 3], [1.0e9, 4]],
           'min_thickness' => 15.0

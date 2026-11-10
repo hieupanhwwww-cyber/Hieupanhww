@@ -1,5 +1,15 @@
 # Nhật ký thay đổi
 
+## 1.4.0 — 10/11/2026 — Đối tượng gia công đúng kiểu ABF
+Căn cứ: dự án ABF thật của xưởng `CHAU_NAM_CNC` (`docs/khao_sat/ABF_DU_AN_THAT.md`).
+- Cam/chốt, lỗ cạnh, bản lề, rãnh hậu sinh ra **đúng tên nhóm, layer và thuộc tính** như công cụ ABF:
+  `_ABF_minifixPlasticBase` / `ABF-D15`, `_ABF_minifixBolts` / `ABF-D5`, `_ABF_sideDrill` + `_ABF_sideDrillDepth` / `ABF-DSIDE-8`,
+  `ABF_D35`, `_ABF_Intersect` / `ABF_SOI HAU`; dictionary `ABF` có `setting-name`, ID tấm đối tác, `is-minifix-part-a/b`…
+- Mỗi lỗ là một nhóm riêng (trước đây gộp theo tag). Lỗ cạnh có thêm dấu độ sâu (chữ nhật ở giữa độ dày).
+- Mặc định theo số xưởng: cốc cam sâu 13, chốt sâu 13, rãnh hậu sâu 9, rộng hơn hậu 2.
+- Cài đặt chung thêm mục **Tên setting trong ABF** (cam, bản lề, rãnh hậu, intersect-x) và dòng “Dấu độ sâu lỗ cạnh”.
+- Cấu hình tên đã lưu từ 1.3.0: ô nào còn nguyên tên mặc định cũ được tự đổi sang tên ABF thật; ô bạn đã tự đặt thì giữ.
+
 ## 1.3.0 — 10/11/2026 — Cài đặt chung
 - **Mới: cửa sổ “Cài đặt chung”** (menu và thanh công cụ): đổi tên **layer (tag)** và **instance (tên nhóm)** cho từng loại gia công —
   cốc cam, lỗ cạnh, lỗ chốt cam, lỗ cốc bản lề, rãnh hậu, tiết diện khoét, tiết diện cắt xuyên. Tên dùng được `{D}` (đường kính) và `{Z}` (độ sâu).

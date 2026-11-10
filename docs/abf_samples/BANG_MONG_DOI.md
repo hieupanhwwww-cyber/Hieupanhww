@@ -13,8 +13,8 @@ Cột "Thực tế ABF" để trống: điền sau khi nạp bản gia công và
 | bottom | Đáy | 866.0 × 580.0 × 17.0 | 9 | back_groove×1 cam_edge_hole×4 cam_housing×4 | |
 | plinth_F | Len chân | 866.0 × 50.0 × 17.0 | 0 |  | |
 | plinth_B | Len chân | 866.0 × 50.0 × 17.0 | 0 |  | |
-| back | Hậu | 880.0 × 1130.0 × 7.0 | 0 |  | |
-| dot_toa4tveb070003 | Đợt | 866.0 × 558.0 × 17.0 | 8 | cam_edge_hole×4 cam_housing×4 | |
+| back | Hậu | 882.0 × 1132.0 × 7.0 | 0 |  | |
+| dot_toa5pv59ba0003 | Đợt | 866.0 × 558.0 × 17.0 | 8 | cam_edge_hole×4 cam_housing×4 | |
 | door:side_L/side_R:0 | Cánh | 447.0 × 1146.0 × 17.0 | 3 | hinge_cup×3 | |
 | door:side_L/side_R:1 | Cánh | 447.0 × 1146.0 × 17.0 | 3 | hinge_cup×3 | |
 | top | Nóc chữ L | 1600.0 × 1200.0 × 17.0 | 4 | cam_bolt×4 | |
@@ -34,27 +34,27 @@ Cột "Thực tế ABF" để trống: điền sau khi nạp bản gia công và
 | side_R | Hồi | 350.0 × 883.0 × 17.0 | 1 | back_groove×1 | |
 | top | Nóc | 400.0 × 350.0 × 17.0 | 1 | back_groove×1 | |
 | bottom | Đáy | 366.0 × 350.0 × 17.0 | 1 | back_groove×1 | |
-| back | Hậu | 380.0 × 880.0 × 7.0 | 0 |  | |
+| back | Hậu | 382.0 × 882.0 × 7.0 | 0 |  | |
 | side_L | Hồi | 500.0 × 703.0 × 17.0 | 1 | back_groove×1 | |
 | side_R | Hồi | 500.0 × 703.0 × 17.0 | 1 | back_groove×1 | |
 | top | Nóc | 600.0 × 500.0 × 17.0 | 1 | back_groove×1 | |
 | bottom | Đáy | 566.0 × 500.0 × 17.0 | 1 | back_groove×1 | |
-| back | Hậu | 580.0 × 700.0 × 7.0 | 0 |  | |
+| back | Hậu | 582.0 × 702.0 × 7.0 | 0 |  | |
 | dface:0 | Mặt ngăn kéo | 596.0 × 214.3 × 17.0 | 0 |  | |
 | dface:1 | Mặt ngăn kéo | 596.0 × 214.3 × 17.0 | 0 |  | |
 | dface:2 | Mặt ngăn kéo | 596.0 × 214.3 × 17.0 | 0 |  | |
-| dr_toa4tva698000d:side_L | Hông thùng | 450.0 × 150.0 × 15.0 | 0 |  | |
-| dr_toa4tva698000d:side_R | Hông thùng | 450.0 × 150.0 × 15.0 | 0 |  | |
-| dr_toa4tva698000d:front | Đầu thùng | 510.0 × 143.0 × 15.0 | 0 |  | |
-| dr_toa4tva698000d:back | Hậu thùng | 510.0 × 143.0 × 15.0 | 0 |  | |
-| dr_toa4tva698000d:bottom | Đáy thùng | 540.0 × 450.0 × 7.0 | 0 |  | |
-| dr_toa4tv536d000e:side_L | Hông thùng | 450.0 × 150.0 × 15.0 | 0 |  | |
-| dr_toa4tv536d000e:side_R | Hông thùng | 450.0 × 150.0 × 15.0 | 0 |  | |
-| dr_toa4tv536d000e:front | Đầu thùng | 510.0 × 143.0 × 15.0 | 0 |  | |
-| dr_toa4tv536d000e:back | Hậu thùng | 510.0 × 143.0 × 15.0 | 0 |  | |
-| dr_toa4tv536d000e:bottom | Đáy thùng | 540.0 × 450.0 × 7.0 | 0 |  | |
-| dr_toa4tvfcf5000f:side_L | Hông thùng | 450.0 × 150.0 × 15.0 | 0 |  | |
-| dr_toa4tvfcf5000f:side_R | Hông thùng | 450.0 × 150.0 × 15.0 | 0 |  | |
-| dr_toa4tvfcf5000f:front | Đầu thùng | 510.0 × 143.0 × 15.0 | 0 |  | |
-| dr_toa4tvfcf5000f:back | Hậu thùng | 510.0 × 143.0 × 15.0 | 0 |  | |
-| dr_toa4tvfcf5000f:bottom | Đáy thùng | 540.0 × 450.0 × 7.0 | 0 |  | |
+| dr_toa5pvb0f3000d:side_L | Hông thùng | 450.0 × 150.0 × 15.0 | 0 |  | |
+| dr_toa5pvb0f3000d:side_R | Hông thùng | 450.0 × 150.0 × 15.0 | 0 |  | |
+| dr_toa5pvb0f3000d:front | Đầu thùng | 510.0 × 143.0 × 15.0 | 0 |  | |
+| dr_toa5pvb0f3000d:back | Hậu thùng | 510.0 × 143.0 × 15.0 | 0 |  | |
+| dr_toa5pvb0f3000d:bottom | Đáy thùng | 540.0 × 450.0 × 7.0 | 0 |  | |
+| dr_toa5pv4ed2000e:side_L | Hông thùng | 450.0 × 150.0 × 15.0 | 0 |  | |
+| dr_toa5pv4ed2000e:side_R | Hông thùng | 450.0 × 150.0 × 15.0 | 0 |  | |
+| dr_toa5pv4ed2000e:front | Đầu thùng | 510.0 × 143.0 × 15.0 | 0 |  | |
+| dr_toa5pv4ed2000e:back | Hậu thùng | 510.0 × 143.0 × 15.0 | 0 |  | |
+| dr_toa5pv4ed2000e:bottom | Đáy thùng | 540.0 × 450.0 × 7.0 | 0 |  | |
+| dr_toa5pvba35000f:side_L | Hông thùng | 450.0 × 150.0 × 15.0 | 0 |  | |
+| dr_toa5pvba35000f:side_R | Hông thùng | 450.0 × 150.0 × 15.0 | 0 |  | |
+| dr_toa5pvba35000f:front | Đầu thùng | 510.0 × 143.0 × 15.0 | 0 |  | |
+| dr_toa5pvba35000f:back | Hậu thùng | 510.0 × 143.0 × 15.0 | 0 |  | |
+| dr_toa5pvba35000f:bottom | Đáy thùng | 540.0 × 450.0 × 7.0 | 0 |  | |

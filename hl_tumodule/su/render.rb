@@ -16,12 +16,14 @@ module HungLoan
         end
 
         # Dựng lại toàn bộ tấm của module (giữ material theo ID tấm). Trả map entityID → local_id.
+        # Hai lượt: (1) dựng mọi tấm, (2) vẽ dấu gia công — vì thuộc tính ABF của cam/rãnh cần ID tấm đối tác.
         def module!(mod, built, extra_features = {})
           ents = Store.entities_of(mod)
           mats = {}
           Store.panels_in(mod).each { |g| mats[g.get_attribute(Store::DICT, 'local_id')] = g.material if g.material }
           ents.clear!
           registry = {}
+          groups = {}
           mid = built['params']['id']
           built['panels'].each do |pn|
             g = ents.add_group
@@ -31,8 +33,6 @@ module HungLoan
               else
                 g.transformation = U.frame_tf(pn['frame'])
                 draw_flat(g, pn)
-                feats = (pn['features'] || []) + (extra_features[pn['local_id']] || [])
-                draw_marks(g, pn, feats) if feats.any?
               end
             rescue StandardError => e
               warn "[TuModule] Lỗi vẽ tấm #{pn['local_id']}: #{e.message}"
@@ -40,8 +40,25 @@ module HungLoan
             Store.tag_panel(g, pn, mid)
             g.material = mats[pn['local_id']] if mats[pn['local_id']]
             registry[g.entityID] = pn['local_id']
+            groups[pn['local_id']] = g
+          end
+          world = begin
+            Pick.world_tf(Actions.path_to(mod) + [mod])
+          rescue StandardError
+            nil
+          end
+          ctx = { 'resolve' => ->(lid) { (gg = groups[lid.to_s.split('/').last]) && abf_id(gg) }, 'world' => world, 'cam_groups' => {} }
+          built['panels'].each do |pn|
+            next if pn['kind'] == 'bent'
+            feats = (pn['features'] || []) + (extra_features[pn['local_id']] || [])
+            draw_marks(groups[pn['local_id']], pn, feats, ctx) if feats.any?
           end
           registry
+        end
+
+        # ID ABF dùng để nối các đối tượng (bền qua lưu/mở file).
+        def abf_id(e)
+          e.respond_to?(:persistent_id) ? e.persistent_id : e.entityID
         end
 
         def draw_flat(g, pn)
@@ -116,9 +133,90 @@ module HungLoan
         end
 
         # Dấu kỹ thuật cho lỗ khoan/tiết diện, vẽ trong nhóm con (không cắt khối tấm).
-        # Tag ABF (tạo nếu chưa có, gán màu khi API hỗ trợ).
-        def abf_layer(model, f)
-          tag = C::AbfRules.tag_for(f)
+        # ĐỐI TƯỢNG GIA CÔNG KIỂU ABF (theo dự án ABF thật của xưởng — docs/khao_sat/ABF_DU_AN_THAT.md):
+        # mỗi thao tác là MỘT nhóm con nằm ngay trong nhóm tấm, tên nhóm và layer như công cụ ABF tạo
+        # (_ABF_minifixPlasticBase / ABF-D15, _ABF_minifixBolts / ABF-D5, _ABF_sideDrill + _ABF_sideDrillDepth / ABF-DSIDE-8,
+        #  ABF_D35, _ABF_Intersect / ABF_SOI HAU), kèm dictionary "ABF" (setting-name, id tấm đối tác…).
+        # Hình: lỗ = mặt tròn trên mặt/cạnh tấm; độ sâu lỗ cạnh = chữ nhật ở giữa độ dày; rãnh = chữ nhật trên mặt.
+        # ctx: {'resolve' => ->(local_id) { id tấm }, 'world' => Transformation module→thế giới, 'cam_groups' => {}}
+        def draw_marks(g, pn, feats, ctx = nil)
+          ctx ||= { 'resolve' => ->(_x) {}, 'world' => nil, 'cam_groups' => {} }
+          rules = C::AbfRules
+          made = []
+          mk = lambda do |f, key|
+            tag = rules.tag_for(f, key)
+            ly = ensure_layer(g.model, tag, f)
+            sub = g.entities.add_group
+            sub.name = rules.instance_for(f, key)
+            sub.layer = ly
+            sub.set_attribute(Store::DICT, 'kind', 'marks')
+            sub.set_attribute(Store::DICT, 'feature', f['id'])
+            made << sub
+            sub
+          end
+          put = lambda do |sub, f, key, ids|
+            rules.attrs_for(f, key, ids).each { |k, v| sub.set_attribute(rules::DICT, k, v) }
+          end
+          # cốc cam trước để lỗ cạnh tham chiếu được (face-drill-group-id)
+          order = feats.sort_by { |f| f['op'] == 'cam_housing' ? 0 : 1 }
+          order.each do |f|
+            begin
+              key = rules.op_key(f)
+              src = f['source'] || {}
+              a_id = b_id = nil
+              if src['kind'] == 'cam'
+                la, lb = src['joint'].to_s.split('>', 2)
+                a_id = ctx['resolve'].call(la); b_id = ctx['resolve'].call(lb)
+              end
+              case f['type']
+              when 'drill'
+                dir = U.vec(f['dir'])
+                next if dir.length < 1e-9
+                sub = mk.call(f, key)
+                edges = sub.entities.add_circle(U.pt(f['pos']), dir, U.l(f['diameter'] / 2.0), 24)
+                sub.entities.add_face(edges)
+                ids = { 'a' => a_id, 'b' => b_id }
+                jk = "#{src['joint']}:#{src['index']}"
+                if key == 'cam_housing'
+                  ctx['cam_groups'][jk] = abf_id(sub)
+                  n = C::Geom.dir_f2w(pn['frame'], f['dir'].map { |x| -x })
+                  v = U.vec(n)
+                  v = v.transform(ctx['world']) if ctx['world']
+                  sub.set_attribute(rules::DICT, 'minifix-up-face-normal', v)
+                elsif key == 'cam_edge_hole'
+                  ids['face_group'] = ctx['cam_groups'][jk]
+                  rect = rules.side_depth_rect(f)
+                  if rect
+                    dsub = mk.call(f, 'cam_side_depth')
+                    dsub.entities.add_face(rect.map { |q| U.pt(q) })
+                    put.call(dsub, f, 'cam_side_depth', ids)
+                  end
+                end
+                put.call(sub, f, key, ids)
+              when 'groove'
+                next unless f['rect']
+                sub = mk.call(f, key)
+                w = f['face'] == 'A' ? pn['t'] : 0.0
+                r = f['rect']
+                sub.entities.add_face([[r[0], r[1]], [r[2], r[1]], [r[2], r[3]], [r[0], r[3]]].map { |u, v| Geom::Point3d.new(U.l(u), U.l(v), U.l(w)) })
+                put.call(sub, f, key, 'other' => ctx['resolve'].call(src['other']))
+              when 'pocket'
+                sub = mk.call(f, key)
+                w = f['face'] == 'A' ? pn['t'] : 0.0
+                (f['outline'] || []).each do |poly|
+                  next if poly.size < 3
+                  sub.entities.add_face(poly.map { |q| Geom::Point3d.new(U.l(q[0]), U.l(q[1]), U.l(w)) })
+                end
+                put.call(sub, f, key, 'other' => ctx['resolve'].call(src['other'])) if key == 'section'
+              end
+            rescue StandardError => e
+              warn "[TuModule] Lỗi vẽ dấu #{f['id']}: #{e.message}"
+            end
+          end
+          made
+        end
+
+        def ensure_layer(model, tag, f)
           ly = model.layers[tag]
           unless ly
             ly = model.layers.add(tag)
@@ -128,52 +226,7 @@ module HungLoan
               nil
             end
           end
-          [tag, ly]
-        end
-
-        # DẤU GIA CÔNG KIỂU ABF: mỗi tag một NHÓM CON nằm NGAY TRONG nhóm tấm (một cấp), tên nhóm = tên tag,
-        # gắn tag ABF_…; hình là MẶT phẳng nằm đúng trên mặt/cạnh tấm (lỗ = mặt tròn, rãnh = chữ nhật,
-        # tiết diện = đa giác). Khối tấm giữ nguyên lăng trụ để ABF nhận là tấm.
-        # (Căn cứ: file mẫu của xưởng dùng nhóm ABF_BanLe/ABF_… trên tag ABF_D35…; kết quả ABF thật
-        #  cho thấy dấu lồng 2 cấp bằng nét rời không được nhận.)
-        def draw_marks(g, pn, feats, _legacy_layer = nil)
-          subs = {}
-          feats.each do |f|
-            tag, ly = abf_layer(g.model, f)
-            inst = C::AbfRules.instance_for(f)
-            sub = subs[[tag, inst]]
-            unless sub
-              sub = g.entities.add_group
-              sub.name = inst
-              sub.layer = ly
-              sub.set_attribute(Store::DICT, 'kind', 'marks')
-              subs[[tag, inst]] = sub
-            end
-            ents = sub.entities
-            begin
-              case f['type']
-              when 'drill'
-                dir = U.vec(f['dir'])
-                next if dir.length < 1e-9
-                edges = ents.add_circle(U.pt(f['pos']), dir, U.l(f['diameter'] / 2.0), 24)
-                ents.add_face(edges)
-              when 'groove'
-                next unless f['rect']
-                w = f['face'] == 'A' ? pn['t'] : 0.0
-                r = f['rect']
-                ents.add_face([[r[0], r[1]], [r[2], r[1]], [r[2], r[3]], [r[0], r[3]]].map { |u, v| Geom::Point3d.new(U.l(u), U.l(v), U.l(w)) })
-              when 'pocket'
-                w = f['face'] == 'A' ? pn['t'] : 0.0
-                (f['outline'] || []).each do |poly|
-                  next if poly.size < 3
-                  ents.add_face(poly.map { |q| Geom::Point3d.new(U.l(q[0]), U.l(q[1]), U.l(w)) })
-                end
-              end
-            rescue StandardError => e
-              warn "[TuModule] Lỗi vẽ dấu #{f['id']}: #{e.message}"
-            end
-          end
-          subs.values
+          ly
         end
       end
     end

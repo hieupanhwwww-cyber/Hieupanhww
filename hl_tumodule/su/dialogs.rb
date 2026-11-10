@@ -207,6 +207,7 @@ module HungLoan
           cam = Prefs.cam_presets.first
           { 'ops' => A::OP_KEYS.map { |k| { 'key' => k, 'title' => A::OP_TITLES[k], 'layer' => A.ops[k]['layer'], 'instance' => A.ops[k]['instance'],
                                             'def_layer' => A::DEFAULT_OPS[k]['layer'], 'def_instance' => A::DEFAULT_OPS[k]['instance'] } },
+            'settings' => A::DEFAULT_SETTINGS.keys.map { |k| { 'key' => k, 'label' => A::SETTING_TITLES[k], 'value' => A.settings[k], 'default' => A::DEFAULT_SETTINGS[k] } },
             'cam' => CAM_KEYS.map { |k, label| { 'key' => k, 'label' => label, 'value' => cam[k] } },
             'cam_name' => cam['name'], 'cam_demo' => cam['demo'] ? true : false }
         end
@@ -216,6 +217,8 @@ module HungLoan
           when 'init' then payload
           when 'save'
             cfg, errs = A.clean_ops(d['ops'] || {})
+            st, serr = A.clean_settings(d['settings'] || {})
+            errs = errs.merge(serr)
             cam = Core::Util.deep_copy(Prefs.cam_presets.first)
             CAM_KEYS.each do |k, label|
               x = Core::Util.num((d['cam'] || {})[k])
@@ -230,7 +233,7 @@ module HungLoan
               cam['demo'] = false
               Prefs.save_cam_presets([cam] + Prefs.cam_presets.drop(1))
             end
-            Prefs.save_abf_ops(cfg)
+            Prefs.save_abf_ops(cfg, st)
             n = d['regen'] ? Actions.regen_all : nil
             payload.merge('message' => n ? "Đã lưu và cập nhật #{n} bộ tủ trong model." : 'Đã lưu. Áp dụng cho tủ đặt mới và lần cập nhật kế tiếp.')
           when 'defaults'
