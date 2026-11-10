@@ -269,6 +269,46 @@ class TestSUFlow < Minitest::Test
     assert_equal :abort, model.ops.last[0], 'model đang mở không bị thay đổi'
   end
 
+  def test_panel_machining_table_and_delete
+    g = place('hl.khung_tu.v1')
+    S::Props.apply_module(g, 'top_joint' => 'inset', 'bottom_joint' => 'inset', 'front_enabled' => true,
+                             'door_count:side_L|side_R' => '1', 'hinges_enabled' => true, 'joints_enabled' => true)
+    pan = lambda { |lid| S::Store.panels_in(g).find { |x| x.get_attribute(S::Store::DICT, 'local_id') == lid } }
+    feats = lambda { |lid| S::Manager.build(params(g))['panels'].find { |x| x['local_id'] == lid }['features'] }
+    desc = S::Props.panel(pan.call('top'))
+    sec = desc['sections'].find { |x| x['title'].start_with?('Gia công CNC') }
+    assert sec, 'tấm có bảng gia công'
+    assert(sec['fields'].any? { |f| f['value'].to_s.include?('[ABF_D15]') })
+    assert(sec['fields'].any? { |f| f['value'].to_s.include?('[ABF_RANH_HAU]') })
+    # Xóa một lỗ cam → xóa cả bộ liên kết của cạnh đó (không để lỗ mồ côi)
+    cam = feats.call('top').find { |f| f['op'] == 'cam_housing' }
+    S::Props.apply_panel(pan.call('top'), "del_feat:#{cam['id']}" => true)
+    jid = cam['source']['joint']
+    assert(feats.call('top').none? { |f| f.dig('source', 'joint') == jid })
+    other = jid.split('>').last
+    assert(feats.call(other).none? { |f| f.dig('source', 'joint') == jid }, 'lỗ chốt bên tấm kia cũng được dọn')
+    # Xóa một lỗ cốc bản lề
+    door = S::Store.panels_in(g).find { |x| x.get_attribute(S::Store::DICT, 'role') == 'door' }
+    dl = door.get_attribute(S::Store::DICT, 'local_id')
+    n0 = feats.call(dl).size
+    S::Props.apply_panel(pan.call(dl), "del_feat:#{feats.call(dl).first['id']}" => true)
+    assert_equal n0 - 1, feats.call(dl).size
+    # Xóa rãnh hậu rồi khôi phục
+    S::Props.apply_panel(pan.call('side_L'), 'del_feat:side_L:back_groove' => true)
+    assert(feats.call('side_L').none? { |f| f['op'] == 'back_groove' })
+    S::Props.apply_module(g, 'h' => '1900')
+    assert(feats.call('side_L').none? { |f| f['op'] == 'back_groove' }, 'không tự hồi sinh')
+    d2 = S::Props.panel(pan.call('side_L'))
+    assert(d2['sections'].any? { |x| x['title'] == 'Thao tác đã xóa' })
+    S::Props.apply_panel(pan.call('side_L'), 'restore_feat:side_L:back_groove' => true)
+    assert(feats.call('side_L').any? { |f| f['op'] == 'back_groove' })
+    _parts, _j, issues = S::Export.check(model)
+    errs = issues.select { |i| i['level'] == 'error' }
+    assert_empty errs, errs.first(3).inspect
+    assert(model.layers['ABF_D35'], 'dấu lỗ cốc nằm trên tag ABF_D35')
+    assert(model.layers['ABF_RANH_HAU'])
+  end
+
   def test_tools_construct
     S::Commands.start_place('hl.khung_tu.v1')
     assert_kind_of S::PlaceTool, model.tool

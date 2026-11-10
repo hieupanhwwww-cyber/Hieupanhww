@@ -16,6 +16,7 @@ require 'core/sections'
 require 'core/mfg'
 require 'core/library'
 require 'core/abf_adapter'
+require 'core/abf_rules'
 
 include HungLoan::TuModule::Core
 
@@ -641,5 +642,37 @@ class TestLibrary < Minitest::Test
       assert_empty r['errors'], "#{t['id']}: #{r['errors']}"
       assert_empty H.overlaps(r['panels']), t['id']
     end
+  end
+end
+
+class TestAbfRules < Minitest::Test
+  def test_tags_follow_observed_shop_convention
+    assert_equal 'ABF_D35', AbfRules.tag_for('type' => 'drill', 'op' => 'hinge_cup', 'diameter' => 35.0, 'depth' => 12.5)
+    assert_equal 'ABF_D15', AbfRules.tag_for('type' => 'drill', 'op' => 'cam_housing', 'diameter' => 15.0)
+    assert_equal 'ABF_RANH_HAU', AbfRules.tag_for('type' => 'groove', 'op' => 'back_groove', 'depth' => 8.0)
+    assert_equal 'ABF_POCKET_Z7', AbfRules.tag_for('type' => 'pocket', 'op' => 'section', 'depth' => 7.0, 'through' => false)
+    assert_equal 'ABF_CatTrong', AbfRules.tag_for('type' => 'pocket', 'op' => 'section', 'depth' => 17.0, 'through' => true)
+  end
+
+  def test_parts_and_csv_carry_abf_tag
+    p = H.params('hl.khung_tu.v1', 'top_joint' => 'inset', 'bottom_joint' => 'inset')
+    p['joints']['enabled'] = true
+    r = Builder.build(p)
+    parts = Mfg.parts(r['panels'])
+    feats = parts.flat_map { |x| x['features'] }
+    assert(feats.all? { |f| f['abf_tag'].to_s.start_with?('ABF_') })
+    assert_includes feats.map { |f| f['abf_tag'] }, 'ABF_RANH_HAU'
+    assert_includes Mfg.to_csv_ops(parts).lines.first, 'tag_abf'
+    assert_match(/Ø15 sâu 12.5 mm/, AbfRules.describe(feats.find { |f| f['op'] == 'cam_housing' }))
+  end
+
+  def test_suppressed_feature_not_regenerated
+    p = H.params('hl.khung_tu.v1', 'back_mode' => 'groove')
+    p['suppressed_features'] = ['side_L:back_groove']
+    r = Builder.build(p)
+    assert_empty H.by(r, 'side_L')['features']
+    refute_empty H.by(r, 'side_R')['features']
+    r2 = Builder.build(r['params'].merge('w' => 1000.0))
+    assert_empty H.by(r2, 'side_L')['features'], 'đổi kích thước không hồi sinh thao tác đã xóa'
   end
 end

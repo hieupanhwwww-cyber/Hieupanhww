@@ -5,8 +5,8 @@
   "meta": {
     "model": "",
     "plugin": "Tủ Module Hùng Loan",
-    "version": "1.0.0",
-    "exported_at": "2026-11-07 17:37:39"
+    "version": "1.1.0",
+    "exported_at": "2026-11-10 09:01:48"
   },
   "status": {
     "geometry_valid": true,
@@ -30,11 +30,11 @@
   },
   "parts": [
     {
-      "id": "mod_to57mr30820002/side_L",
+      "id": "mod_toa3r04b030002/side_L",
       "role": "side",
       "label": "Hồi",
-      "module_id": "mod_to57mr30820002",
-      "assembly_id": "asm_to57mrf3a70001",
+      "module_id": "mod_toa3r04b030002",
+      "assembly_id": "asm_toa3r02ec60001",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -124,7 +124,8 @@
           "carve": true,
           "source": {
             "kind": "back_groove"
-          }
+          },
+          "abf_tag": "ABF_RANH_HAU"
         },
         {
           "id": "top>side_L:0:bolt",
@@ -146,12 +147,13 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_to57mr30820002/top>side_L",
+            "joint": "mod_toa3r04b030002/top>side_L",
             "index": 0,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
             "role": "bolt"
-          }
+          },
+          "abf_tag": "ABF_D5"
         },
         {
           "id": "top>side_L:1:bolt",
@@ -173,12 +175,13 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_to57mr30820002/top>side_L",
+            "joint": "mod_toa3r04b030002/top>side_L",
             "index": 1,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
             "role": "bolt"
-          }
+          },
+          "abf_tag": "ABF_D5"
         },
         {
           "id": "bottom>side_L:0:bolt",
@@ -200,12 +203,13 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_to57mr30820002/bottom>side_L",
+            "joint": "mod_toa3r04b030002/bottom>side_L",
             "index": 0,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
             "role": "bolt"
-          }
+          },
+          "abf_tag": "ABF_D5"
         },
         {
           "id": "bottom>side_L:1:bolt",
@@ -227,15 +231,16 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_to57mr30820002/bottom>side_L",
+            "joint": "mod_toa3r04b030002/bottom>side_L",
             "index": 1,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
             "role": "bolt"
-          }
+          },
+          "abf_tag": "ABF_D5"
         },
         {
-          "id": "dot_to57mr00650003>side_L:0:bolt",
+          "id": "dot_toa3r06b660003>side_L:0:bolt",
           "type": "drill",
           "op": "cam_bolt",
           "face": "A",
@@ -254,15 +259,16 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_to57mr30820002/dot_to57mr00650003>side_L",
+            "joint": "mod_toa3r04b030002/dot_toa3r06b660003>side_L",
             "index": 0,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
             "role": "bolt"
-          }
+          },
+          "abf_tag": "ABF_D5"
         },
         {
-          "id": "dot_to57mr00650003>side_L:1:bolt",
+          "id": "dot_toa3r06b660003>side_L:1:bolt",
           "type": "drill",
           "op": "cam_bolt",
           "face": "A",
@@ -281,12 +287,13 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_to57mr30820002/dot_to57mr00650003>side_L",
+            "joint": "mod_toa3r04b030002/dot_toa3r06b660003>side_L",
             "index": 1,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
             "role": "bolt"
-          }
+          },
+          "abf_tag": "ABF_D5"
         }
       ],
       "bent": null,
@@ -310,11 +317,11 @@
       ]
     },
     {
-      "id": "mod_to57mr30820002/side_R",
+      "id": "mod_toa3r04b030002/side_R",
       "role": "side",
       "label": "Hồi",
-      "module_id": "mod_to57mr30820002",
-      "assembly_id": "asm_to57mrf3a70001",
+      "module_id": "mod_toa3r04b030002",
+      "assembly_id": "asm_toa3r02ec60001",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -404,7 +411,8 @@
           "carve": true,
           "source": {
             "kind": "back_groove"
-          }
+          },
+          "abf_tag": "ABF_RANH_HAU"
         },
         {
           "id": "top>side_R:0:bolt",
@@ -426,12 +434,13 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_to57mr30820002/top>side_R",
+            "joint": "mod_toa3r04b030002/top>side_R",
             "index": 0,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
             "role": "bolt"
-          }
+          },
+          "abf_tag": "ABF_D5"
         },
         {
           "id": "top>side_R:1:bolt",
@@ -453,12 +462,13 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_to57mr30820002/top>side_R",
+            "joint": "mod_toa3r04b030002/top>side_R",
             "index": 1,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
             "role": "bolt"
-          }
+          },
+          "abf_tag": "ABF_D5"
         },
         {
           "id": "bottom>side_R:0:bolt",
@@ -480,12 +490,13 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_to57mr30820002/bottom>side_R",
+            "joint": "mod_toa3r04b030002/bottom>side_R",
             "index": 0,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
             "role": "bolt"
-          }
+          },
+          "abf_tag": "ABF_D5"
         },
         {
           "id": "bottom>side_R:1:bolt",
@@ -507,15 +518,16 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_to57mr30820002/bottom>side_R",
+            "joint": "mod_toa3r04b030002/bottom>side_R",
             "index": 1,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
             "role": "bolt"
-          }
+          },
+          "abf_tag": "ABF_D5"
         },
         {
-          "id": "dot_to57mr00650003>side_R:0:bolt",
+          "id": "dot_toa3r06b660003>side_R:0:bolt",
           "type": "drill",
           "op": "cam_bolt",
           "face": "B",
@@ -534,15 +546,16 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_to57mr30820002/dot_to57mr00650003>side_R",
+            "joint": "mod_toa3r04b030002/dot_toa3r06b660003>side_R",
             "index": 0,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
             "role": "bolt"
-          }
+          },
+          "abf_tag": "ABF_D5"
         },
         {
-          "id": "dot_to57mr00650003>side_R:1:bolt",
+          "id": "dot_toa3r06b660003>side_R:1:bolt",
           "type": "drill",
           "op": "cam_bolt",
           "face": "B",
@@ -561,12 +574,13 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_to57mr30820002/dot_to57mr00650003>side_R",
+            "joint": "mod_toa3r04b030002/dot_toa3r06b660003>side_R",
             "index": 1,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
             "role": "bolt"
-          }
+          },
+          "abf_tag": "ABF_D5"
         }
       ],
       "bent": null,
@@ -590,11 +604,11 @@
       ]
     },
     {
-      "id": "mod_to57mr30820002/top",
+      "id": "mod_toa3r04b030002/top",
       "role": "top",
       "label": "Nóc",
-      "module_id": "mod_to57mr30820002",
-      "assembly_id": "asm_to57mrf3a70001",
+      "module_id": "mod_toa3r04b030002",
+      "assembly_id": "asm_toa3r02ec60001",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -684,7 +698,8 @@
           "carve": true,
           "source": {
             "kind": "back_groove"
-          }
+          },
+          "abf_tag": "ABF_RANH_HAU"
         },
         {
           "id": "top>side_L:0:edge",
@@ -706,12 +721,13 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_to57mr30820002/top>side_L",
+            "joint": "mod_toa3r04b030002/top>side_L",
             "index": 0,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
             "role": "edge"
-          }
+          },
+          "abf_tag": "ABF_D8"
         },
         {
           "id": "top>side_L:0:cam",
@@ -733,12 +749,13 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_to57mr30820002/top>side_L",
+            "joint": "mod_toa3r04b030002/top>side_L",
             "index": 0,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
             "role": "cam"
-          }
+          },
+          "abf_tag": "ABF_D15"
         },
         {
           "id": "top>side_L:1:edge",
@@ -760,12 +777,13 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_to57mr30820002/top>side_L",
+            "joint": "mod_toa3r04b030002/top>side_L",
             "index": 1,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
             "role": "edge"
-          }
+          },
+          "abf_tag": "ABF_D8"
         },
         {
           "id": "top>side_L:1:cam",
@@ -787,12 +805,13 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_to57mr30820002/top>side_L",
+            "joint": "mod_toa3r04b030002/top>side_L",
             "index": 1,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
             "role": "cam"
-          }
+          },
+          "abf_tag": "ABF_D15"
         },
         {
           "id": "top>side_R:0:edge",
@@ -814,12 +833,13 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_to57mr30820002/top>side_R",
+            "joint": "mod_toa3r04b030002/top>side_R",
             "index": 0,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
             "role": "edge"
-          }
+          },
+          "abf_tag": "ABF_D8"
         },
         {
           "id": "top>side_R:0:cam",
@@ -841,12 +861,13 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_to57mr30820002/top>side_R",
+            "joint": "mod_toa3r04b030002/top>side_R",
             "index": 0,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
             "role": "cam"
-          }
+          },
+          "abf_tag": "ABF_D15"
         },
         {
           "id": "top>side_R:1:edge",
@@ -868,12 +889,13 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_to57mr30820002/top>side_R",
+            "joint": "mod_toa3r04b030002/top>side_R",
             "index": 1,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
             "role": "edge"
-          }
+          },
+          "abf_tag": "ABF_D8"
         },
         {
           "id": "top>side_R:1:cam",
@@ -895,12 +917,13 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_to57mr30820002/top>side_R",
+            "joint": "mod_toa3r04b030002/top>side_R",
             "index": 1,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
             "role": "cam"
-          }
+          },
+          "abf_tag": "ABF_D15"
         }
       ],
       "bent": null,
@@ -924,11 +947,11 @@
       ]
     },
     {
-      "id": "mod_to57mr30820002/bottom",
+      "id": "mod_toa3r04b030002/bottom",
       "role": "bottom",
       "label": "Đáy",
-      "module_id": "mod_to57mr30820002",
-      "assembly_id": "asm_to57mrf3a70001",
+      "module_id": "mod_toa3r04b030002",
+      "assembly_id": "asm_toa3r02ec60001",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -1018,7 +1041,8 @@
           "carve": true,
           "source": {
             "kind": "back_groove"
-          }
+          },
+          "abf_tag": "ABF_RANH_HAU"
         },
         {
           "id": "bottom>side_L:0:edge",
@@ -1040,12 +1064,13 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_to57mr30820002/bottom>side_L",
+            "joint": "mod_toa3r04b030002/bottom>side_L",
             "index": 0,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
             "role": "edge"
-          }
+          },
+          "abf_tag": "ABF_D8"
         },
         {
           "id": "bottom>side_L:0:cam",
@@ -1067,12 +1092,13 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_to57mr30820002/bottom>side_L",
+            "joint": "mod_toa3r04b030002/bottom>side_L",
             "index": 0,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
             "role": "cam"
-          }
+          },
+          "abf_tag": "ABF_D15"
         },
         {
           "id": "bottom>side_L:1:edge",
@@ -1094,12 +1120,13 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_to57mr30820002/bottom>side_L",
+            "joint": "mod_toa3r04b030002/bottom>side_L",
             "index": 1,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
             "role": "edge"
-          }
+          },
+          "abf_tag": "ABF_D8"
         },
         {
           "id": "bottom>side_L:1:cam",
@@ -1121,12 +1148,13 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_to57mr30820002/bottom>side_L",
+            "joint": "mod_toa3r04b030002/bottom>side_L",
             "index": 1,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
             "role": "cam"
-          }
+          },
+          "abf_tag": "ABF_D15"
         },
         {
           "id": "bottom>side_R:0:edge",
@@ -1148,12 +1176,13 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_to57mr30820002/bottom>side_R",
+            "joint": "mod_toa3r04b030002/bottom>side_R",
             "index": 0,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
             "role": "edge"
-          }
+          },
+          "abf_tag": "ABF_D8"
         },
         {
           "id": "bottom>side_R:0:cam",
@@ -1175,12 +1204,13 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_to57mr30820002/bottom>side_R",
+            "joint": "mod_toa3r04b030002/bottom>side_R",
             "index": 0,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
             "role": "cam"
-          }
+          },
+          "abf_tag": "ABF_D15"
         },
         {
           "id": "bottom>side_R:1:edge",
@@ -1202,12 +1232,13 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_to57mr30820002/bottom>side_R",
+            "joint": "mod_toa3r04b030002/bottom>side_R",
             "index": 1,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
             "role": "edge"
-          }
+          },
+          "abf_tag": "ABF_D8"
         },
         {
           "id": "bottom>side_R:1:cam",
@@ -1229,12 +1260,13 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_to57mr30820002/bottom>side_R",
+            "joint": "mod_toa3r04b030002/bottom>side_R",
             "index": 1,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
             "role": "cam"
-          }
+          },
+          "abf_tag": "ABF_D15"
         }
       ],
       "bent": null,
@@ -1258,11 +1290,11 @@
       ]
     },
     {
-      "id": "mod_to57mr30820002/back",
+      "id": "mod_toa3r04b030002/back",
       "role": "back",
       "label": "Hậu",
-      "module_id": "mod_to57mr30820002",
-      "assembly_id": "asm_to57mrf3a70001",
+      "module_id": "mod_toa3r04b030002",
+      "assembly_id": "asm_toa3r02ec60001",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -1348,11 +1380,11 @@
       ]
     },
     {
-      "id": "mod_to57mr30820002/dot_to57mr00650003",
+      "id": "mod_toa3r04b030002/dot_toa3r06b660003",
       "role": "shelf",
       "label": "Đợt",
-      "module_id": "mod_to57mr30820002",
-      "assembly_id": "asm_to57mrf3a70001",
+      "module_id": "mod_toa3r04b030002",
+      "assembly_id": "asm_toa3r02ec60001",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -1416,7 +1448,7 @@
       },
       "features": [
         {
-          "id": "dot_to57mr00650003>side_L:0:edge",
+          "id": "dot_toa3r06b660003>side_L:0:edge",
           "type": "drill",
           "op": "cam_edge_hole",
           "face": "E:u0",
@@ -1435,15 +1467,16 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_to57mr30820002/dot_to57mr00650003>side_L",
+            "joint": "mod_toa3r04b030002/dot_toa3r06b660003>side_L",
             "index": 0,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
             "role": "edge"
-          }
+          },
+          "abf_tag": "ABF_D8"
         },
         {
-          "id": "dot_to57mr00650003>side_L:0:cam",
+          "id": "dot_toa3r06b660003>side_L:0:cam",
           "type": "drill",
           "op": "cam_housing",
           "face": "A",
@@ -1462,15 +1495,16 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_to57mr30820002/dot_to57mr00650003>side_L",
+            "joint": "mod_toa3r04b030002/dot_toa3r06b660003>side_L",
             "index": 0,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
             "role": "cam"
-          }
+          },
+          "abf_tag": "ABF_D15"
         },
         {
-          "id": "dot_to57mr00650003>side_L:1:edge",
+          "id": "dot_toa3r06b660003>side_L:1:edge",
           "type": "drill",
           "op": "cam_edge_hole",
           "face": "E:u0",
@@ -1489,15 +1523,16 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_to57mr30820002/dot_to57mr00650003>side_L",
+            "joint": "mod_toa3r04b030002/dot_toa3r06b660003>side_L",
             "index": 1,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
             "role": "edge"
-          }
+          },
+          "abf_tag": "ABF_D8"
         },
         {
-          "id": "dot_to57mr00650003>side_L:1:cam",
+          "id": "dot_toa3r06b660003>side_L:1:cam",
           "type": "drill",
           "op": "cam_housing",
           "face": "A",
@@ -1516,15 +1551,16 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_to57mr30820002/dot_to57mr00650003>side_L",
+            "joint": "mod_toa3r04b030002/dot_toa3r06b660003>side_L",
             "index": 1,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
             "role": "cam"
-          }
+          },
+          "abf_tag": "ABF_D15"
         },
         {
-          "id": "dot_to57mr00650003>side_R:0:edge",
+          "id": "dot_toa3r06b660003>side_R:0:edge",
           "type": "drill",
           "op": "cam_edge_hole",
           "face": "E:u1",
@@ -1543,15 +1579,16 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_to57mr30820002/dot_to57mr00650003>side_R",
+            "joint": "mod_toa3r04b030002/dot_toa3r06b660003>side_R",
             "index": 0,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
             "role": "edge"
-          }
+          },
+          "abf_tag": "ABF_D8"
         },
         {
-          "id": "dot_to57mr00650003>side_R:0:cam",
+          "id": "dot_toa3r06b660003>side_R:0:cam",
           "type": "drill",
           "op": "cam_housing",
           "face": "A",
@@ -1570,15 +1607,16 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_to57mr30820002/dot_to57mr00650003>side_R",
+            "joint": "mod_toa3r04b030002/dot_toa3r06b660003>side_R",
             "index": 0,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
             "role": "cam"
-          }
+          },
+          "abf_tag": "ABF_D15"
         },
         {
-          "id": "dot_to57mr00650003>side_R:1:edge",
+          "id": "dot_toa3r06b660003>side_R:1:edge",
           "type": "drill",
           "op": "cam_edge_hole",
           "face": "E:u1",
@@ -1597,15 +1635,16 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_to57mr30820002/dot_to57mr00650003>side_R",
+            "joint": "mod_toa3r04b030002/dot_toa3r06b660003>side_R",
             "index": 1,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
             "role": "edge"
-          }
+          },
+          "abf_tag": "ABF_D8"
         },
         {
-          "id": "dot_to57mr00650003>side_R:1:cam",
+          "id": "dot_toa3r06b660003>side_R:1:cam",
           "type": "drill",
           "op": "cam_housing",
           "face": "A",
@@ -1624,12 +1663,13 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_to57mr30820002/dot_to57mr00650003>side_R",
+            "joint": "mod_toa3r04b030002/dot_toa3r06b660003>side_R",
             "index": 1,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
             "role": "cam"
-          }
+          },
+          "abf_tag": "ABF_D15"
         }
       ],
       "bent": null,
@@ -1653,11 +1693,11 @@
       ]
     },
     {
-      "id": "mod_to57mr30820002/door:side_L|side_R:0",
+      "id": "mod_toa3r04b030002/door:side_L|side_R:0",
       "role": "door",
       "label": "Cánh",
-      "module_id": "mod_to57mr30820002",
-      "assembly_id": "asm_to57mrf3a70001",
+      "module_id": "mod_toa3r04b030002",
+      "assembly_id": "asm_toa3r02ec60001",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -1746,7 +1786,8 @@
             "index": 0,
             "preset": "Mặc định (DEMO)",
             "demo": true
-          }
+          },
+          "abf_tag": "ABF_D35"
         },
         {
           "id": "door:side_L|side_R:0:hinge:1",
@@ -1774,7 +1815,8 @@
             "index": 1,
             "preset": "Mặc định (DEMO)",
             "demo": true
-          }
+          },
+          "abf_tag": "ABF_D35"
         },
         {
           "id": "door:side_L|side_R:0:hinge:2",
@@ -1802,7 +1844,8 @@
             "index": 2,
             "preset": "Mặc định (DEMO)",
             "demo": true
-          }
+          },
+          "abf_tag": "ABF_D35"
         }
       ],
       "bent": null,
@@ -1826,11 +1869,11 @@
       ]
     },
     {
-      "id": "mod_to57mr30820002/door:side_L|side_R:1",
+      "id": "mod_toa3r04b030002/door:side_L|side_R:1",
       "role": "door",
       "label": "Cánh",
-      "module_id": "mod_to57mr30820002",
-      "assembly_id": "asm_to57mrf3a70001",
+      "module_id": "mod_toa3r04b030002",
+      "assembly_id": "asm_toa3r02ec60001",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -1919,7 +1962,8 @@
             "index": 0,
             "preset": "Mặc định (DEMO)",
             "demo": true
-          }
+          },
+          "abf_tag": "ABF_D35"
         },
         {
           "id": "door:side_L|side_R:1:hinge:1",
@@ -1947,7 +1991,8 @@
             "index": 1,
             "preset": "Mặc định (DEMO)",
             "demo": true
-          }
+          },
+          "abf_tag": "ABF_D35"
         },
         {
           "id": "door:side_L|side_R:1:hinge:2",
@@ -1975,7 +2020,8 @@
             "index": 2,
             "preset": "Mặc định (DEMO)",
             "demo": true
-          }
+          },
+          "abf_tag": "ABF_D35"
         }
       ],
       "bent": null,
@@ -1999,11 +2045,11 @@
       ]
     },
     {
-      "id": "mod_to57mrccc50007/top",
+      "id": "mod_toa3r0ff8f0007/top",
       "role": "top",
       "label": "Nóc chữ L",
-      "module_id": "mod_to57mrccc50007",
-      "assembly_id": "asm_to57mra72d0006",
+      "module_id": "mod_toa3r0ff8f0007",
+      "assembly_id": "asm_toa3r038390006",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -2100,12 +2146,13 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_to57mrccc50007/end_B>top",
+            "joint": "mod_toa3r0ff8f0007/end_B>top",
             "index": 0,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
             "role": "bolt"
-          }
+          },
+          "abf_tag": "ABF_D5"
         },
         {
           "id": "end_B>top:1:bolt",
@@ -2127,12 +2174,13 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_to57mrccc50007/end_B>top",
+            "joint": "mod_toa3r0ff8f0007/end_B>top",
             "index": 1,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
             "role": "bolt"
-          }
+          },
+          "abf_tag": "ABF_D5"
         },
         {
           "id": "end_A>top:0:bolt",
@@ -2154,12 +2202,13 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_to57mrccc50007/end_A>top",
+            "joint": "mod_toa3r0ff8f0007/end_A>top",
             "index": 0,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
             "role": "bolt"
-          }
+          },
+          "abf_tag": "ABF_D5"
         },
         {
           "id": "end_A>top:1:bolt",
@@ -2181,12 +2230,13 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_to57mrccc50007/end_A>top",
+            "joint": "mod_toa3r0ff8f0007/end_A>top",
             "index": 1,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
             "role": "bolt"
-          }
+          },
+          "abf_tag": "ABF_D5"
         }
       ],
       "bent": null,
@@ -2218,11 +2268,11 @@
       ]
     },
     {
-      "id": "mod_to57mrccc50007/bottom",
+      "id": "mod_toa3r0ff8f0007/bottom",
       "role": "bottom",
       "label": "Đáy chữ L",
-      "module_id": "mod_to57mrccc50007",
-      "assembly_id": "asm_to57mra72d0006",
+      "module_id": "mod_toa3r0ff8f0007",
+      "assembly_id": "asm_toa3r038390006",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -2319,12 +2369,13 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_to57mrccc50007/end_B>bottom",
+            "joint": "mod_toa3r0ff8f0007/end_B>bottom",
             "index": 0,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
             "role": "bolt"
-          }
+          },
+          "abf_tag": "ABF_D5"
         },
         {
           "id": "end_B>bottom:1:bolt",
@@ -2346,12 +2397,13 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_to57mrccc50007/end_B>bottom",
+            "joint": "mod_toa3r0ff8f0007/end_B>bottom",
             "index": 1,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
             "role": "bolt"
-          }
+          },
+          "abf_tag": "ABF_D5"
         },
         {
           "id": "end_A>bottom:0:bolt",
@@ -2373,12 +2425,13 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_to57mrccc50007/end_A>bottom",
+            "joint": "mod_toa3r0ff8f0007/end_A>bottom",
             "index": 0,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
             "role": "bolt"
-          }
+          },
+          "abf_tag": "ABF_D5"
         },
         {
           "id": "end_A>bottom:1:bolt",
@@ -2400,12 +2453,13 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_to57mrccc50007/end_A>bottom",
+            "joint": "mod_toa3r0ff8f0007/end_A>bottom",
             "index": 1,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
             "role": "bolt"
-          }
+          },
+          "abf_tag": "ABF_D5"
         }
       ],
       "bent": null,
@@ -2437,11 +2491,11 @@
       ]
     },
     {
-      "id": "mod_to57mrccc50007/end_A",
+      "id": "mod_toa3r0ff8f0007/end_A",
       "role": "l_end",
       "label": "Hồi chữ L",
-      "module_id": "mod_to57mrccc50007",
-      "assembly_id": "asm_to57mra72d0006",
+      "module_id": "mod_toa3r0ff8f0007",
+      "assembly_id": "asm_toa3r038390006",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -2524,12 +2578,13 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_to57mrccc50007/end_A>top",
+            "joint": "mod_toa3r0ff8f0007/end_A>top",
             "index": 0,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
             "role": "edge"
-          }
+          },
+          "abf_tag": "ABF_D8"
         },
         {
           "id": "end_A>top:0:cam",
@@ -2551,12 +2606,13 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_to57mrccc50007/end_A>top",
+            "joint": "mod_toa3r0ff8f0007/end_A>top",
             "index": 0,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
             "role": "cam"
-          }
+          },
+          "abf_tag": "ABF_D15"
         },
         {
           "id": "end_A>top:1:edge",
@@ -2578,12 +2634,13 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_to57mrccc50007/end_A>top",
+            "joint": "mod_toa3r0ff8f0007/end_A>top",
             "index": 1,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
             "role": "edge"
-          }
+          },
+          "abf_tag": "ABF_D8"
         },
         {
           "id": "end_A>top:1:cam",
@@ -2605,12 +2662,13 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_to57mrccc50007/end_A>top",
+            "joint": "mod_toa3r0ff8f0007/end_A>top",
             "index": 1,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
             "role": "cam"
-          }
+          },
+          "abf_tag": "ABF_D15"
         },
         {
           "id": "end_A>bottom:0:edge",
@@ -2632,12 +2690,13 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_to57mrccc50007/end_A>bottom",
+            "joint": "mod_toa3r0ff8f0007/end_A>bottom",
             "index": 0,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
             "role": "edge"
-          }
+          },
+          "abf_tag": "ABF_D8"
         },
         {
           "id": "end_A>bottom:0:cam",
@@ -2659,12 +2718,13 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_to57mrccc50007/end_A>bottom",
+            "joint": "mod_toa3r0ff8f0007/end_A>bottom",
             "index": 0,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
             "role": "cam"
-          }
+          },
+          "abf_tag": "ABF_D15"
         },
         {
           "id": "end_A>bottom:1:edge",
@@ -2686,12 +2746,13 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_to57mrccc50007/end_A>bottom",
+            "joint": "mod_toa3r0ff8f0007/end_A>bottom",
             "index": 1,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
             "role": "edge"
-          }
+          },
+          "abf_tag": "ABF_D8"
         },
         {
           "id": "end_A>bottom:1:cam",
@@ -2713,12 +2774,13 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_to57mrccc50007/end_A>bottom",
+            "joint": "mod_toa3r0ff8f0007/end_A>bottom",
             "index": 1,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
             "role": "cam"
-          }
+          },
+          "abf_tag": "ABF_D15"
         }
       ],
       "bent": null,
@@ -2742,11 +2804,11 @@
       ]
     },
     {
-      "id": "mod_to57mrccc50007/end_B",
+      "id": "mod_toa3r0ff8f0007/end_B",
       "role": "l_end",
       "label": "Hồi chữ L",
-      "module_id": "mod_to57mrccc50007",
-      "assembly_id": "asm_to57mra72d0006",
+      "module_id": "mod_toa3r0ff8f0007",
+      "assembly_id": "asm_toa3r038390006",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -2829,12 +2891,13 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_to57mrccc50007/end_B>top",
+            "joint": "mod_toa3r0ff8f0007/end_B>top",
             "index": 0,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
             "role": "edge"
-          }
+          },
+          "abf_tag": "ABF_D8"
         },
         {
           "id": "end_B>top:0:cam",
@@ -2856,12 +2919,13 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_to57mrccc50007/end_B>top",
+            "joint": "mod_toa3r0ff8f0007/end_B>top",
             "index": 0,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
             "role": "cam"
-          }
+          },
+          "abf_tag": "ABF_D15"
         },
         {
           "id": "end_B>top:1:edge",
@@ -2883,12 +2947,13 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_to57mrccc50007/end_B>top",
+            "joint": "mod_toa3r0ff8f0007/end_B>top",
             "index": 1,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
             "role": "edge"
-          }
+          },
+          "abf_tag": "ABF_D8"
         },
         {
           "id": "end_B>top:1:cam",
@@ -2910,12 +2975,13 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_to57mrccc50007/end_B>top",
+            "joint": "mod_toa3r0ff8f0007/end_B>top",
             "index": 1,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
             "role": "cam"
-          }
+          },
+          "abf_tag": "ABF_D15"
         },
         {
           "id": "end_B>bottom:0:edge",
@@ -2937,12 +3003,13 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_to57mrccc50007/end_B>bottom",
+            "joint": "mod_toa3r0ff8f0007/end_B>bottom",
             "index": 0,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
             "role": "edge"
-          }
+          },
+          "abf_tag": "ABF_D8"
         },
         {
           "id": "end_B>bottom:0:cam",
@@ -2964,12 +3031,13 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_to57mrccc50007/end_B>bottom",
+            "joint": "mod_toa3r0ff8f0007/end_B>bottom",
             "index": 0,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
             "role": "cam"
-          }
+          },
+          "abf_tag": "ABF_D15"
         },
         {
           "id": "end_B>bottom:1:edge",
@@ -2991,12 +3059,13 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_to57mrccc50007/end_B>bottom",
+            "joint": "mod_toa3r0ff8f0007/end_B>bottom",
             "index": 1,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
             "role": "edge"
-          }
+          },
+          "abf_tag": "ABF_D8"
         },
         {
           "id": "end_B>bottom:1:cam",
@@ -3018,12 +3087,13 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_to57mrccc50007/end_B>bottom",
+            "joint": "mod_toa3r0ff8f0007/end_B>bottom",
             "index": 1,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
             "role": "cam"
-          }
+          },
+          "abf_tag": "ABF_D15"
         }
       ],
       "bent": null,
@@ -3047,11 +3117,11 @@
       ]
     },
     {
-      "id": "mod_to57mrccc50007/back_A",
+      "id": "mod_toa3r0ff8f0007/back_A",
       "role": "back",
       "label": "Hậu",
-      "module_id": "mod_to57mrccc50007",
-      "assembly_id": "asm_to57mra72d0006",
+      "module_id": "mod_toa3r0ff8f0007",
+      "assembly_id": "asm_toa3r038390006",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -3137,11 +3207,11 @@
       ]
     },
     {
-      "id": "mod_to57mrccc50007/back_B",
+      "id": "mod_toa3r0ff8f0007/back_B",
       "role": "back",
       "label": "Hậu",
-      "module_id": "mod_to57mrccc50007",
-      "assembly_id": "asm_to57mra72d0006",
+      "module_id": "mod_toa3r0ff8f0007",
+      "assembly_id": "asm_toa3r038390006",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -3227,11 +3297,11 @@
       ]
     },
     {
-      "id": "mod_to57mr9ae50009/side_L",
+      "id": "mod_toa3r0f3690009/side_L",
       "role": "side",
       "label": "Hồi",
-      "module_id": "mod_to57mr9ae50009",
-      "assembly_id": "asm_to57mr05670008",
+      "module_id": "mod_toa3r0f3690009",
+      "assembly_id": "asm_toa3r079f50008",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -3317,11 +3387,11 @@
       ]
     },
     {
-      "id": "mod_to57mr9ae50009/side_R",
+      "id": "mod_toa3r0f3690009/side_R",
       "role": "side",
       "label": "Hồi",
-      "module_id": "mod_to57mr9ae50009",
-      "assembly_id": "asm_to57mr05670008",
+      "module_id": "mod_toa3r0f3690009",
+      "assembly_id": "asm_toa3r079f50008",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -3385,7 +3455,7 @@
       },
       "features": [
         {
-          "id": "sec:mod_to57mr63fd000a/side_L~mod_to57mr9ae50009/side_R",
+          "id": "sec:mod_toa3r022b4000a/side_L~mod_toa3r0f3690009/side_R",
           "type": "pocket",
           "op": "section",
           "face": "A",
@@ -3420,10 +3490,11 @@
           "approx": false,
           "source": {
             "kind": "section",
-            "pair": "mod_to57mr63fd000a/side_L~mod_to57mr9ae50009/side_R",
-            "other": "mod_to57mr63fd000a/side_L",
+            "pair": "mod_toa3r022b4000a/side_L~mod_toa3r0f3690009/side_R",
+            "other": "mod_toa3r022b4000a/side_L",
             "mark": "pocket"
-          }
+          },
+          "abf_tag": "ABF_POCKET_Z7"
         }
       ],
       "bent": null,
@@ -3447,11 +3518,11 @@
       ]
     },
     {
-      "id": "mod_to57mr9ae50009/top",
+      "id": "mod_toa3r0f3690009/top",
       "role": "top",
       "label": "Nóc",
-      "module_id": "mod_to57mr9ae50009",
-      "assembly_id": "asm_to57mr05670008",
+      "module_id": "mod_toa3r0f3690009",
+      "assembly_id": "asm_toa3r079f50008",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -3537,11 +3608,11 @@
       ]
     },
     {
-      "id": "mod_to57mr9ae50009/bottom",
+      "id": "mod_toa3r0f3690009/bottom",
       "role": "bottom",
       "label": "Đáy",
-      "module_id": "mod_to57mr9ae50009",
-      "assembly_id": "asm_to57mr05670008",
+      "module_id": "mod_toa3r0f3690009",
+      "assembly_id": "asm_toa3r079f50008",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -3627,11 +3698,11 @@
       ]
     },
     {
-      "id": "mod_to57mr9ae50009/back",
+      "id": "mod_toa3r0f3690009/back",
       "role": "back",
       "label": "Hậu",
-      "module_id": "mod_to57mr9ae50009",
-      "assembly_id": "asm_to57mr05670008",
+      "module_id": "mod_toa3r0f3690009",
+      "assembly_id": "asm_toa3r079f50008",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -3717,11 +3788,11 @@
       ]
     },
     {
-      "id": "mod_to57mr63fd000a/side_L",
+      "id": "mod_toa3r022b4000a/side_L",
       "role": "side",
       "label": "Hồi",
-      "module_id": "mod_to57mr63fd000a",
-      "assembly_id": "asm_to57mr05670008",
+      "module_id": "mod_toa3r022b4000a",
+      "assembly_id": "asm_toa3r079f50008",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -3811,7 +3882,8 @@
           "carve": true,
           "source": {
             "kind": "back_groove"
-          }
+          },
+          "abf_tag": "ABF_RANH_HAU"
         }
       ],
       "bent": null,
@@ -3835,11 +3907,11 @@
       ]
     },
     {
-      "id": "mod_to57mr63fd000a/side_R",
+      "id": "mod_toa3r022b4000a/side_R",
       "role": "side",
       "label": "Hồi",
-      "module_id": "mod_to57mr63fd000a",
-      "assembly_id": "asm_to57mr05670008",
+      "module_id": "mod_toa3r022b4000a",
+      "assembly_id": "asm_toa3r079f50008",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -3929,7 +4001,8 @@
           "carve": true,
           "source": {
             "kind": "back_groove"
-          }
+          },
+          "abf_tag": "ABF_RANH_HAU"
         }
       ],
       "bent": null,
@@ -3953,11 +4026,11 @@
       ]
     },
     {
-      "id": "mod_to57mr63fd000a/top",
+      "id": "mod_toa3r022b4000a/top",
       "role": "top",
       "label": "Nóc",
-      "module_id": "mod_to57mr63fd000a",
-      "assembly_id": "asm_to57mr05670008",
+      "module_id": "mod_toa3r022b4000a",
+      "assembly_id": "asm_toa3r079f50008",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -4047,7 +4120,8 @@
           "carve": true,
           "source": {
             "kind": "back_groove"
-          }
+          },
+          "abf_tag": "ABF_RANH_HAU"
         }
       ],
       "bent": null,
@@ -4071,11 +4145,11 @@
       ]
     },
     {
-      "id": "mod_to57mr63fd000a/bottom",
+      "id": "mod_toa3r022b4000a/bottom",
       "role": "bottom",
       "label": "Đáy",
-      "module_id": "mod_to57mr63fd000a",
-      "assembly_id": "asm_to57mr05670008",
+      "module_id": "mod_toa3r022b4000a",
+      "assembly_id": "asm_toa3r079f50008",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -4165,7 +4239,8 @@
           "carve": true,
           "source": {
             "kind": "back_groove"
-          }
+          },
+          "abf_tag": "ABF_RANH_HAU"
         }
       ],
       "bent": null,
@@ -4189,11 +4264,11 @@
       ]
     },
     {
-      "id": "mod_to57mr63fd000a/back",
+      "id": "mod_toa3r022b4000a/back",
       "role": "back",
       "label": "Hậu",
-      "module_id": "mod_to57mr63fd000a",
-      "assembly_id": "asm_to57mr05670008",
+      "module_id": "mod_toa3r022b4000a",
+      "assembly_id": "asm_toa3r079f50008",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -4279,11 +4354,11 @@
       ]
     },
     {
-      "id": "mod_to57mr29aa000c/side_L",
+      "id": "mod_toa3r020a2000c/side_L",
       "role": "side",
       "label": "Hồi",
-      "module_id": "mod_to57mr29aa000c",
-      "assembly_id": "asm_to57mra750000b",
+      "module_id": "mod_toa3r020a2000c",
+      "assembly_id": "asm_toa3r05584000b",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -4373,7 +4448,8 @@
           "carve": true,
           "source": {
             "kind": "back_groove"
-          }
+          },
+          "abf_tag": "ABF_RANH_HAU"
         }
       ],
       "bent": null,
@@ -4397,11 +4473,11 @@
       ]
     },
     {
-      "id": "mod_to57mr29aa000c/side_R",
+      "id": "mod_toa3r020a2000c/side_R",
       "role": "side",
       "label": "Hồi",
-      "module_id": "mod_to57mr29aa000c",
-      "assembly_id": "asm_to57mra750000b",
+      "module_id": "mod_toa3r020a2000c",
+      "assembly_id": "asm_toa3r05584000b",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -4491,7 +4567,8 @@
           "carve": true,
           "source": {
             "kind": "back_groove"
-          }
+          },
+          "abf_tag": "ABF_RANH_HAU"
         }
       ],
       "bent": null,
@@ -4515,11 +4592,11 @@
       ]
     },
     {
-      "id": "mod_to57mr29aa000c/top",
+      "id": "mod_toa3r020a2000c/top",
       "role": "top",
       "label": "Nóc",
-      "module_id": "mod_to57mr29aa000c",
-      "assembly_id": "asm_to57mra750000b",
+      "module_id": "mod_toa3r020a2000c",
+      "assembly_id": "asm_toa3r05584000b",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -4609,7 +4686,8 @@
           "carve": true,
           "source": {
             "kind": "back_groove"
-          }
+          },
+          "abf_tag": "ABF_RANH_HAU"
         }
       ],
       "bent": null,
@@ -4633,11 +4711,11 @@
       ]
     },
     {
-      "id": "mod_to57mr29aa000c/bottom",
+      "id": "mod_toa3r020a2000c/bottom",
       "role": "bottom",
       "label": "Đáy",
-      "module_id": "mod_to57mr29aa000c",
-      "assembly_id": "asm_to57mra750000b",
+      "module_id": "mod_toa3r020a2000c",
+      "assembly_id": "asm_toa3r05584000b",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -4727,7 +4805,8 @@
           "carve": true,
           "source": {
             "kind": "back_groove"
-          }
+          },
+          "abf_tag": "ABF_RANH_HAU"
         }
       ],
       "bent": null,
@@ -4751,11 +4830,11 @@
       ]
     },
     {
-      "id": "mod_to57mr29aa000c/back",
+      "id": "mod_toa3r020a2000c/back",
       "role": "back",
       "label": "Hậu",
-      "module_id": "mod_to57mr29aa000c",
-      "assembly_id": "asm_to57mra750000b",
+      "module_id": "mod_toa3r020a2000c",
+      "assembly_id": "asm_toa3r05584000b",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -4841,11 +4920,11 @@
       ]
     },
     {
-      "id": "mod_to57mr29aa000c/dface:0",
+      "id": "mod_toa3r020a2000c/dface:0",
       "role": "drawer_face",
       "label": "Mặt ngăn kéo",
-      "module_id": "mod_to57mr29aa000c",
-      "assembly_id": "asm_to57mra750000b",
+      "module_id": "mod_toa3r020a2000c",
+      "assembly_id": "asm_toa3r05584000b",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -4931,11 +5010,11 @@
       ]
     },
     {
-      "id": "mod_to57mr29aa000c/dface:1",
+      "id": "mod_toa3r020a2000c/dface:1",
       "role": "drawer_face",
       "label": "Mặt ngăn kéo",
-      "module_id": "mod_to57mr29aa000c",
-      "assembly_id": "asm_to57mra750000b",
+      "module_id": "mod_toa3r020a2000c",
+      "assembly_id": "asm_toa3r05584000b",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -5021,11 +5100,11 @@
       ]
     },
     {
-      "id": "mod_to57mr29aa000c/dface:2",
+      "id": "mod_toa3r020a2000c/dface:2",
       "role": "drawer_face",
       "label": "Mặt ngăn kéo",
-      "module_id": "mod_to57mr29aa000c",
-      "assembly_id": "asm_to57mra750000b",
+      "module_id": "mod_toa3r020a2000c",
+      "assembly_id": "asm_toa3r05584000b",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -5111,11 +5190,11 @@
       ]
     },
     {
-      "id": "mod_to57mr29aa000c/dr_to57mr1fd7000d:side_L",
+      "id": "mod_toa3r020a2000c/dr_toa3r0b229000d:side_L",
       "role": "drawer_side",
       "label": "Hông thùng",
-      "module_id": "mod_to57mr29aa000c",
-      "assembly_id": "asm_to57mra750000b",
+      "module_id": "mod_toa3r020a2000c",
+      "assembly_id": "asm_toa3r05584000b",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -5201,11 +5280,11 @@
       ]
     },
     {
-      "id": "mod_to57mr29aa000c/dr_to57mr1fd7000d:side_R",
+      "id": "mod_toa3r020a2000c/dr_toa3r0b229000d:side_R",
       "role": "drawer_side",
       "label": "Hông thùng",
-      "module_id": "mod_to57mr29aa000c",
-      "assembly_id": "asm_to57mra750000b",
+      "module_id": "mod_toa3r020a2000c",
+      "assembly_id": "asm_toa3r05584000b",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -5291,11 +5370,11 @@
       ]
     },
     {
-      "id": "mod_to57mr29aa000c/dr_to57mr1fd7000d:front",
+      "id": "mod_toa3r020a2000c/dr_toa3r0b229000d:front",
       "role": "drawer_front",
       "label": "Đầu thùng",
-      "module_id": "mod_to57mr29aa000c",
-      "assembly_id": "asm_to57mra750000b",
+      "module_id": "mod_toa3r020a2000c",
+      "assembly_id": "asm_toa3r05584000b",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -5381,11 +5460,11 @@
       ]
     },
     {
-      "id": "mod_to57mr29aa000c/dr_to57mr1fd7000d:back",
+      "id": "mod_toa3r020a2000c/dr_toa3r0b229000d:back",
       "role": "drawer_back",
       "label": "Hậu thùng",
-      "module_id": "mod_to57mr29aa000c",
-      "assembly_id": "asm_to57mra750000b",
+      "module_id": "mod_toa3r020a2000c",
+      "assembly_id": "asm_toa3r05584000b",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -5471,11 +5550,11 @@
       ]
     },
     {
-      "id": "mod_to57mr29aa000c/dr_to57mr1fd7000d:bottom",
+      "id": "mod_toa3r020a2000c/dr_toa3r0b229000d:bottom",
       "role": "drawer_bottom",
       "label": "Đáy thùng",
-      "module_id": "mod_to57mr29aa000c",
-      "assembly_id": "asm_to57mra750000b",
+      "module_id": "mod_toa3r020a2000c",
+      "assembly_id": "asm_toa3r05584000b",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -5561,11 +5640,11 @@
       ]
     },
     {
-      "id": "mod_to57mr29aa000c/dr_to57mr809a000e:side_L",
+      "id": "mod_toa3r020a2000c/dr_toa3r08dbf000e:side_L",
       "role": "drawer_side",
       "label": "Hông thùng",
-      "module_id": "mod_to57mr29aa000c",
-      "assembly_id": "asm_to57mra750000b",
+      "module_id": "mod_toa3r020a2000c",
+      "assembly_id": "asm_toa3r05584000b",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -5651,11 +5730,11 @@
       ]
     },
     {
-      "id": "mod_to57mr29aa000c/dr_to57mr809a000e:side_R",
+      "id": "mod_toa3r020a2000c/dr_toa3r08dbf000e:side_R",
       "role": "drawer_side",
       "label": "Hông thùng",
-      "module_id": "mod_to57mr29aa000c",
-      "assembly_id": "asm_to57mra750000b",
+      "module_id": "mod_toa3r020a2000c",
+      "assembly_id": "asm_toa3r05584000b",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -5741,11 +5820,11 @@
       ]
     },
     {
-      "id": "mod_to57mr29aa000c/dr_to57mr809a000e:front",
+      "id": "mod_toa3r020a2000c/dr_toa3r08dbf000e:front",
       "role": "drawer_front",
       "label": "Đầu thùng",
-      "module_id": "mod_to57mr29aa000c",
-      "assembly_id": "asm_to57mra750000b",
+      "module_id": "mod_toa3r020a2000c",
+      "assembly_id": "asm_toa3r05584000b",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -5831,11 +5910,11 @@
       ]
     },
     {
-      "id": "mod_to57mr29aa000c/dr_to57mr809a000e:back",
+      "id": "mod_toa3r020a2000c/dr_toa3r08dbf000e:back",
       "role": "drawer_back",
       "label": "Hậu thùng",
-      "module_id": "mod_to57mr29aa000c",
-      "assembly_id": "asm_to57mra750000b",
+      "module_id": "mod_toa3r020a2000c",
+      "assembly_id": "asm_toa3r05584000b",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -5921,11 +6000,11 @@
       ]
     },
     {
-      "id": "mod_to57mr29aa000c/dr_to57mr809a000e:bottom",
+      "id": "mod_toa3r020a2000c/dr_toa3r08dbf000e:bottom",
       "role": "drawer_bottom",
       "label": "Đáy thùng",
-      "module_id": "mod_to57mr29aa000c",
-      "assembly_id": "asm_to57mra750000b",
+      "module_id": "mod_toa3r020a2000c",
+      "assembly_id": "asm_toa3r05584000b",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -6011,11 +6090,11 @@
       ]
     },
     {
-      "id": "mod_to57mr29aa000c/dr_to57mrd353000f:side_L",
+      "id": "mod_toa3r020a2000c/dr_toa3r0de52000f:side_L",
       "role": "drawer_side",
       "label": "Hông thùng",
-      "module_id": "mod_to57mr29aa000c",
-      "assembly_id": "asm_to57mra750000b",
+      "module_id": "mod_toa3r020a2000c",
+      "assembly_id": "asm_toa3r05584000b",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -6101,11 +6180,11 @@
       ]
     },
     {
-      "id": "mod_to57mr29aa000c/dr_to57mrd353000f:side_R",
+      "id": "mod_toa3r020a2000c/dr_toa3r0de52000f:side_R",
       "role": "drawer_side",
       "label": "Hông thùng",
-      "module_id": "mod_to57mr29aa000c",
-      "assembly_id": "asm_to57mra750000b",
+      "module_id": "mod_toa3r020a2000c",
+      "assembly_id": "asm_toa3r05584000b",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -6191,11 +6270,11 @@
       ]
     },
     {
-      "id": "mod_to57mr29aa000c/dr_to57mrd353000f:front",
+      "id": "mod_toa3r020a2000c/dr_toa3r0de52000f:front",
       "role": "drawer_front",
       "label": "Đầu thùng",
-      "module_id": "mod_to57mr29aa000c",
-      "assembly_id": "asm_to57mra750000b",
+      "module_id": "mod_toa3r020a2000c",
+      "assembly_id": "asm_toa3r05584000b",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -6281,11 +6360,11 @@
       ]
     },
     {
-      "id": "mod_to57mr29aa000c/dr_to57mrd353000f:back",
+      "id": "mod_toa3r020a2000c/dr_toa3r0de52000f:back",
       "role": "drawer_back",
       "label": "Hậu thùng",
-      "module_id": "mod_to57mr29aa000c",
-      "assembly_id": "asm_to57mra750000b",
+      "module_id": "mod_toa3r020a2000c",
+      "assembly_id": "asm_toa3r05584000b",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -6371,11 +6450,11 @@
       ]
     },
     {
-      "id": "mod_to57mr29aa000c/dr_to57mrd353000f:bottom",
+      "id": "mod_toa3r020a2000c/dr_toa3r0de52000f:bottom",
       "role": "drawer_bottom",
       "label": "Đáy thùng",
-      "module_id": "mod_to57mr29aa000c",
-      "assembly_id": "asm_to57mra750000b",
+      "module_id": "mod_toa3r020a2000c",
+      "assembly_id": "asm_toa3r05584000b",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -6466,77 +6545,77 @@
       "code": "DEMO_PRESET",
       "level": "warning",
       "message": "Thông số từ preset DEMO (Minifix 15 (DEMO)) — chưa kiểm chứng xưởng",
-      "part": "mod_to57mr30820002/side_L",
+      "part": "mod_toa3r04b030002/side_L",
       "feature": "top>side_L:0:bolt"
     },
     {
       "code": "DEMO_PRESET",
       "level": "warning",
       "message": "Thông số từ preset DEMO (Minifix 15 (DEMO)) — chưa kiểm chứng xưởng",
-      "part": "mod_to57mr30820002/side_R",
+      "part": "mod_toa3r04b030002/side_R",
       "feature": "top>side_R:0:bolt"
     },
     {
       "code": "DEMO_PRESET",
       "level": "warning",
       "message": "Thông số từ preset DEMO (Minifix 15 (DEMO)) — chưa kiểm chứng xưởng",
-      "part": "mod_to57mr30820002/top",
+      "part": "mod_toa3r04b030002/top",
       "feature": "top>side_L:0:edge"
     },
     {
       "code": "DEMO_PRESET",
       "level": "warning",
       "message": "Thông số từ preset DEMO (Minifix 15 (DEMO)) — chưa kiểm chứng xưởng",
-      "part": "mod_to57mr30820002/bottom",
+      "part": "mod_toa3r04b030002/bottom",
       "feature": "bottom>side_L:0:edge"
     },
     {
       "code": "DEMO_PRESET",
       "level": "warning",
       "message": "Thông số từ preset DEMO (Minifix 15 (DEMO)) — chưa kiểm chứng xưởng",
-      "part": "mod_to57mr30820002/dot_to57mr00650003",
-      "feature": "dot_to57mr00650003>side_L:0:edge"
+      "part": "mod_toa3r04b030002/dot_toa3r06b660003",
+      "feature": "dot_toa3r06b660003>side_L:0:edge"
     },
     {
       "code": "DEMO_PRESET",
       "level": "warning",
       "message": "Thông số từ preset DEMO (Mặc định (DEMO)) — chưa kiểm chứng xưởng",
-      "part": "mod_to57mr30820002/door:side_L|side_R:0",
+      "part": "mod_toa3r04b030002/door:side_L|side_R:0",
       "feature": "door:side_L|side_R:0:hinge:0"
     },
     {
       "code": "DEMO_PRESET",
       "level": "warning",
       "message": "Thông số từ preset DEMO (Mặc định (DEMO)) — chưa kiểm chứng xưởng",
-      "part": "mod_to57mr30820002/door:side_L|side_R:1",
+      "part": "mod_toa3r04b030002/door:side_L|side_R:1",
       "feature": "door:side_L|side_R:1:hinge:0"
     },
     {
       "code": "DEMO_PRESET",
       "level": "warning",
       "message": "Thông số từ preset DEMO (Minifix 15 (DEMO)) — chưa kiểm chứng xưởng",
-      "part": "mod_to57mrccc50007/top",
+      "part": "mod_toa3r0ff8f0007/top",
       "feature": "end_B>top:0:bolt"
     },
     {
       "code": "DEMO_PRESET",
       "level": "warning",
       "message": "Thông số từ preset DEMO (Minifix 15 (DEMO)) — chưa kiểm chứng xưởng",
-      "part": "mod_to57mrccc50007/bottom",
+      "part": "mod_toa3r0ff8f0007/bottom",
       "feature": "end_B>bottom:0:bolt"
     },
     {
       "code": "DEMO_PRESET",
       "level": "warning",
       "message": "Thông số từ preset DEMO (Minifix 15 (DEMO)) — chưa kiểm chứng xưởng",
-      "part": "mod_to57mrccc50007/end_A",
+      "part": "mod_toa3r0ff8f0007/end_A",
       "feature": "end_A>top:0:edge"
     },
     {
       "code": "DEMO_PRESET",
       "level": "warning",
       "message": "Thông số từ preset DEMO (Minifix 15 (DEMO)) — chưa kiểm chứng xưởng",
-      "part": "mod_to57mrccc50007/end_B",
+      "part": "mod_toa3r0ff8f0007/end_B",
       "feature": "end_B>top:0:edge"
     }
   ]

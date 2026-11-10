@@ -1,4 +1,4 @@
-# TEST_REPORT — Tủ Module Hùng Loan 1.0.0 (07/11/2026)
+# TEST_REPORT — Tủ Module Hùng Loan 1.1.0 (10/11/2026)
 
 ## 1. Môi trường thực tế
 | Hạng mục | Trạng thái |
@@ -16,8 +16,8 @@ Ba mức kiểm thử, phân biệt rõ:
 ## 2. Kết quả chạy
 | Bộ kiểm thử | Lệnh | Kết quả |
 |---|---|---|
-| Lõi | `ruby -Itests tests/test_core.rb` | **41 phép thử, 292 kiểm tra, 0 lỗi** |
-| Luồng SketchUp (giả lập) | `ruby tests/test_su_flow.rb` | **11 phép thử, 126 kiểm tra, 0 lỗi** |
+| Lõi | `ruby -Itests tests/test_core.rb` | **44 phép thử, 310 kiểm tra, 0 lỗi** |
+| Luồng SketchUp (giả lập) | `ruby tests/test_su_flow.rb` | **12 phép thử, 143 kiểm tra, 0 lỗi** |
 | Công cụ tương tác (view giả lập) | `ruby tests/test_su_tools.rb` | **4 phép thử, 12 kiểm tra, 0 lỗi** |
 | Cú pháp mọi file `.rb` | `tools/build_rbz.sh` | Đạt |
 | Gói RBZ | giải nén + nạp loader `hl_tumodule.rb` → `hl_tumodule/main` | Nạp được (trên giả lập); không chứa đường dẫn máy phát triển |
@@ -62,6 +62,7 @@ Ký hiệu: **R** = kiểm thử thuần Ruby đạt · **M** = chạy đạt tr
 | Bản lề: tự động/thủ công, tránh đợt, không có vị trí → báo, chỉ trên cánh, 2 chính sách chia cánh | R + M |
 | Khoan mặt và khoan cạnh sâu > độ dày nhưng hợp lệ | R |
 | Sai mặt, ngoài vùng, cam lệch, tấm uốn chưa hỗ trợ, feature mồ côi → mã lỗi + ID | R |
+| Bảng gia công trong Thuộc tính, xóa/khôi phục thao tác, tag ABF trên dấu và file xuất | R + M |
 | **Bàn giao ABF/Nesting nạp trên phần mềm đích** | **— CHƯA KIỂM CHỨNG** |
 
 ## 4. Bảng bao phủ dữ liệu/feature gia công

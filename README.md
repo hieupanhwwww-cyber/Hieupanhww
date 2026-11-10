@@ -107,6 +107,12 @@ Mở **Thư viện module** (biểu tượng 4 ô).
 - **Dựng bộ ca kiểm thử ABF**: dựng sẵn 4 ca chuẩn để nạp thử trên ABF. Quy trình: `docs/ABF_HANDOFF.md`.
 - ⚠ **Tương thích ABF/Nesting: CHƯA KIỂM CHỨNG.**
 
+### Bảng gia công CNC trong Thuộc tính (từ 1.1.0)
+- Bấm đúp mở module → chọn **một tấm** → Thuộc tính → mục **“Gia công CNC”**: liệt kê từng lỗ/rãnh/tiết diện với mặt, Ø, độ sâu, vị trí và **tag ABF** trong `[ ]`.
+- Tick “Xóa…” rồi **Áp dụng**: xóa lỗ cam = xóa cả bộ cam/chốt của cạnh đó; xóa lỗ cốc = cánh chuyển sang đặt thủ công; rãnh hậu = ẩn, khôi phục ở mục “Thao tác đã xóa”.
+- Chọn module: mục “Gia công CNC” tổng hợp số thao tác theo tag ABF.
+- Trong model, dấu gia công nằm trên các tag `ABF_D35`, `ABF_D15`, `ABF_RANH_HAU`… (bật/tắt ở bảng Tags của SketchUp).
+
 ## 14. Thuộc tính & Undo
 - **Thuộc tính**: chuột phải đối tượng → Thuộc tính, hoặc nút trên thanh công cụ. Đổi đối tượng chọn → bảng tự theo.
 - Sửa nhiều ô rồi bấm **Áp dụng** — cập nhật một lần. Nháp gắn theo từng đối tượng; đổi lựa chọn không áp nhầm.

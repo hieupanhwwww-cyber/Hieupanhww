@@ -46,7 +46,7 @@ module HungLoan
             ops = pt['features'].map do |f|
               { 'feature' => f['id'], 'type' => f['type'], 'op' => f['op'], 'face' => f['face'], 'pos' => f['pos'],
                 'dir' => f['dir'], 'diameter' => f['diameter'], 'depth' => f['depth'], 'through' => f['through'],
-                'rect' => f['rect'], 'outline' => f['outline'] }
+                'rect' => f['rect'], 'outline' => f['outline'], 'abf_tag' => f['abf_tag'] }
             end
             items << { 'part' => pt['id'], 'label' => pt['label'], 'role' => pt['role'], 'frame' => pt['frame'],
                        'thickness' => pt['thickness'], 'outline' => pt['outline_mesh'], 'material' => pt['material'],

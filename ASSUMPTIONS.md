@@ -40,6 +40,10 @@ Các điểm dưới đây là **lựa chọn tạm để có bản chạy đư�
 - **Tiết diện**: chỉ cặp **xuyên thật** (thể tích giao > 0 và hình chiếu thật trên cả hai tấm > 0). Tấm nhận theo bảng ưu tiên vai trò (hồi 50 > vách/nóc/đáy 40 > đợt 30 > thùng 20 > hậu 5 > cánh 1); cùng mức → “chưa xác định”, người dùng chọn. Kiểu dấu: khoét sâu (pocket) theo độ xuyên; xuyên hết độ dày → khoét suốt. Cặp đã có rãnh soi bao phủ → bỏ qua.
 - **Tủ vát theo tường/mái**: **hoãn**, ngoài bản đầu.
 
+- **Tag ABF (từ 1.1.0)**: tên tag theo quy ước quan sát trong bộ mẫu của xưởng; `ABF_D35`, `ABF_RANH_HAU`, `ABF_CatTrong` có nguyên văn trong mẫu,
+  còn `ABF_D{Ø}` cho đường kính khác và `ABF_POCKET_Z{n}` là suy rộng mẫu tên. Chưa nạp thử trên ABF. Sửa tại `core/abf_rules.rb`.
+- **Xóa thao tác gia công trong Thuộc tính**: xóa theo nguồn — lỗ cam xóa cả bộ của cạnh; lỗ cốc chuyển cánh sang thủ công; rãnh/khác ghi vào danh sách đã xóa.
+
 ## C. Giới hạn đã biết của bản 1.0.0
 
 - Chưa chạy trong SketchUp thật: hình học `pushpull` khoét rãnh/lỗ, observer, HtmlDialog, Undo cần kiểm tra trên host.

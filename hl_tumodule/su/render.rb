@@ -117,23 +117,54 @@ module HungLoan
         end
 
         # Dấu kỹ thuật cho lỗ khoan/tiết diện, vẽ trong nhóm con (không cắt khối tấm).
+        # Tag ABF (tạo nếu chưa có, gán màu khi API hỗ trợ).
+        def abf_layer(model, f)
+          tag = C::AbfRules.tag_for(f)
+          ly = model.layers[tag]
+          unless ly
+            ly = model.layers.add(tag)
+            begin
+              ly.color = Sketchup::Color.new(*C::AbfRules.color_for(tag, f)) if ly.respond_to?(:color=)
+            rescue StandardError
+              nil
+            end
+          end
+          [tag, ly]
+        end
+
+        # Dấu kỹ thuật cho lỗ khoan/rãnh/tiết diện, vẽ trong nhóm con (không cắt khối tấm).
+        # Mỗi loại thao tác nằm trong nhóm con riêng, gắn TAG ABF theo Core::AbfRules.
         def draw_marks(g, pn, feats, layer)
           mg = g.entities.add_group
           mg.name = 'Dấu gia công'
           mg.layer = layer
           mg.set_attribute(Store::DICT, 'kind', 'marks')
-          ents = mg.entities
+          subs = {}
           eps = 0.1 # mm, nổi khỏi mặt để không chồng mặt
           feats.each do |f|
+            tag, ly = abf_layer(g.model, f)
+            sub = subs[tag]
+            unless sub
+              sub = mg.entities.add_group
+              sub.name = tag
+              sub.layer = ly
+              subs[tag] = sub
+            end
+            ents = sub.entities
             case f['type']
             when 'drill'
               dir = U.vec(f['dir'])
               next if dir.length < 1e-9
               c = U.pt(f['pos'].each_with_index.map { |x, i| x - f['dir'][i] * eps })
-              r = U.l(f['diameter'] / 2.0)
-              ents.add_circle(c, dir, r, 16)
+              ents.add_circle(c, dir, U.l(f['diameter'] / 2.0), 16)
               tip = U.pt(f['pos'].each_with_index.map { |x, i| x + f['dir'][i] * f['depth'] })
               ents.add_cline(c, tip) rescue nil
+            when 'groove'
+              next unless f['rect']
+              w = f['face'] == 'A' ? pn['t'] + eps : -eps
+              r = f['rect']
+              pts = [[r[0], r[1]], [r[2], r[1]], [r[2], r[3]], [r[0], r[3]]].map { |u, v| Geom::Point3d.new(U.l(u), U.l(v), U.l(w)) }
+              ents.add_edges(pts + [pts.first])
             when 'pocket'
               w = f['face'] == 'A' ? pn['t'] + eps : -eps
               (f['outline'] || []).each do |poly|

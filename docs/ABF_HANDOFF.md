@@ -16,6 +16,21 @@ cho tới khi có kết quả nạp thật trên ABF/Nesting ghi vào bảng dư
 | Dữ liệu trung lập | *Xuất dữ liệu gia công* | `*.json` (format `HLTM-MFG` v1, mm) + `*_chi_tiet.csv` + `*_thao_tac.csv` |
 | Dữ liệu mong đợi mẫu | `docs/abf_samples/` | Kết quả lõi cho bộ ca kiểm thử (47 chi tiết, 79 thao tác) |
 
+## 2b. Quy ước tag ABF đang áp dụng (từ 1.1.0)
+Nguồn: tên tag có sẵn trong bộ mẫu `DC_17MM` của xưởng (`docs/khao_sat/ABF_TAGS.md`). Mức bằng chứng: **quan sát tên tag trong file mẫu**,
+chưa nạp thử trên ABF. Quy tắc nằm một chỗ: `hl_tumodule/core/abf_rules.rb`.
+
+| Thao tác plugin | Tag gắn | Căn cứ trong bộ mẫu |
+|---|---|---|
+| Lỗ cốc bản lề Ø35 | `ABF_D35` | Tag `ABF_D35` trong “1C. Cánh Kính Hèm” |
+| Cốc cam Ø15, lỗ cạnh Ø8, chốt Ø5 | `ABF_D15`, `ABF_D8`, `ABF_D5` | Suy rộng mẫu tên `ABF_D{Ø}` — **giả định** |
+| Rãnh hậu | `ABF_RANH_HAU` | Tag `ABF_RANH_HAU` trong “05B - Thùng ngăn kéo có ray” |
+| Tiết diện (khoét sâu n mm) | `ABF_POCKET_Z{n}` | Mẫu tên `ABF_POCKET_Z6_…`, `ABF_POCKET_Z9_…` — **giả định** phần đuôi |
+| Tiết diện xuyên hết | `ABF_CatTrong` | Tag `ABF_CatTrong` trong “1C. Cánh Kính Hèm” |
+
+Mỗi tấm trong bản gia công có nhóm con “Dấu gia công”, bên trong chia nhóm theo tag; hình khoét thật vẫn giữ.
+Chưa dùng: dictionary `abf_object_data` (chưa đọc được nội dung — cần file `khao_sat_mau.json` từ lệnh Khảo sát).
+
 ## 3. Bảng ánh xạ (cần điền khi kiểm chứng)
 | Schema nội bộ | Bản gia công | Khóa/định dạng ABF | Nguồn kiểm chứng | Phiên bản ABF |
 |---|---|---|---|---|

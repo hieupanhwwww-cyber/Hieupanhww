@@ -580,6 +580,9 @@ module HungLoan
             r['joints'] = joints
             issues.each { |i| r['errors'] << i.merge('level' => 'warning') }
           end
+          # Thao tác gia công người dùng đã xóa trong Thuộc tính: không tự hồi sinh.
+          supf = p['suppressed_features'] || []
+          r['panels'].each { |pn| pn['features'].reject! { |f| supf.include?(f['id']) } } if supf.any?
           r['params'] = p
           r
         end

@@ -88,7 +88,7 @@ module HungLoan
                           'split_policy' => 'keep_and_add', 'doors' => {} },
             'drawers' => [],
             'joints' => { 'enabled' => false, 'preset' => Config::CAM_PRESET_DEMO['name'], 'overrides' => {} },
-            'suppressed' => [],
+            'suppressed' => [], 'suppressed_features' => [],
             'shelf_setback' => 0.0
           }
           if %w[l_two_box l_single].include?(tpl['geometry'])

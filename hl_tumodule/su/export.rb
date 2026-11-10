@@ -184,6 +184,8 @@ module HungLoan
             end
             failed << "• #{it['part']} / #{op['feature']}" unless ok
           end
+          # Dấu trên tag ABF (ABF_D35, ABF_RANH_HAU, ABF_POCKET_Z…) đi kèm hình khoét.
+          Render.draw_marks(g, { 't' => t }, it['ops'], Render.mark_layer(g.model)) if it['ops'].any?
         end
 
         def carve_hole(ents, op, _t)

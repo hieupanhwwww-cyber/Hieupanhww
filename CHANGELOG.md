@@ -1,5 +1,14 @@
 # Nhật ký thay đổi
 
+## 1.1.0 — 10/11/2026 — Logic ABF/CNC xuyên suốt
+- **Quy ước tag ABF tập trung** (`core/abf_rules.rb`), rút từ chính bộ mẫu của xưởng: lỗ tròn → `ABF_D{Ø}` (vd `ABF_D35`),
+  rãnh hậu → `ABF_RANH_HAU`, vùng khoét → `ABF_POCKET_Z{sâu}`, cắt xuyên → `ABF_CatTrong`.
+- Dấu gia công trong model, bản gia công và file JSON/CSV đều mang tag ABF (cột `tag_abf`, trường `abf_tag`).
+- **Thuộc tính tấm có bảng “Gia công CNC”**: từng thao tác với mặt, Ø, độ sâu, vị trí, tag ABF; tick để xóa.
+  Xóa lỗ cam → xóa cả bộ cam/chốt của cạnh; xóa lỗ cốc → cánh chuyển sang đặt thủ công; rãnh → ẩn và khôi phục được.
+  Thao tác đã xóa không tự hồi sinh khi đổi kích thước.
+- Thuộc tính module có tổng hợp số thao tác theo tag ABF.
+
 ## 1.0.1 — 10/11/2026
 - Sửa lỗi gắn observer làm hỏng lệnh đặt module trên SketchUp thật (`entityID` của `Entities`).
 - Thư viện hiện ảnh thumbnail thật từ file SKP nguồn cho 6 mẫu tương ứng.

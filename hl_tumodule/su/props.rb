@@ -104,6 +104,12 @@ module HungLoan
             secs << { 'title' => 'Tủ bếp trên', 'fields' => [ro('Khoảng hở thực tế tới tủ dưới', gap ? format('%.1f mm', gap) : 'Chưa ghép'),
                                                            ro('Khoảng hở nhập lúc đặt', format('%.0f mm', p['upper_gap'].to_f))] }
           end
+          allf = b['panels'].flat_map { |x| x['features'] }
+          if allf.any?
+            by = allf.group_by { |x| C::AbfRules.tag_for(x) }.sort.map { |tag, l| "#{tag}: #{l.size}" }.join("\n")
+            secs << { 'title' => "Gia công CNC (#{allf.size} thao tác)", 'fields' => [ro('Theo tag ABF', by)],
+                      'note' => 'Bấm đúp vào module rồi chọn từng tấm để xem/xóa từng thao tác.' }
+          end
           warn_list = b['errors'].map { |e| "#{e['level'] == 'error' ? '⛔' : '⚠'} #{e['message']}" }
           {
             'kind' => 'module', 'target' => "mod:#{p['id']}", 'title' => p['template_name'],
@@ -126,6 +132,28 @@ module HungLoan
           info = [ro('Vai trò', pn['label']), ro('Kích thước', format('%.1f × %.1f × %.1f mm', pn['w'] || 0, pn['h'] || 0, pn['t'])),
                   ro('Thao tác gia công', pn['features'].size)]
           secs << { 'title' => 'Tấm', 'fields' => info }
+          feats = pn['features'] + section_features(mod, p, lid)
+          if feats.any?
+            mf = []
+            feats.each_with_index do |ft, i|
+              mf << ro("#{i + 1}.", C::AbfRules.describe(ft))
+              if ft.dig('source', 'kind') == 'section'
+                next
+              end
+              hint = case ft.dig('source', 'kind')
+                     when 'cam' then 'Xóa cả bộ cam/chốt của cạnh này'
+                     when 'hinge' then 'Xóa lỗ cốc này (cánh chuyển sang đặt thủ công)'
+                     else 'Xóa thao tác này'
+                     end
+              mf << f("del_feat:#{ft['id']}", hint, 'bool', false)
+            end
+            secs << { 'title' => "Gia công CNC (#{feats.size} thao tác)", 'fields' => mf,
+                      'note' => 'Tag trong [ ] theo quy ước ABF quan sát từ bộ mẫu của xưởng. Tiết diện: bỏ bằng lệnh “Xóa dấu tiết diện”.' }
+          end
+          hidden = (p['suppressed_features'] || []).select { |x| x.start_with?("#{lid}:") }
+          if hidden.any?
+            secs << { 'title' => 'Thao tác đã xóa', 'fields' => hidden.map { |x| f("restore_feat:#{x}", "Khôi phục #{x.split(':').last}", 'bool', false) } }
+          end
           if (dv = b['dividers'].find { |d| d['id'] == lid })
             node = b['nodes'][dv['node']]
             a = dv['axis'] == 'x' ? node['x0'] : node['z0']
@@ -170,6 +198,43 @@ module HungLoan
             'kind' => 'panel', 'target' => "pnl:#{p['id']}/#{lid}", 'title' => "#{pn['label']} — #{p['template_name']}",
             'scope' => 'Tấm', 'sections' => secs, 'apply' => secs.size > 1, 'tools' => [%w[copy_divider Sao\ chép\ vách/đợt]]
           }
+        end
+
+        # Tiết diện đã đánh dấu mà tấm này là tấm nhận (dữ liệu ở cấp bộ tủ).
+        def section_features(mod, p, lid)
+          asm = M.asm_of(mod)
+          return [] unless asm
+          gid = "#{p['id']}/#{lid}"
+          data = Store.asm_data(asm)
+          return [] if data['sections']['marked'].empty?
+          rows, = Actions.scan_sections(asm)
+          rows.select { |r| r['status'] == 'ok' && r['receiver'] == gid && data['sections']['marked'].key?(r['key']) }
+              .map { |r| C::Sections.feature_from(r) }
+        rescue StandardError
+          []
+        end
+
+        # Xóa một thao tác gia công theo NGUỒN của nó (giữ dữ liệu nhất quán, không để lỗ mồ côi).
+        def delete_feature!(p, built, lid, fid)
+          pn = built['panels'].find { |x| x['local_id'] == lid }
+          ft = pn && pn['features'].find { |x| x['id'] == fid }
+          return unless ft
+          case ft.dig('source', 'kind')
+          when 'cam'
+            (p['joints']['overrides'][ft['source']['joint']] ||= {})['deleted'] = true
+          when 'hinge'
+            door = built['doors'].find { |d| d['local_id'] == lid }
+            d = (p['hinges']['doors'][lid] ||= { 'side' => 'left', 'on_resize' => 'keep_edge' })
+            keep = pn['features'].select { |x| x['op'] == 'hinge_cup' && x['id'] != fid }
+            d['manual'] = keep.map { |x| C::Hinges.manual_entry(x['pos'][1], door['h']) }
+            d['mode'] = 'manual'
+            if keep.empty?
+              # không còn lỗ nào: ẩn các lỗ tự động của cánh này
+              p['suppressed_features'] |= pn['features'].select { |x| x['op'] == 'hinge_cup' }.map { |x| x['id'] }
+            end
+          else
+            p['suppressed_features'] = (p['suppressed_features'] || []) | [fid]
+          end
         end
 
         # ------------------------------------------------------------ ÁP DỤNG
@@ -251,6 +316,13 @@ module HungLoan
               dr['rail_length'] = num(v['dr_rail'], 'Ray') if v.key?('dr_rail')
               dr['bottom'] = num(v['dr_bottom'], 'Vị trí đáy') if v.key?('dr_bottom')
             end
+            p['suppressed_features'] ||= []
+            dels = v.select { |k, val| k.start_with?('del_feat:') && val == true }.keys.map { |k| k.sub('del_feat:', '') }
+            if dels.any?
+              b0 = M.build(p)
+              dels.each { |fid| delete_feature!(p, b0, lid, fid) }
+            end
+            v.each { |k, val| p['suppressed_features'].delete(k.sub('restore_feat:', '')) if k.start_with?('restore_feat:') && val == true }
             v.each do |k, val|
               next unless k =~ /\Ajoint_(pos|flip|del):(.+)\z/
               kind = Regexp.last_match(1); key = Regexp.last_match(2)

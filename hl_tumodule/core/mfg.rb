@@ -5,6 +5,7 @@ require 'json'
 require_relative 'geom'
 require_relative 'config'
 require_relative 'util'
+require_relative 'abf_rules'
 
 module HungLoan
   module TuModule
@@ -26,7 +27,7 @@ module HungLoan
               'kind' => pn['kind'] || 'flat', 'thickness' => pn['t'], 'frame' => pn['frame'],
               'outline' => pn['outline'], 'outline_mesh' => pts,
               'stock' => { 'w' => bb[2] - bb[0], 'h' => bb[3] - bb[1], 't' => pn['t'] },
-              'features' => pn['features'] || [], 'bent' => pn['bent']
+              'features' => (pn['features'] || []).map { |f| f.merge('abf_tag' => AbfRules.tag_for(f)) }, 'bent' => pn['bent']
             }
           end
         end
@@ -240,14 +241,14 @@ module HungLoan
         end
 
         def to_csv_ops(parts)
-          lines = [csv_line(%w[part_id feature_id loai thao_tac mat u v w huong_u huong_v huong_w duong_kinh sau xuyen nguon])]
+          lines = [csv_line(%w[part_id feature_id loai thao_tac mat u v w huong_u huong_v huong_w duong_kinh sau xuyen nguon tag_abf])]
           parts.each do |p|
             p['features'].each do |f|
               pos = f['pos'] || (f['rect'] ? [f['rect'][0], f['rect'][1], 0] : [nil, nil, nil])
               dir = f['dir'] || [nil, nil, nil]
               lines << csv_line([p['id'], f['id'], f['type'], f['op'], f['face']] + pos.map { |x| x && Util.r3(x) } +
                                 dir.map { |x| x && Util.r3(x) } + [f['diameter'], Util.r3(f['depth'].to_f), f['through'] ? 1 : 0,
-                                                                   f.dig('source', 'kind')])
+                                                                   f.dig('source', 'kind'), f['abf_tag']])
             end
           end
           lines.join("\n") + "\n"
