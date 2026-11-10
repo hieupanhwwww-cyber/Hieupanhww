@@ -1,5 +1,17 @@
 # Nhật ký thay đổi
 
+## 1.2.0 — 10/11/2026 — Sửa theo kết quả ABF thật + len chân, xà
+Căn cứ: file `bantest.skp` người dùng gửi có kết quả ABF Nesting thật (`docs/khao_sat/ABF_KET_QUA_THAT.md`).
+- **Sửa: 12 tấm có rãnh hậu không được ABF nhận.** Rãnh hậu mặc định không khoét vào khối tấm nữa; thể hiện bằng nhóm `ABF_RANH_HAU`.
+  (Thuộc tính › “Hiển thị rãnh hậu” cho chọn lại khoét thật.)
+- **Sửa: ABF không nhận lỗ khoan.** Dấu gia công đổi sang kiểu file mẫu của xưởng: nhóm một cấp ngay trong tấm, tên = tag `ABF_…`,
+  hình là mặt nằm đúng trên mặt/cạnh ván. Bỏ đường gióng (construction line) gây rối.
+- Bản gia công: không khoét, dùng cùng kiểu dấu ABF.
+- **Mới: len chân** (cao, lùi trước, có/không chân sau) và **xà trước/sau thay nóc** — trong ⚙ setting mẫu và Thuộc tính.
+  Mặc định theo model nguồn: Khung tủ chân 50; Tủ bếp dưới và bếp L chân 100 + xà.
+- Thuộc tính thêm: độ dày cánh/mặt, lùi vách/đợt so với mép trước.
+- Thêm `tools/skp_attrs.py` đọc attribute trong file .skp ngoài SketchUp.
+
 ## 1.1.0 — 10/11/2026 — Logic ABF/CNC xuyên suốt
 - **Quy ước tag ABF tập trung** (`core/abf_rules.rb`), rút từ chính bộ mẫu của xưởng: lỗ tròn → `ABF_D{Ø}` (vd `ABF_D35`),
   rãnh hậu → `ABF_RANH_HAU`, vùng khoét → `ABF_POCKET_Z{sâu}`, cắt xuyên → `ABF_CatTrong`.

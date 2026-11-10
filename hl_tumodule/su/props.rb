@@ -60,13 +60,26 @@ module HungLoan
               f('back_scope', 'Phạm vi hậu', 'enum', p['back']['scope'], 'options' => [['whole', 'Hậu chung'], ['per_column', 'Riêng từng khoang đứng']]),
               f('back_setback', 'Lùi hậu (mm)', 'mm', p['back']['setback']),
               f('groove_depth', 'Sâu rãnh hậu (mm)', 'mm', p['back']['groove_depth']),
+              f('groove_carve', 'Hiển thị rãnh hậu', 'enum', p['back']['carve'] ? 'carve' : 'mark',
+                'options' => [['mark', 'Dấu ABF_RANH_HAU (để ABF nhận tấm)'], ['carve', 'Khoét thật vào tấm (ABF không nhận tấm)']]),
+              f('shelf_setback', 'Lùi vách/đợt so với mép trước (mm)', 'mm', p['shelf_setback'].to_f),
               f('corner_radius', 'Bo góc trước nóc/đáy/đợt (mm)', 'mm', p['round']['corner_r']),
               f('end_round', 'Bán kính đầu bo phải (mm, 0 = không)', 'mm', p['round']['end_r'])
             ] }
           end
+          if p['geometry'] == 'carcass' || p['geometry'] == 'l_two_box'
+            pl = p['plinth'] || {}
+            secs << { 'title' => 'Len chân & xà', 'fields' => [
+              f('plinth_h', 'Cao len chân (mm, 0 = không chân)', 'mm', pl['h'].to_f),
+              f('plinth_setback', 'Lùi len chân trước (mm)', 'mm', (pl['setback'] || C::Config::PLINTH_SETBACK).to_f),
+              f('plinth_back', 'Có len chân sau', 'bool', pl['back'] != false),
+              f('top_style', 'Nóc dạng', 'enum', p['top_style'] || 'panel', 'options' => [['panel', 'Tấm nóc'], ['stretchers', 'Hai xà trước/sau']]),
+              f('stretcher_w', 'Bản rộng xà (mm)', 'mm', (p['stretcher_w'] || C::Config::STRETCHER_W).to_f)
+            ], 'note' => 'Có len chân: đáy nâng lên và lọt giữa hai hồi, hai hồi chạy tới sàn; chiều cao tổng giữ nguyên.' }
+          end
           fr = p['front']
           if fr['type'] != 'open'
-            ff = [f('front_enabled', 'Có mặt trước', 'bool', fr['enabled']),
+            ff = [f('front_t', 'Độ dày cánh/mặt (mm)', 'mm', fr['t']), f('front_enabled', 'Có mặt trước', 'bool', fr['enabled']),
                   f('front_mount', fr['type'] == 'doors' ? 'Kiểu cánh' : 'Kiểu mặt', 'enum', fr['mount'], 'options' => T::MOUNT_OPTS),
                   f('edge_gap', 'Khe biên (mm)', 'mm', fr['edge_gap']), f('mid_gap', 'Khe giữa cánh (mm)', 'mm', fr['mid_gap'])]
             if fr['type'] == 'doors'
@@ -258,7 +271,16 @@ module HungLoan
               p['l']['lb'] = num(v['lb'], 'lb') if v.key?('lb')
               p['w'] = p['l']['la']
             end
-            p['front']['t'] = p['t'] if v.key?('t')
+            p['front']['t'] = p['t'] if v.key?('t') && !v.key?('front_t')
+            p['front']['t'] = num(v['front_t'], 'Độ dày cánh') if v.key?('front_t')
+            p['plinth'] ||= { 'h' => 0.0, 'setback' => C::Config::PLINTH_SETBACK, 'back' => true }
+            p['plinth']['h'] = num(v['plinth_h'], 'Cao len chân') if v.key?('plinth_h')
+            p['plinth']['setback'] = num(v['plinth_setback'], 'Lùi len chân') if v.key?('plinth_setback')
+            p['plinth']['back'] = v['plinth_back'] == true if v.key?('plinth_back')
+            p['top_style'] = v['top_style'] if %w[panel stretchers].include?(v['top_style'])
+            p['stretcher_w'] = num(v['stretcher_w'], 'Bản rộng xà') if v.key?('stretcher_w')
+            p['shelf_setback'] = num(v['shelf_setback'], 'Lùi vách/đợt') if v.key?('shelf_setback')
+            p['back']['carve'] = v['groove_carve'] == 'carve' if v.key?('groove_carve')
             %w[top_joint bottom_joint].each { |k| p[k] = v[k] if %w[inset overlay].include?(v[k]) }
             p['back']['mode'] = v['back_mode'] if %w[overlay inset groove].include?(v['back_mode'])
             p['back']['scope'] = v['back_scope'] if %w[whole per_column].include?(v['back_scope'])

@@ -3,6 +3,10 @@
 **Trạng thái: CHƯA KIỂM CHỨNG TƯƠNG THÍCH.** Tiêu chí 10D (ABF nhận đúng tấm, cam/chốt, lỗ cốc, tiết diện/rãnh) **chưa đạt**
 cho tới khi có kết quả nạp thật trên ABF/Nesting ghi vào bảng dưới.
 
+## 0. Kết quả thật đầu tiên (10/11/2026)
+Người dùng đã chạy ABF Nesting trên model của plugin 1.1.0: ABF nhận 18/27 tấm, **0 lỗ khoan**, 12 tấm có rãnh khoét bị bỏ.
+Chi tiết và cách sửa ở 1.2.0: `docs/khao_sat/ABF_KET_QUA_THAT.md`. Cần chạy lại trên 1.2.0 để biết đã nhận đủ tấm và lỗ chưa.
+
 ## 1. Vì sao chưa kiểm chứng
 - Môi trường xây dựng không có SketchUp, không có ABF/Nesting.
 - Tài liệu công khai ABF (`getabf.net`) không truy cập được từ môi trường (lỗi DNS ENOTFOUND, 07/11/2026).

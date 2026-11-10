@@ -67,6 +67,12 @@ Mở **Thư viện module** (biểu tượng 4 ô).
 - **Hậu**: *Đóng phủ phía sau* / *Lọt trong lòng* / *Soi rãnh* (rãnh được khoét thật trên hồi, nóc, đáy). **Phạm vi hậu**: chung toàn thùng hoặc riêng từng khoang đứng (khoang có nhiều đợt vẫn một tấm hậu suốt).
 - **Bo cong**: “Bo góc trước nóc/đáy/đợt” và “Bán kính đầu bo phải”. Bán kính giữ nguyên khi đổi kích thước; không vừa thì báo, không tự đổi R.
 
+### Len chân và xà (từ 1.2.0)
+- Thuộc tính module › **Len chân & xà**: *Cao len chân* (0 = không chân), *Lùi len chân trước*, *Có len chân sau*,
+  *Nóc dạng* (tấm nóc / hai xà trước–sau), *Bản rộng xà*. Cũng đặt được ở ⚙ setting mẫu.
+- Có len chân: đáy nâng lên và lọt giữa hai hồi, hai hồi chạy tới sàn, cánh phủ bắt đầu từ trên len chân; chiều cao tổng giữ nguyên.
+- *Hiển thị rãnh hậu*: mặc định là dấu `ABF_RANH_HAU` (để ABF nhận tấm). Chọn “Khoét thật” nếu chỉ cần xem 3D.
+
 ## 7. Vách, đợt, sao chép
 - **Thêm vách / Thêm đợt**: trỏ vào khoang → xem trước. **Tab** đổi điểm bám (mặt trái/tim/mặt phải; đợt: mặt dưới/tim/mặt trên). Mốc đo tự lấy mặt trong khoang **phía gần chuột** (vạch xanh).
 - Click để đặt tự do, hoặc **gõ khoảng cách rồi Enter** — đặt ngay. Khi đã gõ số, mốc bị khóa, chuột không ghi đè. Esc hủy số đang gõ.

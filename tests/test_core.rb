@@ -25,7 +25,8 @@ module H
 
   def params(tid, over = {})
     tpl = Templates.find(tid)
-    vals, errs = Params.clean_settings(tpl, tpl['defaults'].merge(over))
+    base = tpl['fields'].any? { |f| f['key'] == 'plinth_h' } ? { 'plinth_h' => 0, 'top_style' => 'panel' } : {}
+    vals, errs = Params.clean_settings(tpl, tpl['defaults'].merge(base).merge(over))
     raise errs.inspect if errs.any?
     Params.build(tpl, vals, 'm1')
   end
@@ -674,5 +675,67 @@ class TestAbfRules < Minitest::Test
     refute_empty H.by(r, 'side_R')['features']
     r2 = Builder.build(r['params'].merge('w' => 1000.0))
     assert_empty H.by(r2, 'side_L')['features'], 'đổi kích thước không hồi sinh thao tác đã xóa'
+  end
+end
+
+class TestPlinthStretcher < Minitest::Test
+  def test_plinth_raises_bottom_keeps_total_height
+    p = H.params('hl.khung_tu.v1', 'plinth_h' => 80, 'plinth_setback' => 50, 'h' => 2000, 'bottom_joint' => 'overlay')
+    p['front']['enabled'] = true
+    r = Builder.build(p)
+    assert_empty r['errors']
+    bot = H.by(r, 'bottom')
+    assert_in_delta 80.0, bot['frame']['o'][2], 1e-9, 'đáy nằm trên len chân'
+    assert_in_delta 866.0, bot['w'], 1e-9, 'có chân → đáy lọt giữa hai hồi'
+    pf = H.by(r, 'plinth_F'); pb = H.by(r, 'plinth_B')
+    assert pf && pb
+    assert_in_delta 80.0, pf['h'], 1e-9
+    assert_in_delta 50.0, H.box(pf)[0][1], 1e-9, 'lùi len chân trước'
+    zs = r['panels'].flat_map { |q| b = H.box(q); [b[0][2], b[1][2]] }
+    assert_in_delta 0.0, zs.min, 1e-9
+    assert_in_delta 2000.0, zs.max, 1e-9
+    assert_in_delta 97.0, r['cells'][0]['z0'], 1e-9
+    door = r['doors'].first
+    assert_in_delta 82.0, door['frame']['o'][2], 1e-9, 'cánh phủ bắt đầu trên len chân'
+    assert_empty H.overlaps(r['panels'])
+    p['plinth']['h'] = 0.0
+    assert_nil H.by(Builder.build(p), 'plinth_F')
+  end
+
+  def test_stretchers_replace_top
+    p = H.params('hl.tu_bep_duoi.v1', 'top_style' => 'stretchers', 'stretcher_w' => 100, 'plinth_h' => 100, 'back_mode' => 'groove')
+    p['joints']['enabled'] = true
+    r = Builder.build(p)
+    assert_empty r['errors'].select { |e| e['level'] == 'error' }
+    assert_nil H.by(r, 'top')
+    sf = H.by(r, 'stretcher_F'); sb = H.by(r, 'stretcher_B')
+    assert_in_delta 100.0, sf['h'], 1e-9
+    assert_in_delta 766.0, sf['w'], 1e-9
+    assert(sb['features'].any? { |f| f['op'] == 'back_groove' }, 'xà sau nhận rãnh hậu')
+    assert_in_delta 810.0, H.by(r, 'side_L')['h'], 1e-9, 'hồi suốt chiều cao'
+    assert_empty H.overlaps(r['panels'])
+    assert(r['joints'].any? { |j| j['a'] == 'stretcher_F' }, 'xà có liên kết cam vào hồi')
+    errs = Mfg.validate(Mfg.parts(r['panels']), r['joints']).select { |i| i['level'] == 'error' }
+    assert_empty errs, errs.first(3).inspect
+  end
+
+  def test_groove_not_carved_by_default
+    r = Builder.build(H.params('hl.khung_tu.v1', 'back_mode' => 'groove'))
+    g = H.by(r, 'side_L')['features'].find { |f| f['op'] == 'back_groove' }
+    assert_equal false, g['carve'], 'mặc định không khoét mesh để ABF nhận tấm'
+  end
+
+  def test_catalog_defaults_with_plinth_build_clean
+    %w[hl.khung_tu.v1 hl.tu_bep_duoi.v1 hl.tu_bep_L.v1].each do |id|
+      tpl = Templates.find(id)
+      vals, errs = Params.clean_settings(tpl, tpl['defaults'])
+      assert_empty errs
+      p = Params.build(tpl, vals, 'm')
+      p['front']['enabled'] = true
+      r = Builder.build(p)
+      assert_empty r['errors'].select { |e| e['level'] == 'error' }, id
+      assert_empty H.overlaps(r['panels']), id
+      assert(r['panels'].any? { |q| q['role'] == 'plinth' }, id)
+    end
   end
 end

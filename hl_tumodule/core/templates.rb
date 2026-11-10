@@ -37,6 +37,10 @@ module HungLoan
           f('back_scope', 'Phạm vi hậu', 'enum', 'options' => [['whole', 'Hậu chung toàn thùng'], ['per_column', 'Hậu riêng từng khoang đứng']]),
           f('back_setback', 'Lùi hậu (mm)', 'mm', 'min' => 0, 'max' => 100),
           f('groove_depth', 'Sâu rãnh hậu (mm)', 'mm', 'min' => 2, 'max' => 15),
+          f('plinth_h', 'Cao len chân (mm, 0 = không chân)', 'mm', 'min' => 0, 'max' => 300),
+          f('plinth_setback', 'Lùi len chân trước (mm)', 'mm', 'min' => 0, 'max' => 300),
+          f('top_style', 'Nóc dạng', 'enum', 'options' => [['panel', 'Tấm nóc'], ['stretchers', 'Hai xà trước/sau']]),
+          f('stretcher_w', 'Bản rộng xà (mm)', 'mm', 'min' => 40, 'max' => 400),
           f('front_mount', 'Cánh/mặt', 'enum', 'options' => MOUNT_OPTS),
           f('edge_gap', 'Khe biên cánh (mm)', 'mm', 'min' => 0, 'max' => 10),
           f('mid_gap', 'Khe giữa cánh (mm)', 'mm', 'min' => 0, 'max' => 10)
@@ -48,6 +52,7 @@ module HungLoan
           'back_setback' => C::BACK_SETBACK, 'groove_depth' => C::GROOVE_DEPTH,
           'front_mount' => 'overlay', 'edge_gap' => C::DOOR_EDGE_GAP, 'mid_gap' => C::DOOR_MID_GAP,
           'corner_radius' => 0.0, 'end_round' => 0.0, 'side_radius' => 0.0,
+          'plinth_h' => 0.0, 'plinth_setback' => C::PLINTH_SETBACK, 'top_style' => 'panel', 'stretcher_w' => C::STRETCHER_W,
           'drawer_count' => 3, 'drawer_ratios' => '1,1,1'
         }.freeze
 
@@ -62,7 +67,7 @@ module HungLoan
         CATALOG = [
           tpl('id' => 'hl.khung_tu.v1', 'name' => 'Khung tủ', 'module_type' => 'khung_tu', 'geometry' => 'carcass',
               'category' => 'Khung tủ', 'link_role' => 'stack_lower', 'source_candidate' => '1. KHUNG TỦ.skp',
-              'defaults' => BASE_DEFAULTS.merge('w' => 900.0, 'd' => 580.0, 'h' => 2000.0)),
+              'defaults' => BASE_DEFAULTS.merge('w' => 900.0, 'd' => 580.0, 'h' => 2000.0, 'plinth_h' => 50.0)),
           tpl('id' => 'hl.cuc_tren.v1', 'name' => 'Cục tủ trên', 'module_type' => 'cuc_tren', 'geometry' => 'carcass',
               'category' => 'Khung tủ', 'link_role' => 'stack_upper', 'source_candidate' => '1.CucTuTren.skp',
               'defaults' => BASE_DEFAULTS.merge('w' => 900.0, 'd' => 580.0, 'h' => 500.0, 'bottom_joint' => 'overlay')),
@@ -71,7 +76,7 @@ module HungLoan
               'defaults' => BASE_DEFAULTS.merge('w' => 400.0, 'd' => 350.0, 'h' => 1200.0)),
           tpl('id' => 'hl.tu_bep_duoi.v1', 'name' => 'Tủ bếp dưới (thẳng)', 'module_type' => 'tu_bep_duoi', 'geometry' => 'carcass',
               'category' => 'Tủ bếp', 'link_role' => 'kitchen_lower', 'source_candidate' => '3. TỦ BẾP DƯỚI (THẲNG).skp',
-              'defaults' => BASE_DEFAULTS.merge('w' => 800.0, 'd' => 560.0, 'h' => 810.0, 'top_joint' => 'inset')),
+              'defaults' => BASE_DEFAULTS.merge('w' => 800.0, 'd' => 560.0, 'h' => 810.0, 'top_joint' => 'inset', 'plinth_h' => 100.0, 'top_style' => 'stretchers')),
           tpl('id' => 'hl.tu_bep_tren.v1', 'name' => 'Tủ bếp trên', 'module_type' => 'tu_bep_tren', 'geometry' => 'carcass',
               'category' => 'Tủ bếp', 'link_role' => 'kitchen_upper', 'source_candidate' => '3.TỦ BẾP TRÊN.skp',
               'anchor' => { 'fx' => 0.0, 'fy' => 1.0, 'fz' => 0.0, 'label' => 'Góc trái-sau-dưới' },
@@ -89,11 +94,16 @@ module HungLoan
                 f('t', 'Độ dày ván (mm)', 'mm', 'min' => 5, 'max' => 50),
                 f('tb', 'Độ dày hậu (mm)', 'mm', 'min' => 3, 'max' => 25),
                 f('l_orient', 'Hướng', 'enum', 'options' => [['right', 'Nhánh B bên trái (góc trái)'], ['left', 'Nhánh B bên phải (góc phải)']]),
+                f('plinth_h', 'Cao len chân (mm, 0 = không chân)', 'mm', 'min' => 0, 'max' => 300),
+                f('plinth_setback', 'Lùi len chân trước (mm)', 'mm', 'min' => 0, 'max' => 300),
+                f('top_style', 'Nóc dạng', 'enum', 'options' => [['panel', 'Tấm nóc'], ['stretchers', 'Hai xà trước/sau']]),
+                f('stretcher_w', 'Bản rộng xà (mm)', 'mm', 'min' => 40, 'max' => 400),
                 f('edge_gap', 'Khe biên cánh (mm)', 'mm', 'min' => 0, 'max' => 10),
                 f('mid_gap', 'Khe giữa cánh (mm)', 'mm', 'min' => 0, 'max' => 10)
               ],
               'defaults' => BASE_DEFAULTS.merge('la' => 2400.0, 'lb' => 1800.0, 'd' => 560.0, 'h' => 810.0,
-                                                'l_orient' => 'right', 'top_joint' => 'inset', 'back_mode' => 'groove')),
+                                                'l_orient' => 'right', 'top_joint' => 'inset', 'back_mode' => 'groove',
+                                                'plinth_h' => 100.0, 'top_style' => 'stretchers')),
           tpl('id' => 'hl.tu_L_mot_thung.v1', 'name' => 'Tủ chữ L một thùng', 'module_type' => 'tu_L', 'geometry' => 'l_single',
               'category' => 'Tủ chữ L', 'link_role' => 'base', 'source_candidate' => nil,
               'anchor' => { 'fx' => 0.0, 'fy' => 1.0, 'fz' => 0.0, 'label' => 'Góc ngoài phía sau' },

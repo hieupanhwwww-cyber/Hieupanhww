@@ -24,6 +24,9 @@ module HungLoan
         GROOVE_CLEAR = 1.0         # hậu ngắn hơn đáy rãnh mỗi phía
         ARC_SEG_PER_QUARTER = 12   # số đoạn hiển thị mỗi cung 90°
         MIN_CELL = 50.0            # lọt lòng tối thiểu một khoang
+        SNAPSHOT_CARVE = false     # true: khoét lỗ/rãnh thật vào bản gia công (ABF không nhận tấm đã khoét rãnh)
+        PLINTH_SETBACK = 50.0      # lùi len chân trước (DEMO)
+        STRETCHER_W = 100.0        # bản rộng xà thay nóc (DEMO)
         DRAWER_BOX_SIDE_T = 15.0
         DRAWER_BOX_BOTTOM_T = 7.0
         DRAWER_BOX_BOTTOM_OFFSET = 15.0 # chế độ cả cụm: đáy thùng cao hơn đáy mặt ngăn kéo
@@ -43,7 +46,7 @@ module HungLoan
           'count_rules' => [[150.0, 1], [600.0, 2], [1000.0, 3], [1.0e9, 4]],
           'min_thickness' => 15.0
         }.freeze
-        CAM_ROLES = %w[side top bottom partition shelf l_end].freeze
+        CAM_ROLES = %w[side top bottom partition shelf l_end stretcher].freeze
 
         # Bản lề — bộ quy tắc DEMO (có thể lưu nhiều bộ).
         HINGE_PRESET_DEMO = {
@@ -59,7 +62,7 @@ module HungLoan
 
         # Tiết diện giao nhau: ưu tiên vai trò làm tấm NHẬN dấu (lớn hơn nhận). DEMO.
         SECTION_RECEIVER_PRIORITY = {
-          'side' => 50, 'l_end' => 50, 'partition' => 40, 'top' => 40, 'bottom' => 40,
+          'side' => 50, 'l_end' => 50, 'partition' => 40, 'top' => 40, 'bottom' => 40, 'stretcher' => 35, 'plinth' => 25,
           'shelf' => 30, 'drawer_side' => 20, 'drawer_front' => 20, 'drawer_back' => 20,
           'drawer_bottom' => 10, 'back' => 5, 'door' => 1, 'drawer_face' => 1, 'bent_end' => 0
         }.freeze
@@ -68,7 +71,7 @@ module HungLoan
           'side' => 'Hồi', 'top' => 'Nóc', 'bottom' => 'Đáy', 'back' => 'Hậu', 'partition' => 'Vách',
           'shelf' => 'Đợt', 'door' => 'Cánh', 'drawer_face' => 'Mặt ngăn kéo', 'drawer_side' => 'Hông thùng',
           'drawer_front' => 'Đầu thùng', 'drawer_back' => 'Hậu thùng', 'drawer_bottom' => 'Đáy thùng',
-          'bent_end' => 'Tấm uốn đầu bo', 'l_end' => 'Hồi chữ L'
+          'bent_end' => 'Tấm uốn đầu bo', 'l_end' => 'Hồi chữ L', 'plinth' => 'Len chân', 'stretcher' => 'Xà'
         }.freeze
       end
     end

@@ -1,6 +1,6 @@
 # Bảng mong đợi — bộ ca kiểm thử ABF (sinh tự động từ lõi plugin)
 
-Tổng: 47 chi tiết, 79 thao tác, 10 cạnh cam.
+Tổng: 51 chi tiết, 79 thao tác, 10 cạnh cam.
 Lỗi dữ liệu: 0 · Cảnh báo: 11 (preset DEMO).
 
 Cột "Thực tế ABF" để trống: điền sau khi nạp bản gia công vào ABF/Nesting (xem docs/ABF_HANDOFF.md).
@@ -11,10 +11,12 @@ Cột "Thực tế ABF" để trống: điền sau khi nạp bản gia công và
 | side_R | Hồi | 580.0 × 1200.0 × 17.0 | 7 | back_groove×1 cam_bolt×6 | |
 | top | Nóc | 866.0 × 580.0 × 17.0 | 9 | back_groove×1 cam_edge_hole×4 cam_housing×4 | |
 | bottom | Đáy | 866.0 × 580.0 × 17.0 | 9 | back_groove×1 cam_edge_hole×4 cam_housing×4 | |
-| back | Hậu | 880.0 × 1180.0 × 7.0 | 0 |  | |
-| dot_toa3r06b660003 | Đợt | 866.0 × 558.0 × 17.0 | 8 | cam_edge_hole×4 cam_housing×4 | |
-| door:side_L/side_R:0 | Cánh | 447.0 × 1196.0 × 17.0 | 3 | hinge_cup×3 | |
-| door:side_L/side_R:1 | Cánh | 447.0 × 1196.0 × 17.0 | 3 | hinge_cup×3 | |
+| plinth_F | Len chân | 866.0 × 50.0 × 17.0 | 0 |  | |
+| plinth_B | Len chân | 866.0 × 50.0 × 17.0 | 0 |  | |
+| back | Hậu | 880.0 × 1130.0 × 7.0 | 0 |  | |
+| dot_toa4dj08b60003 | Đợt | 866.0 × 558.0 × 17.0 | 8 | cam_edge_hole×4 cam_housing×4 | |
+| door:side_L/side_R:0 | Cánh | 447.0 × 1146.0 × 17.0 | 3 | hinge_cup×3 | |
+| door:side_L/side_R:1 | Cánh | 447.0 × 1146.0 × 17.0 | 3 | hinge_cup×3 | |
 | top | Nóc chữ L | 1600.0 × 1200.0 × 17.0 | 4 | cam_bolt×4 | |
 | bottom | Đáy chữ L | 1600.0 × 1200.0 × 17.0 | 4 | cam_bolt×4 | |
 | end_A | Hồi chữ L | 400.0 × 766.0 × 17.0 | 8 | cam_edge_hole×4 cam_housing×4 | |
@@ -25,7 +27,9 @@ Cột "Thực tế ABF" để trống: điền sau khi nạp bản gia công và
 | side_R | Hồi | 580.0 × 883.0 × 17.0 | 1 | section×1 | |
 | top | Nóc | 900.0 × 580.0 × 17.0 | 0 |  | |
 | bottom | Đáy | 866.0 × 580.0 × 17.0 | 0 |  | |
-| back | Hậu | 866.0 × 866.0 × 7.0 | 0 |  | |
+| plinth_F | Len chân | 866.0 × 50.0 × 17.0 | 0 |  | |
+| plinth_B | Len chân | 866.0 × 50.0 × 17.0 | 0 |  | |
+| back | Hậu | 866.0 × 816.0 × 7.0 | 0 |  | |
 | side_L | Hồi | 350.0 × 883.0 × 17.0 | 1 | back_groove×1 | |
 | side_R | Hồi | 350.0 × 883.0 × 17.0 | 1 | back_groove×1 | |
 | top | Nóc | 400.0 × 350.0 × 17.0 | 1 | back_groove×1 | |
@@ -39,18 +43,18 @@ Cột "Thực tế ABF" để trống: điền sau khi nạp bản gia công và
 | dface:0 | Mặt ngăn kéo | 596.0 × 214.3 × 17.0 | 0 |  | |
 | dface:1 | Mặt ngăn kéo | 596.0 × 214.3 × 17.0 | 0 |  | |
 | dface:2 | Mặt ngăn kéo | 596.0 × 214.3 × 17.0 | 0 |  | |
-| dr_toa3r0b229000d:side_L | Hông thùng | 450.0 × 150.0 × 15.0 | 0 |  | |
-| dr_toa3r0b229000d:side_R | Hông thùng | 450.0 × 150.0 × 15.0 | 0 |  | |
-| dr_toa3r0b229000d:front | Đầu thùng | 510.0 × 143.0 × 15.0 | 0 |  | |
-| dr_toa3r0b229000d:back | Hậu thùng | 510.0 × 143.0 × 15.0 | 0 |  | |
-| dr_toa3r0b229000d:bottom | Đáy thùng | 540.0 × 450.0 × 7.0 | 0 |  | |
-| dr_toa3r08dbf000e:side_L | Hông thùng | 450.0 × 150.0 × 15.0 | 0 |  | |
-| dr_toa3r08dbf000e:side_R | Hông thùng | 450.0 × 150.0 × 15.0 | 0 |  | |
-| dr_toa3r08dbf000e:front | Đầu thùng | 510.0 × 143.0 × 15.0 | 0 |  | |
-| dr_toa3r08dbf000e:back | Hậu thùng | 510.0 × 143.0 × 15.0 | 0 |  | |
-| dr_toa3r08dbf000e:bottom | Đáy thùng | 540.0 × 450.0 × 7.0 | 0 |  | |
-| dr_toa3r0de52000f:side_L | Hông thùng | 450.0 × 150.0 × 15.0 | 0 |  | |
-| dr_toa3r0de52000f:side_R | Hông thùng | 450.0 × 150.0 × 15.0 | 0 |  | |
-| dr_toa3r0de52000f:front | Đầu thùng | 510.0 × 143.0 × 15.0 | 0 |  | |
-| dr_toa3r0de52000f:back | Hậu thùng | 510.0 × 143.0 × 15.0 | 0 |  | |
-| dr_toa3r0de52000f:bottom | Đáy thùng | 540.0 × 450.0 × 7.0 | 0 |  | |
+| dr_toa4dj3965000d:side_L | Hông thùng | 450.0 × 150.0 × 15.0 | 0 |  | |
+| dr_toa4dj3965000d:side_R | Hông thùng | 450.0 × 150.0 × 15.0 | 0 |  | |
+| dr_toa4dj3965000d:front | Đầu thùng | 510.0 × 143.0 × 15.0 | 0 |  | |
+| dr_toa4dj3965000d:back | Hậu thùng | 510.0 × 143.0 × 15.0 | 0 |  | |
+| dr_toa4dj3965000d:bottom | Đáy thùng | 540.0 × 450.0 × 7.0 | 0 |  | |
+| dr_toa4dj8dcd000e:side_L | Hông thùng | 450.0 × 150.0 × 15.0 | 0 |  | |
+| dr_toa4dj8dcd000e:side_R | Hông thùng | 450.0 × 150.0 × 15.0 | 0 |  | |
+| dr_toa4dj8dcd000e:front | Đầu thùng | 510.0 × 143.0 × 15.0 | 0 |  | |
+| dr_toa4dj8dcd000e:back | Hậu thùng | 510.0 × 143.0 × 15.0 | 0 |  | |
+| dr_toa4dj8dcd000e:bottom | Đáy thùng | 540.0 × 450.0 × 7.0 | 0 |  | |
+| dr_toa4dja30d000f:side_L | Hông thùng | 450.0 × 150.0 × 15.0 | 0 |  | |
+| dr_toa4dja30d000f:side_R | Hông thùng | 450.0 × 150.0 × 15.0 | 0 |  | |
+| dr_toa4dja30d000f:front | Đầu thùng | 510.0 × 143.0 × 15.0 | 0 |  | |
+| dr_toa4dja30d000f:back | Hậu thùng | 510.0 × 143.0 × 15.0 | 0 |  | |
+| dr_toa4dja30d000f:bottom | Đáy thùng | 540.0 × 450.0 × 7.0 | 0 |  | |

@@ -72,8 +72,10 @@ module HungLoan
             'back' => {
               'mode' => s['back_mode'] || 'groove', 'scope' => s['back_scope'] || 'whole',
               'setback' => s['back_setback'] || Config::BACK_SETBACK, 'groove_depth' => s['groove_depth'] || Config::GROOVE_DEPTH,
-              'groove_tol' => Config::GROOVE_TOL, 'groove_clear' => Config::GROOVE_CLEAR
+              'groove_tol' => Config::GROOVE_TOL, 'groove_clear' => Config::GROOVE_CLEAR, 'carve' => false
             },
+            'plinth' => { 'h' => s['plinth_h'].to_f, 'setback' => (s['plinth_setback'] || Config::PLINTH_SETBACK).to_f, 'back' => true },
+            'top_style' => s['top_style'] || 'panel', 'stretcher_w' => (s['stretcher_w'] || Config::STRETCHER_W).to_f,
             'round' => { 'corner_r' => s['corner_radius'].to_f, 'end_r' => s['end_round'].to_f, 'end_side' => 'right',
                          'side_r' => s['side_radius'].to_f },
             'interior' => { 'id' => 'cell_root', 'type' => 'leaf' },

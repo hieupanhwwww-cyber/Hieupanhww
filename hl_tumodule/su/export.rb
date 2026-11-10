@@ -157,7 +157,7 @@ module HungLoan
             end
             true
           end
-          msg = "Đã tạo bản gia công: #{plan['items'].size} chi tiết phẳng một cấp, lỗ/rãnh khoét vào hình học.\n" \
+          msg = "Đã tạo bản gia công: #{plan['items'].size} chi tiết phẳng một cấp, lỗ/rãnh là nhóm dấu trên tag ABF_… nằm ngay trong tấm.\n" \
                 "Bỏ qua (chưa hỗ trợ): #{plan['skipped'].size}\nTương thích ABF/Nesting: CHƯA KIỂM CHỨNG — xem docs/ABF_HANDOFF.md."
           msg += "\n\nKhông khoét được #{failed.size} thao tác (đã ghi trong thuộc tính):\n" + failed.first(8).join("\n") if failed.any?
           UI.messagebox(msg, MB_MULTILINE)
@@ -171,21 +171,23 @@ module HungLoan
           return unless face
           face.reverse! if face.normal.z < 0
           face.pushpull(U.l(t))
-          it['ops'].each do |op|
-            ok = begin
-              case op['type']
-              when 'drill' then carve_hole(ents, op, t)
-              when 'groove' then Render.carve_rect(ents, op['rect'], op['face'] == 'A' ? t : 0.0, op['depth'], t)
-              when 'pocket' then carve_poly(ents, op, t)
+          # ABF nhận tấm là lăng trụ nguyên + dấu trên tag ABF_… → mặc định KHÔNG khoét mesh.
+          if C::Config::SNAPSHOT_CARVE
+            it['ops'].each do |op|
+              ok = begin
+                case op['type']
+                when 'drill' then carve_hole(ents, op, t)
+                when 'groove' then Render.carve_rect(ents, op['rect'], op['face'] == 'A' ? t : 0.0, op['depth'], t)
+                when 'pocket' then carve_poly(ents, op, t)
+                end
+              rescue StandardError => e
+                warn "[TuModule] snapshot #{op['feature']}: #{e.message}"
+                false
               end
-            rescue StandardError => e
-              warn "[TuModule] snapshot #{op['feature']}: #{e.message}"
-              false
+              failed << "• #{it['part']} / #{op['feature']}" unless ok
             end
-            failed << "• #{it['part']} / #{op['feature']}" unless ok
           end
-          # Dấu trên tag ABF (ABF_D35, ABF_RANH_HAU, ABF_POCKET_Z…) đi kèm hình khoét.
-          Render.draw_marks(g, { 't' => t }, it['ops'], Render.mark_layer(g.model)) if it['ops'].any?
+          Render.draw_marks(g, { 't' => t }, it['ops']) if it['ops'].any?
         end
 
         def carve_hole(ents, op, _t)

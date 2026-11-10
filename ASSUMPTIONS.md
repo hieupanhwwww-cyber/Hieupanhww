@@ -44,6 +44,12 @@ Các điểm dưới đây là **lựa chọn tạm để có bản chạy đư�
   còn `ABF_D{Ø}` cho đường kính khác và `ABF_POCKET_Z{n}` là suy rộng mẫu tên. Chưa nạp thử trên ABF. Sửa tại `core/abf_rules.rb`.
 - **Xóa thao tác gia công trong Thuộc tính**: xóa theo nguồn — lỗ cam xóa cả bộ của cạnh; lỗ cốc chuyển cánh sang thủ công; rãnh/khác ghi vào danh sách đã xóa.
 
+- **Rãnh hậu (đổi ở 1.2.0)**: mặc định KHÔNG khoét vào khối tấm vì ABF thật không nhận tấm đã khoét rãnh; rãnh là nhóm dấu `ABF_RANH_HAU`.
+  Hệ quả: trong 3D, hậu “ăn” vào hồi/nóc/đáy 7 mm (đúng thực tế lắp, nhưng không thấy rãnh). Chọn “Khoét thật” trong Thuộc tính nếu cần.
+- **Dấu gia công kiểu ABF (1.2.0)**: nhóm một cấp trong tấm, mặt phẳng trên mặt ván — theo cách file mẫu xưởng làm. Việc ABF đọc được lỗ từ dạng này là **giả thuyết chưa thử**.
+- **Len chân**: cao 50 (khung tủ) / 100 (bếp) là số đọc từ model nguồn (50) và DEMO (100); lùi trước 50 DEMO; len chân dày bằng ván thân; có chân thì đáy buộc lọt.
+- **Xà thay nóc**: hai xà nằm ngang, bản rộng 100 DEMO, lọt giữa hai hồi; xà sau nhận rãnh hậu.
+
 ## C. Giới hạn đã biết của bản 1.0.0
 
 - Chưa chạy trong SketchUp thật: hình học `pushpull` khoét rãnh/lỗ, observer, HtmlDialog, Undo cần kiểm tra trên host.

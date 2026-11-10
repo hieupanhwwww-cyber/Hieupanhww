@@ -1,4 +1,4 @@
-# TEST_REPORT — Tủ Module Hùng Loan 1.1.0 (10/11/2026)
+# TEST_REPORT — Tủ Module Hùng Loan 1.2.0 (10/11/2026)
 
 ## 1. Môi trường thực tế
 | Hạng mục | Trạng thái |
@@ -16,8 +16,8 @@ Ba mức kiểm thử, phân biệt rõ:
 ## 2. Kết quả chạy
 | Bộ kiểm thử | Lệnh | Kết quả |
 |---|---|---|
-| Lõi | `ruby -Itests tests/test_core.rb` | **44 phép thử, 310 kiểm tra, 0 lỗi** |
-| Luồng SketchUp (giả lập) | `ruby tests/test_su_flow.rb` | **12 phép thử, 143 kiểm tra, 0 lỗi** |
+| Lõi | `ruby -Itests tests/test_core.rb` | **48 phép thử, 358 kiểm tra, 0 lỗi** |
+| Luồng SketchUp (giả lập) | `ruby tests/test_su_flow.rb` | **13 phép thử, 165 kiểm tra, 0 lỗi** |
 | Công cụ tương tác (view giả lập) | `ruby tests/test_su_tools.rb` | **4 phép thử, 12 kiểm tra, 0 lỗi** |
 | Cú pháp mọi file `.rb` | `tools/build_rbz.sh` | Đạt |
 | Gói RBZ | giải nén + nạp loader `hl_tumodule.rb` → `hl_tumodule/main` | Nạp được (trên giả lập); không chứa đường dẫn máy phát triển |
@@ -79,7 +79,7 @@ Ký hiệu: **R** = kiểm thử thuần Ruby đạt · **M** = chạy đạt tr
 ## 5. Đích ABF/Nesting
 | Phần mềm | Phiên bản | File thử | Kết quả |
 |---|---|---|---|
-| ABF / ABF Nesting | Chưa xác định | Bộ ca: lệnh *Dựng bộ ca kiểm thử ABF*; dữ liệu mong đợi `docs/abf_samples/` | **Chưa chạy — chưa kiểm chứng** |
+| ABF Nesting (máy người dùng, phiên bản chưa rõ) | — | `bantest.skp` dựng bằng plugin 1.1.0 | **Không đạt**: 18/27 tấm, 0 lỗ khoan (xem `docs/khao_sat/ABF_KET_QUA_THAT.md`). 1.2.0 đã sửa theo kết quả này, **chưa chạy lại** |
 
 Bảng so sánh mong đợi/thực tế: `docs/ABF_HANDOFF.md` mục 5 (cột thực tế để trống).
 
@@ -87,3 +87,4 @@ Bảng so sánh mong đợi/thực tế: `docs/ABF_HANDOFF.md` mục 5 (cột th
 | Ngày | Lỗi | Nguyên nhân | Sửa |
 |---|---|---|---|
 | 08/11 | `undefined method 'entityID' for Sketchup::Entities` khi đặt module | Dùng `entityID` làm khóa gắn observer cho `Entities`/`Selection` — API thật không có; bản giả lập có nên không bắt được | Khóa theo loại đối tượng (`Observers.ident`); bỏ `entityID` khỏi giả lập để không che lỗi |
+| 10/11 | ABF bỏ 12 tấm, không nhận lỗ | Rãnh hậu khoét vào khối; dấu lỗ là nét rời lồng 2 cấp | Rãnh thành dấu `ABF_RANH_HAU`, dấu lỗ thành nhóm mặt 1 cấp trong tấm (1.2.0) — chờ thử lại trên ABF |

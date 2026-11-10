@@ -23,7 +23,6 @@ module HungLoan
           ents.clear!
           registry = {}
           mid = built['params']['id']
-          layer = mark_layer(mod.model)
           built['panels'].each do |pn|
             g = ents.add_group
             begin
@@ -33,7 +32,7 @@ module HungLoan
                 g.transformation = U.frame_tf(pn['frame'])
                 draw_flat(g, pn)
                 feats = (pn['features'] || []) + (extra_features[pn['local_id']] || [])
-                draw_marks(g, pn, feats, layer) if feats.any?
+                draw_marks(g, pn, feats) if feats.any?
               end
             rescue StandardError => e
               warn "[TuModule] Lỗi vẽ tấm #{pn['local_id']}: #{e.message}"
@@ -132,49 +131,48 @@ module HungLoan
           [tag, ly]
         end
 
-        # Dấu kỹ thuật cho lỗ khoan/rãnh/tiết diện, vẽ trong nhóm con (không cắt khối tấm).
-        # Mỗi loại thao tác nằm trong nhóm con riêng, gắn TAG ABF theo Core::AbfRules.
-        def draw_marks(g, pn, feats, layer)
-          mg = g.entities.add_group
-          mg.name = 'Dấu gia công'
-          mg.layer = layer
-          mg.set_attribute(Store::DICT, 'kind', 'marks')
+        # DẤU GIA CÔNG KIỂU ABF: mỗi tag một NHÓM CON nằm NGAY TRONG nhóm tấm (một cấp), tên nhóm = tên tag,
+        # gắn tag ABF_…; hình là MẶT phẳng nằm đúng trên mặt/cạnh tấm (lỗ = mặt tròn, rãnh = chữ nhật,
+        # tiết diện = đa giác). Khối tấm giữ nguyên lăng trụ để ABF nhận là tấm.
+        # (Căn cứ: file mẫu của xưởng dùng nhóm ABF_BanLe/ABF_… trên tag ABF_D35…; kết quả ABF thật
+        #  cho thấy dấu lồng 2 cấp bằng nét rời không được nhận.)
+        def draw_marks(g, pn, feats, _legacy_layer = nil)
           subs = {}
-          eps = 0.1 # mm, nổi khỏi mặt để không chồng mặt
           feats.each do |f|
             tag, ly = abf_layer(g.model, f)
             sub = subs[tag]
             unless sub
-              sub = mg.entities.add_group
+              sub = g.entities.add_group
               sub.name = tag
               sub.layer = ly
+              sub.set_attribute(Store::DICT, 'kind', 'marks')
               subs[tag] = sub
             end
             ents = sub.entities
-            case f['type']
-            when 'drill'
-              dir = U.vec(f['dir'])
-              next if dir.length < 1e-9
-              c = U.pt(f['pos'].each_with_index.map { |x, i| x - f['dir'][i] * eps })
-              ents.add_circle(c, dir, U.l(f['diameter'] / 2.0), 16)
-              tip = U.pt(f['pos'].each_with_index.map { |x, i| x + f['dir'][i] * f['depth'] })
-              ents.add_cline(c, tip) rescue nil
-            when 'groove'
-              next unless f['rect']
-              w = f['face'] == 'A' ? pn['t'] + eps : -eps
-              r = f['rect']
-              pts = [[r[0], r[1]], [r[2], r[1]], [r[2], r[3]], [r[0], r[3]]].map { |u, v| Geom::Point3d.new(U.l(u), U.l(v), U.l(w)) }
-              ents.add_edges(pts + [pts.first])
-            when 'pocket'
-              w = f['face'] == 'A' ? pn['t'] + eps : -eps
-              (f['outline'] || []).each do |poly|
-                next if poly.size < 3
-                pts = poly.map { |p| Geom::Point3d.new(U.l(p[0]), U.l(p[1]), U.l(w)) }
-                ents.add_edges(pts + [pts.first])
+            begin
+              case f['type']
+              when 'drill'
+                dir = U.vec(f['dir'])
+                next if dir.length < 1e-9
+                edges = ents.add_circle(U.pt(f['pos']), dir, U.l(f['diameter'] / 2.0), 24)
+                ents.add_face(edges)
+              when 'groove'
+                next unless f['rect']
+                w = f['face'] == 'A' ? pn['t'] : 0.0
+                r = f['rect']
+                ents.add_face([[r[0], r[1]], [r[2], r[1]], [r[2], r[3]], [r[0], r[3]]].map { |u, v| Geom::Point3d.new(U.l(u), U.l(v), U.l(w)) })
+              when 'pocket'
+                w = f['face'] == 'A' ? pn['t'] : 0.0
+                (f['outline'] || []).each do |poly|
+                  next if poly.size < 3
+                  ents.add_face(poly.map { |q| Geom::Point3d.new(U.l(q[0]), U.l(q[1]), U.l(w)) })
+                end
               end
+            rescue StandardError => e
+              warn "[TuModule] Lỗi vẽ dấu #{f['id']}: #{e.message}"
             end
           end
-          mg
+          subs.values
         end
       end
     end

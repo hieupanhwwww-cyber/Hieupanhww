@@ -309,6 +309,34 @@ class TestSUFlow < Minitest::Test
     assert(model.layers['ABF_RANH_HAU'])
   end
 
+  def test_abf_style_marks_plinth_and_stretchers
+    g = place('hl.khung_tu.v1')
+    side = S::Store.panels_in(g).find { |x| x.get_attribute(S::Store::DICT, 'local_id') == 'side_L' }
+    kids = side.entities.items.select { |e| e.is_a?(Sketchup::Group) }
+    assert_equal ['ABF_RANH_HAU'], kids.map(&:name), 'dấu rãnh hậu là nhóm ABF nằm ngay trong tấm (1 cấp)'
+    assert_equal 'marks', kids[0].get_attribute(S::Store::DICT, 'kind')
+    assert_equal 1, kids[0].entities.items.count { |e| e.is_a?(Sketchup::Face) }, 'dấu là MẶT trên mặt ván'
+    assert_equal 1, side.entities.items.count { |e| e.is_a?(Sketchup::Face) }, 'khối tấm không bị khoét (chỉ 1 lần pushpull)'
+    assert(S::Store.panels_in(g).any? { |x| x.get_attribute(S::Store::DICT, 'role') == 'plinth' }, 'khung tủ mặc định có len chân')
+    desc = S::Props.module(g)
+    sec = desc['sections'].find { |x| x['title'] == 'Len chân & xà' }
+    assert_in_delta 50.0, sec['fields'].find { |f| f['key'] == 'plinth_h' }['value'], 1e-9
+    S::Props.apply_module(g, 'plinth_h' => '120', 'plinth_back' => false, 'top_style' => 'stretchers', 'stretcher_w' => '90',
+                             'top_joint' => 'inset', 'joints_enabled' => true)
+    ids = S::Store.panels_in(g).map { |x| x.get_attribute(S::Store::DICT, 'local_id') }
+    assert_includes ids, 'plinth_F'
+    refute_includes ids, 'plinth_B'
+    assert_includes ids, 'stretcher_F'
+    refute_includes ids, 'top'
+    assert_in_delta 120.0, params(g)['plinth']['h'], 1e-9
+    S::Props.apply_module(g, 'plinth_h' => '5')
+    assert_in_delta 120.0, params(g)['plinth']['h'], 1e-9, 'giá trị sai bị từ chối'
+    S::Props.apply_module(g, 'plinth_h' => '0')
+    refute(S::Store.panels_in(g).any? { |x| x.get_attribute(S::Store::DICT, 'role') == 'plinth' })
+    _p, _j, issues = S::Export.check(model)
+    assert_empty issues.select { |i| i['level'] == 'error' }
+  end
+
   def test_tools_construct
     S::Commands.start_place('hl.khung_tu.v1')
     assert_kind_of S::PlaceTool, model.tool

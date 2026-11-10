@@ -78,6 +78,15 @@ module HungLoan
           gtol = bk['groove_tol'].to_f; gclr = bk['groove_clear'].to_f
           scope = bk['scope'] || 'whole'
           top_ov = p['top_joint'] == 'overlay'; bot_ov = p['bottom_joint'] == 'overlay'
+          # Len chân: đáy nâng lên, hai hồi chạy tới sàn (đáy buộc lọt giữa hai hồi).
+          pl = p['plinth'] || {}
+          ph = pl['h'].to_f
+          pl_sb = pl['setback'].to_f
+          bot_ov = false if ph > 0
+          # Xà thay nóc: hai xà trước/sau lọt giữa hai hồi.
+          stretch = p['top_style'] == 'stretchers'
+          sw = (p['stretcher_w'] || C::STRETCHER_W).to_f
+          top_ov = false if stretch
           sup = p['suppressed'] || []
           fr = p['front'] || {}
           fr_active = fr['enabled'] && fr['type'] != 'open'
@@ -88,7 +97,16 @@ module HungLoan
           end_r = rnd['end_r'].to_f
 
           err(errors, 'DIM_W', "Rộng #{w} mm quá nhỏ so với 2 hồi #{t} mm", 'field' => 'w') if w < 2 * t + C::MIN_CELL
-          err(errors, 'DIM_H', "Cao #{h} mm quá nhỏ", 'field' => 'h') if h < 2 * t + C::MIN_CELL
+          err(errors, 'DIM_H', "Cao #{h} mm quá nhỏ", 'field' => 'h') if h < ph + 2 * t + C::MIN_CELL
+          if ph > 0
+            err(errors, 'PLINTH_H', 'Chiều cao len chân phải từ 20 đến 300 mm (0 = không chân)', 'field' => 'plinth_h') if ph < 20 || ph > 300
+            err(errors, 'PLINTH_SETBACK', 'Lùi len chân quá lớn so với chiều sâu', 'field' => 'plinth_setback') if pl_sb < 0 || pl_sb + 2 * t > d - tb - 20
+            err(errors, 'PLINTH_ROUND', 'Tủ đầu bo chưa hỗ trợ len chân', 'field' => 'plinth_h') if rnd['end_r'].to_f > 0
+          end
+          if stretch
+            err(errors, 'STRETCHER_W', 'Bản rộng xà phải từ 40 mm và nhỏ hơn nửa chiều sâu', 'field' => 'stretcher_w') if sw < 40 || sw > d / 2.0 - 10
+            err(errors, 'STRETCHER_ROUND', 'Tủ đầu bo dùng nóc tấm, không dùng xà', 'field' => 'top_style') if rnd['end_r'].to_f > 0
+          end
           dc = mode == 'overlay' ? d - tb : d
           y_back_inner = mode == 'overlay' ? d - tb : d - sb - tb
           err(errors, 'DIM_D', "Sâu #{d} mm không đủ cho hậu và lùi hậu", 'field' => 'd') if y_back_inner - inner_front < C::MIN_CELL
@@ -114,7 +132,7 @@ module HungLoan
           panels = []
           side_z0 = bot_ov ? t : 0.0
           side_z1 = top_ov ? h - t : h
-          zi0 = t; zi1 = h - t; xi0 = t; xi1 = w - t
+          zb0 = ph; zi0 = ph + t; zi1 = h - t; xi0 = t; xi1 = w - t
           endc_out = end_r > 0 ? [w - end_r, end_r, end_r] : nil
           endc_in = end_r > 0 ? [w - end_r, end_r, end_r - t] : nil
 
@@ -130,8 +148,17 @@ module HungLoan
           end
           tx0, tx1 = top_ov ? [0.0, w] : [t, w - t]
           bx0, bx1 = bot_ov ? [0.0, w] : [t, w - t]
-          panels << horiz_panel('top', 'top', tx0, tx1, 0.0, dc, h - t, h, corner_r, top_ov ? endc_out : endc_in)
-          panels << horiz_panel('bottom', 'bottom', bx0, bx1, 0.0, dc, 0.0, t, corner_r, bot_ov ? endc_out : endc_in)
+          if stretch
+            panels << box_panel('stretcher_F', 'stretcher', t, w - t, 0.0, sw, h - t, h, :z)
+            panels << box_panel('stretcher_B', 'stretcher', t, w - t, dc - sw, dc, h - t, h, :z)
+          else
+            panels << horiz_panel('top', 'top', tx0, tx1, 0.0, dc, h - t, h, corner_r, top_ov ? endc_out : endc_in)
+          end
+          panels << horiz_panel('bottom', 'bottom', bx0, bx1, 0.0, dc, zb0, zb0 + t, corner_r, bot_ov ? endc_out : endc_in)
+          if ph > 0
+            panels << box_panel('plinth_F', 'plinth', t, w - t, pl_sb, pl_sb + t, 0.0, ph, :y)
+            panels << box_panel('plinth_B', 'plinth', t, w - t, dc - t, dc, 0.0, ph, :y) unless pl['back'] == false
+          end
 
           # Khoang bên trong
           res = Interior.resolve(p['interior'], xi0, xi1, zi0, zi1)
@@ -151,7 +178,7 @@ module HungLoan
           else
             case mode
             when 'overlay'
-              backs << box_panel('back', 'back', 0.0, w, d - tb, d, 0.0, h, :y)
+              backs << box_panel('back', 'back', 0.0, w, d - tb, d, zb0, h, :y)
             when 'inset'
               backs << box_panel('back', 'back', xi0, xi1, d - sb - tb, d - sb, zi0, zi1, :y)
             else
@@ -192,14 +219,14 @@ module HungLoan
                 'rect' => rect, 'depth' => gd, 'through' => false, 'width' => gy1 - gy0,
                 'path' => axis_along == :v ? [[(rect[0] + rect[2]) / 2, 0.0], [(rect[0] + rect[2]) / 2, pn['h']]] :
                                              [[0.0, (rect[1] + rect[3]) / 2], [pn['w'], (rect[1] + rect[3]) / 2]],
-                'carve' => true, 'source' => { 'kind' => 'back_groove' }
+                'carve' => bk['carve'] == true, 'source' => { 'kind' => 'back_groove' }
               }
             end
             panels.each do |pn|
               case pn['local_id']
               when 'side_L' then add_groove.call(pn, 'A', :v)
               when 'side_R' then add_groove.call(pn, 'B', :v)
-              when 'top' then add_groove.call(pn, 'B', :u)
+              when 'top', 'stretcher_B' then add_groove.call(pn, 'B', :u)
               when 'bottom' then add_groove.call(pn, 'A', :u)
               end
             end
@@ -228,7 +255,7 @@ module HungLoan
               'x0' => bl['kind'] == 'side' ? xi0 : bl['hi'], 'x1' => br['kind'] == 'side' ? xi1 : br['lo'] }
           end
 
-          info = { 'w' => w, 'd' => d, 'h' => h, 't' => t, 'y_back_inner' => y_back_inner, 'inner_front' => inner_front,
+          info = { 'w' => w, 'd' => d, 'h' => h, 't' => t, 'plinth' => ph, 'y_back_inner' => y_back_inner, 'inner_front' => inner_front,
                    'dc' => dc, 'interior' => [xi0, xi1, zi0, zi1], 'side_z' => [side_z0, side_z1] }
           cells = res['cells'].map { |c| c.merge('y0' => inner_front, 'y1' => y_back_inner) }
           fronts = []
@@ -263,11 +290,11 @@ module HungLoan
           doors = []
           zones.each_with_index do |z, zi|
             if fr['mount'] == 'inset'
-              x0 = z['x0'] + eg; x1 = z['x1'] - eg; z0 = t + eg; z1 = h - t - eg; y0 = 0.0; y1 = tf
+              x0 = z['x0'] + eg; x1 = z['x1'] - eg; z0 = info['interior'][2] + eg; z1 = h - t - eg; y0 = 0.0; y1 = tf
             else
               x0 = z['left']['kind'] == 'side' ? eg : z['left']['center'] + mg / 2.0
               x1 = z['right']['kind'] == 'side' ? w - eg : z['right']['center'] - mg / 2.0
-              z0 = eg; z1 = h - eg; y0 = -tf; y1 = 0.0
+              z0 = info['plinth'].to_f + eg; z1 = h - eg; y0 = -tf; y1 = 0.0
             end
             x0 = [x0, opts['door_x_min'] + eg].max if opts['door_x_min'] && zi.zero?
             n = door_count(fr, z)
@@ -295,9 +322,9 @@ module HungLoan
           n = fr['drawer_count'].to_i
           ratios = Array.new(n, 1.0) if ratios.size != n
           if fr['mount'] == 'inset'
-            x0 = t + eg; x1 = w - t - eg; base = t + eg; top = h - t; y0 = 0.0; y1 = tf
+            x0 = t + eg; x1 = w - t - eg; base = info['interior'][2] + eg; top = h - t; y0 = 0.0; y1 = tf
           else
-            x0 = eg; x1 = w - eg; base = eg; top = h; y0 = -tf; y1 = 0.0
+            x0 = eg; x1 = w - eg; base = info['plinth'].to_f + eg; top = h; y0 = -tf; y1 = 0.0
           end
           total = top - base
           sum = ratios.sum.to_f

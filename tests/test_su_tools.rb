@@ -86,7 +86,7 @@ class TestSUTools < Minitest::Test
     box = b['boxes'].first
     assert box, UI.messages.last
     assert_in_delta 600.0 - 26.0, box['outer_w'], 1e-6
-    assert_in_delta 17.0 + 20.0, box['z0'], 1e-6
+    assert_in_delta 50.0 + 17.0 + 20.0, box['z0'], 1e-6, 'đo từ mặt trong đáy khoang (đáy nằm trên len chân 50)'
   end
 
   def test_place_tool_free_and_stack_snap
