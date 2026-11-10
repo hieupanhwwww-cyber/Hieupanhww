@@ -17,6 +17,7 @@ class TestSUFlow < Minitest::Test
     UI.messages.clear
     Dir.glob(File.join(ENV['APPDATA'], 'HungLoanTuModule', '*.json')).each { |f| File.delete(f) }
     S::Prefs.instance_variable_set(:@library, nil)
+    S::Prefs.load_abf_ops
     S::Prefs.instance_variable_set(:@library, nil)
   end
 
@@ -335,6 +336,39 @@ class TestSUFlow < Minitest::Test
     refute(S::Store.panels_in(g).any? { |x| x.get_attribute(S::Store::DICT, 'role') == 'plinth' })
     _p, _j, issues = S::Export.check(model)
     assert_empty issues.select { |i| i['level'] == 'error' }
+  end
+
+  def test_general_settings_rename_layer_instance_and_regen
+    g = place('hl.khung_tu.v1')
+    S::Props.apply_module(g, 'top_joint' => 'inset', 'joints_enabled' => true)
+    S::Commands.run('general')
+    d = S::GeneralDialog.instance_variable_get(:@d)
+    r = d.js('init')
+    ops = r['ops'].map { |o| [o['key'], { 'layer' => o['layer'], 'instance' => o['instance'] }] }.to_h
+    cam = r['cam'].map { |c| [c['key'], c['value']] }.to_h
+    bad = d.js('save', 'ops' => ops.merge('back_groove' => { 'layer' => '', 'instance' => 'x' }), 'cam' => cam)
+    refute bad['ok']
+    assert bad['errors'].key?('back_groove.layer')
+    ops['back_groove'] = { 'layer' => 'XUONG_RANH_HAU', 'instance' => 'RanhHau' }
+    ops['cam_housing'] = { 'layer' => 'XUONG_CAM{D}', 'instance' => 'LoCam' }
+    ok = d.js('save', 'ops' => ops, 'cam' => cam.merge('cam_depth' => '13'), 'regen' => true)
+    assert ok['ok'], ok['error']
+    side = S::Store.panels_in(g).find { |x| x.get_attribute(S::Store::DICT, 'local_id') == 'side_L' }
+    names = side.entities.items.select { |e| e.is_a?(Sketchup::Group) }.map(&:name)
+    assert_includes names, 'RanhHau', 'tủ đã đặt được cập nhật tên instance mới'
+    assert model.layers['XUONG_RANH_HAU']
+    top = S::Store.panels_in(g).find { |x| x.get_attribute(S::Store::DICT, 'local_id') == 'top' }
+    cam_g = top.entities.items.find { |e| e.is_a?(Sketchup::Group) && e.name == 'LoCam' }
+    assert cam_g
+    assert_equal 'XUONG_CAM15', cam_g.layer
+    parts, = S::Export.check(model)
+    feats = parts.flat_map { |x| x['features'] }
+    assert_includes feats.map { |f| f['abf_tag'] }, 'XUONG_RANH_HAU'
+    assert_in_delta 13.0, feats.find { |f| f['op'] == 'cam_housing' }['depth'], 1e-9, 'thông số cam mới được áp dụng'
+    # nhớ qua phiên
+    CORE::AbfRules.ops = nil
+    S::Prefs.load_abf_ops
+    assert_equal 'XUONG_RANH_HAU', CORE::AbfRules.ops['back_groove']['layer']
   end
 
   def test_tools_construct

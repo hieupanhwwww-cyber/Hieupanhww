@@ -94,6 +94,18 @@ module HungLoan
             'cam_preset' => cam_preset((params['joints'] || {})['preset']) }
         end
 
+        # ---- Bảng tên layer/instance gia công (Cài đặt chung)
+        def load_abf_ops
+          raw = read_json('abf_ops.json', nil)
+          cfg, errs = C::AbfRules.clean_ops(raw || {})
+          C::AbfRules.ops = errs.empty? ? cfg : C::AbfRules::DEFAULT_OPS
+        end
+
+        def save_abf_ops(cfg)
+          write_json('abf_ops.json', cfg)
+          C::AbfRules.ops = cfg
+        end
+
         # ---- Cấu hình làm việc (chế độ chọn, v.v.)
         def work
           @work ||= read_json('work.json', {})

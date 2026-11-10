@@ -3,7 +3,7 @@ require 'json'
 
 module HungLoan
   module TuModule
-    VERSION = '1.2.0'.freeze unless const_defined?(:VERSION)
+    VERSION = '1.3.0'.freeze unless const_defined?(:VERSION)
     DIR = File.dirname(__FILE__).freeze
   end
 end
@@ -19,6 +19,7 @@ end
 module HungLoan
   module TuModule
     unless file_loaded?(__FILE__)
+      SU::Prefs.load_abf_ops
       SU::Commands.install
       SU::Observers.install
       file_loaded(__FILE__)

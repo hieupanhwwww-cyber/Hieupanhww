@@ -140,13 +140,14 @@ module HungLoan
           subs = {}
           feats.each do |f|
             tag, ly = abf_layer(g.model, f)
-            sub = subs[tag]
+            inst = C::AbfRules.instance_for(f)
+            sub = subs[[tag, inst]]
             unless sub
               sub = g.entities.add_group
-              sub.name = tag
+              sub.name = inst
               sub.layer = ly
               sub.set_attribute(Store::DICT, 'kind', 'marks')
-              subs[tag] = sub
+              subs[[tag, inst]] = sub
             end
             ents = sub.entities
             begin

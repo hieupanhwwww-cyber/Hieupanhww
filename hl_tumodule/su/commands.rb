@@ -56,6 +56,7 @@ module HungLoan
           case name
           when 'library' then LibraryDialog.show
           when 'properties' then PropertiesDialog.show
+          when 'general' then GeneralDialog.show
           when 'select_set' then Actions.select_whole_set
           when 'select_modules' then Actions.select_single_modules
           when 'fronts' then Actions.create_fronts
@@ -85,6 +86,7 @@ module HungLoan
         ITEMS = [
           ['library', 'Thư viện module', 'Mở thư viện mẫu (cây thư mục, lọc loại, bánh răng setting)', 'library'],
           ['properties', 'Thuộc tính', 'Cửa sổ thuộc tính đối tượng đang chọn', 'properties'],
+          ['general', 'Cài đặt chung', 'Tên layer/instance gia công (cam, rãnh hậu…), thông số cam', 'general'],
           nil,
           ['select_set', 'Chọn cả bộ', 'Chọn nguyên bộ tủ', 'select_set'],
           ['select_modules', 'Chọn từng module', 'Mở bộ tủ để chọn/Move từng module', 'select_modules'],

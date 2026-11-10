@@ -185,6 +185,65 @@ module HungLoan
         def reload_if_open; Bridge.push(@d, payload) if @d && @d.visible? && @tid; end
       end
 
+      # ================================================================== CÀI ĐẶT CHUNG
+      module GeneralDialog
+        A = Core::AbfRules
+        CAM_KEYS = [['cam_diameter', 'Ø cốc cam'], ['cam_depth', 'Sâu cốc cam'], ['cam_offset', 'Tâm cốc cách mặt tiếp xúc'],
+                    ['edge_diameter', 'Ø lỗ cạnh'], ['edge_depth', 'Sâu lỗ cạnh'], ['bolt_diameter', 'Ø lỗ chốt'],
+                    ['bolt_depth', 'Sâu lỗ chốt'], ['end_setback', 'Cam đầu/cuối cách đầu cạnh']].freeze
+        module_function
+
+        def show
+          if @d && @d.visible?
+            @d.bring_to_front
+            return
+          end
+          @d = Bridge.make('Cài đặt chung — Tủ Module', 'HLTM_General', 'general.html', 560, 640)
+          Bridge.bind(@d, method(:handle))
+          @d.show
+        end
+
+        def payload
+          cam = Prefs.cam_presets.first
+          { 'ops' => A::OP_KEYS.map { |k| { 'key' => k, 'title' => A::OP_TITLES[k], 'layer' => A.ops[k]['layer'], 'instance' => A.ops[k]['instance'],
+                                            'def_layer' => A::DEFAULT_OPS[k]['layer'], 'def_instance' => A::DEFAULT_OPS[k]['instance'] } },
+            'cam' => CAM_KEYS.map { |k, label| { 'key' => k, 'label' => label, 'value' => cam[k] } },
+            'cam_name' => cam['name'], 'cam_demo' => cam['demo'] ? true : false }
+        end
+
+        def handle(action, d)
+          case action
+          when 'init' then payload
+          when 'save'
+            cfg, errs = A.clean_ops(d['ops'] || {})
+            cam = Core::Util.deep_copy(Prefs.cam_presets.first)
+            CAM_KEYS.each do |k, label|
+              x = Core::Util.num((d['cam'] || {})[k])
+              if x.nil? || x <= 0 then errs["cam.#{k}"] = "#{label}: cần số dương"
+              else cam[k] = x
+              end
+            end
+            return { 'ok' => false, 'errors' => errs, 'error' => 'Có ô chưa hợp lệ — chưa lưu.' } if errs.any?
+            changed_cam = CAM_KEYS.any? { |k, _| (cam[k].to_f - Prefs.cam_presets.first[k].to_f).abs > 1e-9 }
+            if changed_cam
+              cam['name'] = 'Minifix xưởng' if cam['demo']
+              cam['demo'] = false
+              Prefs.save_cam_presets([cam] + Prefs.cam_presets.drop(1))
+            end
+            Prefs.save_abf_ops(cfg)
+            n = d['regen'] ? Actions.regen_all : nil
+            payload.merge('message' => n ? "Đã lưu và cập nhật #{n} bộ tủ trong model." : 'Đã lưu. Áp dụng cho tủ đặt mới và lần cập nhật kế tiếp.')
+          when 'defaults'
+            payload.merge('ops' => A::OP_KEYS.map { |k| { 'key' => k, 'title' => A::OP_TITLES[k], 'layer' => A::DEFAULT_OPS[k]['layer'],
+                                                           'instance' => A::DEFAULT_OPS[k]['instance'], 'def_layer' => A::DEFAULT_OPS[k]['layer'],
+                                                           'def_instance' => A::DEFAULT_OPS[k]['instance'] } },
+                          'message' => 'Đã nạp tên mặc định — bấm Lưu để áp dụng.', 'dirty' => true)
+          else
+            raise Core::ValidationError, 'Lệnh không hợp lệ'
+          end
+        end
+      end
+
       # ================================================================== THUỘC TÍNH
       module PropertiesDialog
         C = Core

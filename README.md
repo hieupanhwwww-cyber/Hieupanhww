@@ -119,6 +119,15 @@ Mở **Thư viện module** (biểu tượng 4 ô).
 - Chọn module: mục “Gia công CNC” tổng hợp số thao tác theo tag ABF.
 - Trong model, dấu gia công nằm trên các tag `ABF_D35`, `ABF_D15`, `ABF_RANH_HAU`… (bật/tắt ở bảng Tags của SketchUp).
 
+### Cài đặt chung (từ 1.3.0)
+- **Extensions › Tủ Module Hùng Loan › Cài đặt chung** (hoặc nút bánh răng trên thanh công cụ).
+- Bảng **Tên layer và instance gia công**: mỗi dòng một loại thao tác (cốc cam, lỗ cạnh, chốt cam, lỗ bản lề, rãnh hậu, tiết diện).
+  Sửa ô *Layer (tag)* và *Instance (tên nhóm)* cho khớp tên đã khai báo trong ABF của xưởng. `{D}` = đường kính, `{Z}` = độ sâu
+  (vd `ABF_D{D}` → `ABF_D15`).
+- Bảng **Thông số cam**: Ø và độ sâu cốc cam, lỗ cạnh, lỗ chốt, khoảng cách.
+- Tick “Cập nhật luôn mọi tủ…” rồi **Lưu cài đặt**: tủ đã đặt được vẽ lại dấu theo tên mới. Ô sai báo đỏ, không lưu.
+  “Tên mặc định” chỉ nạp lại tên gốc vào bảng, bấm Lưu mới áp dụng. Tag cũ không còn dùng vẫn nằm trong bảng Tags của SketchUp (xóa bằng Purge nếu muốn).
+
 ## 14. Thuộc tính & Undo
 - **Thuộc tính**: chuột phải đối tượng → Thuộc tính, hoặc nút trên thanh công cụ. Đổi đối tượng chọn → bảng tự theo.
 - Sửa nhiều ô rồi bấm **Áp dụng** — cập nhật một lần. Nháp gắn theo từng đối tượng; đổi lựa chọn không áp nhầm.

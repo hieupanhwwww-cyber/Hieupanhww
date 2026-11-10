@@ -739,3 +739,28 @@ class TestPlinthStretcher < Minitest::Test
     end
   end
 end
+
+class TestAbfOpsConfig < Minitest::Test
+  def teardown; AbfRules.ops = nil; end
+
+  def test_rename_layer_and_instance
+    cfg, errs = AbfRules.clean_ops('cam_housing' => { 'layer' => 'CAM_{D}_Z{Z}', 'instance' => 'LoCam' },
+                                   'back_groove' => { 'layer' => 'RANH_HAU_7', 'instance' => 'RanhHau' })
+    assert_empty errs
+    AbfRules.ops = cfg
+    f = { 'type' => 'drill', 'op' => 'cam_housing', 'diameter' => 15.0, 'depth' => 12.5 }
+    assert_equal 'CAM_15_Z12.5', AbfRules.tag_for(f)
+    assert_equal 'LoCam', AbfRules.instance_for(f)
+    g = { 'type' => 'groove', 'op' => 'back_groove', 'depth' => 8.0 }
+    assert_equal 'RANH_HAU_7', AbfRules.tag_for(g)
+    assert_equal 'RanhHau', AbfRules.instance_for(g)
+    assert_equal 'ABF_D35', AbfRules.tag_for('type' => 'drill', 'op' => 'hinge_cup', 'diameter' => 35.0), 'mục không sửa giữ mặc định'
+  end
+
+  def test_invalid_names_rejected
+    _, errs = AbfRules.clean_ops('back_groove' => { 'layer' => '  ', 'instance' => 'a/b' }, 'cam_bolt' => { 'layer' => 'X{Q}', 'instance' => 'ok' })
+    assert errs.key?('back_groove.layer')
+    assert errs.key?('back_groove.instance')
+    assert errs.key?('cam_bolt.layer')
+  end
+end

@@ -1,52 +1,52 @@
 ﻿id,ten,vai_tro,module,vat_lieu,dai_mm,rong_mm,day_mm,so_thao_tac
-mod_toa4dj3e780002/side_L,Hồi,side,mod_toa4dj3e780002,,580.0,1200.0,17.0,7
-mod_toa4dj3e780002/side_R,Hồi,side,mod_toa4dj3e780002,,580.0,1200.0,17.0,7
-mod_toa4dj3e780002/top,Nóc,top,mod_toa4dj3e780002,,866.0,580.0,17.0,9
-mod_toa4dj3e780002/bottom,Đáy,bottom,mod_toa4dj3e780002,,866.0,580.0,17.0,9
-mod_toa4dj3e780002/plinth_F,Len chân,plinth,mod_toa4dj3e780002,,866.0,50.0,17.0,0
-mod_toa4dj3e780002/plinth_B,Len chân,plinth,mod_toa4dj3e780002,,866.0,50.0,17.0,0
-mod_toa4dj3e780002/back,Hậu,back,mod_toa4dj3e780002,,880.0,1130.0,7.0,0
-mod_toa4dj3e780002/dot_toa4dj08b60003,Đợt,shelf,mod_toa4dj3e780002,,866.0,558.0,17.0,8
-mod_toa4dj3e780002/door:side_L|side_R:0,Cánh,door,mod_toa4dj3e780002,,447.0,1146.0,17.0,3
-mod_toa4dj3e780002/door:side_L|side_R:1,Cánh,door,mod_toa4dj3e780002,,447.0,1146.0,17.0,3
-mod_toa4djac670007/top,Nóc chữ L,top,mod_toa4djac670007,,1600.0,1200.0,17.0,4
-mod_toa4djac670007/bottom,Đáy chữ L,bottom,mod_toa4djac670007,,1600.0,1200.0,17.0,4
-mod_toa4djac670007/end_A,Hồi chữ L,l_end,mod_toa4djac670007,,400.0,766.0,17.0,8
-mod_toa4djac670007/end_B,Hồi chữ L,l_end,mod_toa4djac670007,,400.0,766.0,17.0,8
-mod_toa4djac670007/back_A,Hậu,back,mod_toa4djac670007,,1583.0,766.0,7.0,0
-mod_toa4djac670007/back_B,Hậu,back,mod_toa4djac670007,,1176.0,766.0,7.0,0
-mod_toa4dj922b0009/side_L,Hồi,side,mod_toa4dj922b0009,,580.0,883.0,17.0,0
-mod_toa4dj922b0009/side_R,Hồi,side,mod_toa4dj922b0009,,580.0,883.0,17.0,1
-mod_toa4dj922b0009/top,Nóc,top,mod_toa4dj922b0009,,900.0,580.0,17.0,0
-mod_toa4dj922b0009/bottom,Đáy,bottom,mod_toa4dj922b0009,,866.0,580.0,17.0,0
-mod_toa4dj922b0009/plinth_F,Len chân,plinth,mod_toa4dj922b0009,,866.0,50.0,17.0,0
-mod_toa4dj922b0009/plinth_B,Len chân,plinth,mod_toa4dj922b0009,,866.0,50.0,17.0,0
-mod_toa4dj922b0009/back,Hậu,back,mod_toa4dj922b0009,,866.0,816.0,7.0,0
-mod_toa4dj9309000a/side_L,Hồi,side,mod_toa4dj9309000a,,350.0,883.0,17.0,1
-mod_toa4dj9309000a/side_R,Hồi,side,mod_toa4dj9309000a,,350.0,883.0,17.0,1
-mod_toa4dj9309000a/top,Nóc,top,mod_toa4dj9309000a,,400.0,350.0,17.0,1
-mod_toa4dj9309000a/bottom,Đáy,bottom,mod_toa4dj9309000a,,366.0,350.0,17.0,1
-mod_toa4dj9309000a/back,Hậu,back,mod_toa4dj9309000a,,380.0,880.0,7.0,0
-mod_toa4dj55d7000c/side_L,Hồi,side,mod_toa4dj55d7000c,,500.0,703.0,17.0,1
-mod_toa4dj55d7000c/side_R,Hồi,side,mod_toa4dj55d7000c,,500.0,703.0,17.0,1
-mod_toa4dj55d7000c/top,Nóc,top,mod_toa4dj55d7000c,,600.0,500.0,17.0,1
-mod_toa4dj55d7000c/bottom,Đáy,bottom,mod_toa4dj55d7000c,,566.0,500.0,17.0,1
-mod_toa4dj55d7000c/back,Hậu,back,mod_toa4dj55d7000c,,580.0,700.0,7.0,0
-mod_toa4dj55d7000c/dface:0,Mặt ngăn kéo,drawer_face,mod_toa4dj55d7000c,,596.0,214.333,17.0,0
-mod_toa4dj55d7000c/dface:1,Mặt ngăn kéo,drawer_face,mod_toa4dj55d7000c,,596.0,214.333,17.0,0
-mod_toa4dj55d7000c/dface:2,Mặt ngăn kéo,drawer_face,mod_toa4dj55d7000c,,596.0,214.333,17.0,0
-mod_toa4dj55d7000c/dr_toa4dj3965000d:side_L,Hông thùng,drawer_side,mod_toa4dj55d7000c,,450.0,150.0,15.0,0
-mod_toa4dj55d7000c/dr_toa4dj3965000d:side_R,Hông thùng,drawer_side,mod_toa4dj55d7000c,,450.0,150.0,15.0,0
-mod_toa4dj55d7000c/dr_toa4dj3965000d:front,Đầu thùng,drawer_front,mod_toa4dj55d7000c,,510.0,143.0,15.0,0
-mod_toa4dj55d7000c/dr_toa4dj3965000d:back,Hậu thùng,drawer_back,mod_toa4dj55d7000c,,510.0,143.0,15.0,0
-mod_toa4dj55d7000c/dr_toa4dj3965000d:bottom,Đáy thùng,drawer_bottom,mod_toa4dj55d7000c,,540.0,450.0,7.0,0
-mod_toa4dj55d7000c/dr_toa4dj8dcd000e:side_L,Hông thùng,drawer_side,mod_toa4dj55d7000c,,450.0,150.0,15.0,0
-mod_toa4dj55d7000c/dr_toa4dj8dcd000e:side_R,Hông thùng,drawer_side,mod_toa4dj55d7000c,,450.0,150.0,15.0,0
-mod_toa4dj55d7000c/dr_toa4dj8dcd000e:front,Đầu thùng,drawer_front,mod_toa4dj55d7000c,,510.0,143.0,15.0,0
-mod_toa4dj55d7000c/dr_toa4dj8dcd000e:back,Hậu thùng,drawer_back,mod_toa4dj55d7000c,,510.0,143.0,15.0,0
-mod_toa4dj55d7000c/dr_toa4dj8dcd000e:bottom,Đáy thùng,drawer_bottom,mod_toa4dj55d7000c,,540.0,450.0,7.0,0
-mod_toa4dj55d7000c/dr_toa4dja30d000f:side_L,Hông thùng,drawer_side,mod_toa4dj55d7000c,,450.0,150.0,15.0,0
-mod_toa4dj55d7000c/dr_toa4dja30d000f:side_R,Hông thùng,drawer_side,mod_toa4dj55d7000c,,450.0,150.0,15.0,0
-mod_toa4dj55d7000c/dr_toa4dja30d000f:front,Đầu thùng,drawer_front,mod_toa4dj55d7000c,,510.0,143.0,15.0,0
-mod_toa4dj55d7000c/dr_toa4dja30d000f:back,Hậu thùng,drawer_back,mod_toa4dj55d7000c,,510.0,143.0,15.0,0
-mod_toa4dj55d7000c/dr_toa4dja30d000f:bottom,Đáy thùng,drawer_bottom,mod_toa4dj55d7000c,,540.0,450.0,7.0,0
+mod_toa4tvb3360002/side_L,Hồi,side,mod_toa4tvb3360002,,580.0,1200.0,17.0,7
+mod_toa4tvb3360002/side_R,Hồi,side,mod_toa4tvb3360002,,580.0,1200.0,17.0,7
+mod_toa4tvb3360002/top,Nóc,top,mod_toa4tvb3360002,,866.0,580.0,17.0,9
+mod_toa4tvb3360002/bottom,Đáy,bottom,mod_toa4tvb3360002,,866.0,580.0,17.0,9
+mod_toa4tvb3360002/plinth_F,Len chân,plinth,mod_toa4tvb3360002,,866.0,50.0,17.0,0
+mod_toa4tvb3360002/plinth_B,Len chân,plinth,mod_toa4tvb3360002,,866.0,50.0,17.0,0
+mod_toa4tvb3360002/back,Hậu,back,mod_toa4tvb3360002,,880.0,1130.0,7.0,0
+mod_toa4tvb3360002/dot_toa4tveb070003,Đợt,shelf,mod_toa4tvb3360002,,866.0,558.0,17.0,8
+mod_toa4tvb3360002/door:side_L|side_R:0,Cánh,door,mod_toa4tvb3360002,,447.0,1146.0,17.0,3
+mod_toa4tvb3360002/door:side_L|side_R:1,Cánh,door,mod_toa4tvb3360002,,447.0,1146.0,17.0,3
+mod_toa4tv8d730007/top,Nóc chữ L,top,mod_toa4tv8d730007,,1600.0,1200.0,17.0,4
+mod_toa4tv8d730007/bottom,Đáy chữ L,bottom,mod_toa4tv8d730007,,1600.0,1200.0,17.0,4
+mod_toa4tv8d730007/end_A,Hồi chữ L,l_end,mod_toa4tv8d730007,,400.0,766.0,17.0,8
+mod_toa4tv8d730007/end_B,Hồi chữ L,l_end,mod_toa4tv8d730007,,400.0,766.0,17.0,8
+mod_toa4tv8d730007/back_A,Hậu,back,mod_toa4tv8d730007,,1583.0,766.0,7.0,0
+mod_toa4tv8d730007/back_B,Hậu,back,mod_toa4tv8d730007,,1176.0,766.0,7.0,0
+mod_toa4tv0ef70009/side_L,Hồi,side,mod_toa4tv0ef70009,,580.0,883.0,17.0,0
+mod_toa4tv0ef70009/side_R,Hồi,side,mod_toa4tv0ef70009,,580.0,883.0,17.0,1
+mod_toa4tv0ef70009/top,Nóc,top,mod_toa4tv0ef70009,,900.0,580.0,17.0,0
+mod_toa4tv0ef70009/bottom,Đáy,bottom,mod_toa4tv0ef70009,,866.0,580.0,17.0,0
+mod_toa4tv0ef70009/plinth_F,Len chân,plinth,mod_toa4tv0ef70009,,866.0,50.0,17.0,0
+mod_toa4tv0ef70009/plinth_B,Len chân,plinth,mod_toa4tv0ef70009,,866.0,50.0,17.0,0
+mod_toa4tv0ef70009/back,Hậu,back,mod_toa4tv0ef70009,,866.0,816.0,7.0,0
+mod_toa4tv7714000a/side_L,Hồi,side,mod_toa4tv7714000a,,350.0,883.0,17.0,1
+mod_toa4tv7714000a/side_R,Hồi,side,mod_toa4tv7714000a,,350.0,883.0,17.0,1
+mod_toa4tv7714000a/top,Nóc,top,mod_toa4tv7714000a,,400.0,350.0,17.0,1
+mod_toa4tv7714000a/bottom,Đáy,bottom,mod_toa4tv7714000a,,366.0,350.0,17.0,1
+mod_toa4tv7714000a/back,Hậu,back,mod_toa4tv7714000a,,380.0,880.0,7.0,0
+mod_toa4tv2106000c/side_L,Hồi,side,mod_toa4tv2106000c,,500.0,703.0,17.0,1
+mod_toa4tv2106000c/side_R,Hồi,side,mod_toa4tv2106000c,,500.0,703.0,17.0,1
+mod_toa4tv2106000c/top,Nóc,top,mod_toa4tv2106000c,,600.0,500.0,17.0,1
+mod_toa4tv2106000c/bottom,Đáy,bottom,mod_toa4tv2106000c,,566.0,500.0,17.0,1
+mod_toa4tv2106000c/back,Hậu,back,mod_toa4tv2106000c,,580.0,700.0,7.0,0
+mod_toa4tv2106000c/dface:0,Mặt ngăn kéo,drawer_face,mod_toa4tv2106000c,,596.0,214.333,17.0,0
+mod_toa4tv2106000c/dface:1,Mặt ngăn kéo,drawer_face,mod_toa4tv2106000c,,596.0,214.333,17.0,0
+mod_toa4tv2106000c/dface:2,Mặt ngăn kéo,drawer_face,mod_toa4tv2106000c,,596.0,214.333,17.0,0
+mod_toa4tv2106000c/dr_toa4tva698000d:side_L,Hông thùng,drawer_side,mod_toa4tv2106000c,,450.0,150.0,15.0,0
+mod_toa4tv2106000c/dr_toa4tva698000d:side_R,Hông thùng,drawer_side,mod_toa4tv2106000c,,450.0,150.0,15.0,0
+mod_toa4tv2106000c/dr_toa4tva698000d:front,Đầu thùng,drawer_front,mod_toa4tv2106000c,,510.0,143.0,15.0,0
+mod_toa4tv2106000c/dr_toa4tva698000d:back,Hậu thùng,drawer_back,mod_toa4tv2106000c,,510.0,143.0,15.0,0
+mod_toa4tv2106000c/dr_toa4tva698000d:bottom,Đáy thùng,drawer_bottom,mod_toa4tv2106000c,,540.0,450.0,7.0,0
+mod_toa4tv2106000c/dr_toa4tv536d000e:side_L,Hông thùng,drawer_side,mod_toa4tv2106000c,,450.0,150.0,15.0,0
+mod_toa4tv2106000c/dr_toa4tv536d000e:side_R,Hông thùng,drawer_side,mod_toa4tv2106000c,,450.0,150.0,15.0,0
+mod_toa4tv2106000c/dr_toa4tv536d000e:front,Đầu thùng,drawer_front,mod_toa4tv2106000c,,510.0,143.0,15.0,0
+mod_toa4tv2106000c/dr_toa4tv536d000e:back,Hậu thùng,drawer_back,mod_toa4tv2106000c,,510.0,143.0,15.0,0
+mod_toa4tv2106000c/dr_toa4tv536d000e:bottom,Đáy thùng,drawer_bottom,mod_toa4tv2106000c,,540.0,450.0,7.0,0
+mod_toa4tv2106000c/dr_toa4tvfcf5000f:side_L,Hông thùng,drawer_side,mod_toa4tv2106000c,,450.0,150.0,15.0,0
+mod_toa4tv2106000c/dr_toa4tvfcf5000f:side_R,Hông thùng,drawer_side,mod_toa4tv2106000c,,450.0,150.0,15.0,0
+mod_toa4tv2106000c/dr_toa4tvfcf5000f:front,Đầu thùng,drawer_front,mod_toa4tv2106000c,,510.0,143.0,15.0,0
+mod_toa4tv2106000c/dr_toa4tvfcf5000f:back,Hậu thùng,drawer_back,mod_toa4tv2106000c,,510.0,143.0,15.0,0
+mod_toa4tv2106000c/dr_toa4tvfcf5000f:bottom,Đáy thùng,drawer_bottom,mod_toa4tv2106000c,,540.0,450.0,7.0,0

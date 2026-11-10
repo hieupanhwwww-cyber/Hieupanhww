@@ -31,6 +31,7 @@ class TestSUTools < Minitest::Test
     UI.messages.clear
     Dir.glob(File.join(ENV['APPDATA'], 'HungLoanTuModule', '*.json')).each { |f| File.delete(f) }
     S::Prefs.instance_variable_set(:@library, nil)
+    S::Prefs.load_abf_ops
   end
 
   def model; Sketchup.active_model; end

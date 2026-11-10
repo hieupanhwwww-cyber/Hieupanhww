@@ -1,5 +1,12 @@
 # Nhật ký thay đổi
 
+## 1.3.0 — 10/11/2026 — Cài đặt chung
+- **Mới: cửa sổ “Cài đặt chung”** (menu và thanh công cụ): đổi tên **layer (tag)** và **instance (tên nhóm)** cho từng loại gia công —
+  cốc cam, lỗ cạnh, lỗ chốt cam, lỗ cốc bản lề, rãnh hậu, tiết diện khoét, tiết diện cắt xuyên. Tên dùng được `{D}` (đường kính) và `{Z}` (độ sâu).
+- Sửa **thông số cam Minifix** (Ø, độ sâu, khoảng cách) ngay trong cửa sổ này; bộ đã sửa không còn gắn nhãn DEMO.
+- Tùy chọn “Cập nhật luôn mọi tủ trong model” khi lưu. Cài đặt được nhớ qua các lần mở SketchUp (`abf_ops.json`).
+- Tên mới đi theo dấu trong model, bản gia công, bảng Gia công CNC trong Thuộc tính và file JSON/CSV.
+
 ## 1.2.0 — 10/11/2026 — Sửa theo kết quả ABF thật + len chân, xà
 Căn cứ: file `bantest.skp` người dùng gửi có kết quả ABF Nesting thật (`docs/khao_sat/ABF_KET_QUA_THAT.md`).
 - **Sửa: 12 tấm có rãnh hậu không được ABF nhận.** Rãnh hậu mặc định không khoét vào khối tấm nữa; thể hiện bằng nhóm `ABF_RANH_HAU`.

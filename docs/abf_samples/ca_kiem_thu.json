@@ -5,8 +5,8 @@
   "meta": {
     "model": "",
     "plugin": "Tủ Module Hùng Loan",
-    "version": "1.2.0",
-    "exported_at": "2026-11-10 09:15:19"
+    "version": "1.3.0",
+    "exported_at": "2026-11-10 09:25:07"
   },
   "status": {
     "geometry_valid": true,
@@ -30,11 +30,11 @@
   },
   "parts": [
     {
-      "id": "mod_toa4dj3e780002/side_L",
+      "id": "mod_toa4tvb3360002/side_L",
       "role": "side",
       "label": "Hồi",
-      "module_id": "mod_toa4dj3e780002",
-      "assembly_id": "asm_toa4dj75260001",
+      "module_id": "mod_toa4tvb3360002",
+      "assembly_id": "asm_toa4tvdff90001",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -147,7 +147,7 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_toa4dj3e780002/top>side_L",
+            "joint": "mod_toa4tvb3360002/top>side_L",
             "index": 0,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
@@ -175,7 +175,7 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_toa4dj3e780002/top>side_L",
+            "joint": "mod_toa4tvb3360002/top>side_L",
             "index": 1,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
@@ -203,7 +203,7 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_toa4dj3e780002/bottom>side_L",
+            "joint": "mod_toa4tvb3360002/bottom>side_L",
             "index": 0,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
@@ -231,7 +231,7 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_toa4dj3e780002/bottom>side_L",
+            "joint": "mod_toa4tvb3360002/bottom>side_L",
             "index": 1,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
@@ -240,7 +240,7 @@
           "abf_tag": "ABF_D5"
         },
         {
-          "id": "dot_toa4dj08b60003>side_L:0:bolt",
+          "id": "dot_toa4tveb070003>side_L:0:bolt",
           "type": "drill",
           "op": "cam_bolt",
           "face": "A",
@@ -259,7 +259,7 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_toa4dj3e780002/dot_toa4dj08b60003>side_L",
+            "joint": "mod_toa4tvb3360002/dot_toa4tveb070003>side_L",
             "index": 0,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
@@ -268,7 +268,7 @@
           "abf_tag": "ABF_D5"
         },
         {
-          "id": "dot_toa4dj08b60003>side_L:1:bolt",
+          "id": "dot_toa4tveb070003>side_L:1:bolt",
           "type": "drill",
           "op": "cam_bolt",
           "face": "A",
@@ -287,7 +287,7 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_toa4dj3e780002/dot_toa4dj08b60003>side_L",
+            "joint": "mod_toa4tvb3360002/dot_toa4tveb070003>side_L",
             "index": 1,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
@@ -317,11 +317,11 @@
       ]
     },
     {
-      "id": "mod_toa4dj3e780002/side_R",
+      "id": "mod_toa4tvb3360002/side_R",
       "role": "side",
       "label": "Hồi",
-      "module_id": "mod_toa4dj3e780002",
-      "assembly_id": "asm_toa4dj75260001",
+      "module_id": "mod_toa4tvb3360002",
+      "assembly_id": "asm_toa4tvdff90001",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -434,7 +434,7 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_toa4dj3e780002/top>side_R",
+            "joint": "mod_toa4tvb3360002/top>side_R",
             "index": 0,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
@@ -462,7 +462,7 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_toa4dj3e780002/top>side_R",
+            "joint": "mod_toa4tvb3360002/top>side_R",
             "index": 1,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
@@ -490,7 +490,7 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_toa4dj3e780002/bottom>side_R",
+            "joint": "mod_toa4tvb3360002/bottom>side_R",
             "index": 0,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
@@ -518,7 +518,7 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_toa4dj3e780002/bottom>side_R",
+            "joint": "mod_toa4tvb3360002/bottom>side_R",
             "index": 1,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
@@ -527,7 +527,7 @@
           "abf_tag": "ABF_D5"
         },
         {
-          "id": "dot_toa4dj08b60003>side_R:0:bolt",
+          "id": "dot_toa4tveb070003>side_R:0:bolt",
           "type": "drill",
           "op": "cam_bolt",
           "face": "B",
@@ -546,7 +546,7 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_toa4dj3e780002/dot_toa4dj08b60003>side_R",
+            "joint": "mod_toa4tvb3360002/dot_toa4tveb070003>side_R",
             "index": 0,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
@@ -555,7 +555,7 @@
           "abf_tag": "ABF_D5"
         },
         {
-          "id": "dot_toa4dj08b60003>side_R:1:bolt",
+          "id": "dot_toa4tveb070003>side_R:1:bolt",
           "type": "drill",
           "op": "cam_bolt",
           "face": "B",
@@ -574,7 +574,7 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_toa4dj3e780002/dot_toa4dj08b60003>side_R",
+            "joint": "mod_toa4tvb3360002/dot_toa4tveb070003>side_R",
             "index": 1,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
@@ -604,11 +604,11 @@
       ]
     },
     {
-      "id": "mod_toa4dj3e780002/top",
+      "id": "mod_toa4tvb3360002/top",
       "role": "top",
       "label": "Nóc",
-      "module_id": "mod_toa4dj3e780002",
-      "assembly_id": "asm_toa4dj75260001",
+      "module_id": "mod_toa4tvb3360002",
+      "assembly_id": "asm_toa4tvdff90001",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -721,7 +721,7 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_toa4dj3e780002/top>side_L",
+            "joint": "mod_toa4tvb3360002/top>side_L",
             "index": 0,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
@@ -749,7 +749,7 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_toa4dj3e780002/top>side_L",
+            "joint": "mod_toa4tvb3360002/top>side_L",
             "index": 0,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
@@ -777,7 +777,7 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_toa4dj3e780002/top>side_L",
+            "joint": "mod_toa4tvb3360002/top>side_L",
             "index": 1,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
@@ -805,7 +805,7 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_toa4dj3e780002/top>side_L",
+            "joint": "mod_toa4tvb3360002/top>side_L",
             "index": 1,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
@@ -833,7 +833,7 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_toa4dj3e780002/top>side_R",
+            "joint": "mod_toa4tvb3360002/top>side_R",
             "index": 0,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
@@ -861,7 +861,7 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_toa4dj3e780002/top>side_R",
+            "joint": "mod_toa4tvb3360002/top>side_R",
             "index": 0,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
@@ -889,7 +889,7 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_toa4dj3e780002/top>side_R",
+            "joint": "mod_toa4tvb3360002/top>side_R",
             "index": 1,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
@@ -917,7 +917,7 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_toa4dj3e780002/top>side_R",
+            "joint": "mod_toa4tvb3360002/top>side_R",
             "index": 1,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
@@ -947,11 +947,11 @@
       ]
     },
     {
-      "id": "mod_toa4dj3e780002/bottom",
+      "id": "mod_toa4tvb3360002/bottom",
       "role": "bottom",
       "label": "Đáy",
-      "module_id": "mod_toa4dj3e780002",
-      "assembly_id": "asm_toa4dj75260001",
+      "module_id": "mod_toa4tvb3360002",
+      "assembly_id": "asm_toa4tvdff90001",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -1064,7 +1064,7 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_toa4dj3e780002/bottom>side_L",
+            "joint": "mod_toa4tvb3360002/bottom>side_L",
             "index": 0,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
@@ -1092,7 +1092,7 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_toa4dj3e780002/bottom>side_L",
+            "joint": "mod_toa4tvb3360002/bottom>side_L",
             "index": 0,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
@@ -1120,7 +1120,7 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_toa4dj3e780002/bottom>side_L",
+            "joint": "mod_toa4tvb3360002/bottom>side_L",
             "index": 1,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
@@ -1148,7 +1148,7 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_toa4dj3e780002/bottom>side_L",
+            "joint": "mod_toa4tvb3360002/bottom>side_L",
             "index": 1,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
@@ -1176,7 +1176,7 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_toa4dj3e780002/bottom>side_R",
+            "joint": "mod_toa4tvb3360002/bottom>side_R",
             "index": 0,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
@@ -1204,7 +1204,7 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_toa4dj3e780002/bottom>side_R",
+            "joint": "mod_toa4tvb3360002/bottom>side_R",
             "index": 0,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
@@ -1232,7 +1232,7 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_toa4dj3e780002/bottom>side_R",
+            "joint": "mod_toa4tvb3360002/bottom>side_R",
             "index": 1,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
@@ -1260,7 +1260,7 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_toa4dj3e780002/bottom>side_R",
+            "joint": "mod_toa4tvb3360002/bottom>side_R",
             "index": 1,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
@@ -1290,11 +1290,11 @@
       ]
     },
     {
-      "id": "mod_toa4dj3e780002/plinth_F",
+      "id": "mod_toa4tvb3360002/plinth_F",
       "role": "plinth",
       "label": "Len chân",
-      "module_id": "mod_toa4dj3e780002",
-      "assembly_id": "asm_toa4dj75260001",
+      "module_id": "mod_toa4tvb3360002",
+      "assembly_id": "asm_toa4tvdff90001",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -1380,11 +1380,11 @@
       ]
     },
     {
-      "id": "mod_toa4dj3e780002/plinth_B",
+      "id": "mod_toa4tvb3360002/plinth_B",
       "role": "plinth",
       "label": "Len chân",
-      "module_id": "mod_toa4dj3e780002",
-      "assembly_id": "asm_toa4dj75260001",
+      "module_id": "mod_toa4tvb3360002",
+      "assembly_id": "asm_toa4tvdff90001",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -1470,11 +1470,11 @@
       ]
     },
     {
-      "id": "mod_toa4dj3e780002/back",
+      "id": "mod_toa4tvb3360002/back",
       "role": "back",
       "label": "Hậu",
-      "module_id": "mod_toa4dj3e780002",
-      "assembly_id": "asm_toa4dj75260001",
+      "module_id": "mod_toa4tvb3360002",
+      "assembly_id": "asm_toa4tvdff90001",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -1560,11 +1560,11 @@
       ]
     },
     {
-      "id": "mod_toa4dj3e780002/dot_toa4dj08b60003",
+      "id": "mod_toa4tvb3360002/dot_toa4tveb070003",
       "role": "shelf",
       "label": "Đợt",
-      "module_id": "mod_toa4dj3e780002",
-      "assembly_id": "asm_toa4dj75260001",
+      "module_id": "mod_toa4tvb3360002",
+      "assembly_id": "asm_toa4tvdff90001",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -1628,7 +1628,7 @@
       },
       "features": [
         {
-          "id": "dot_toa4dj08b60003>side_L:0:edge",
+          "id": "dot_toa4tveb070003>side_L:0:edge",
           "type": "drill",
           "op": "cam_edge_hole",
           "face": "E:u0",
@@ -1647,7 +1647,7 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_toa4dj3e780002/dot_toa4dj08b60003>side_L",
+            "joint": "mod_toa4tvb3360002/dot_toa4tveb070003>side_L",
             "index": 0,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
@@ -1656,7 +1656,7 @@
           "abf_tag": "ABF_D8"
         },
         {
-          "id": "dot_toa4dj08b60003>side_L:0:cam",
+          "id": "dot_toa4tveb070003>side_L:0:cam",
           "type": "drill",
           "op": "cam_housing",
           "face": "A",
@@ -1675,7 +1675,7 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_toa4dj3e780002/dot_toa4dj08b60003>side_L",
+            "joint": "mod_toa4tvb3360002/dot_toa4tveb070003>side_L",
             "index": 0,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
@@ -1684,7 +1684,7 @@
           "abf_tag": "ABF_D15"
         },
         {
-          "id": "dot_toa4dj08b60003>side_L:1:edge",
+          "id": "dot_toa4tveb070003>side_L:1:edge",
           "type": "drill",
           "op": "cam_edge_hole",
           "face": "E:u0",
@@ -1703,7 +1703,7 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_toa4dj3e780002/dot_toa4dj08b60003>side_L",
+            "joint": "mod_toa4tvb3360002/dot_toa4tveb070003>side_L",
             "index": 1,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
@@ -1712,7 +1712,7 @@
           "abf_tag": "ABF_D8"
         },
         {
-          "id": "dot_toa4dj08b60003>side_L:1:cam",
+          "id": "dot_toa4tveb070003>side_L:1:cam",
           "type": "drill",
           "op": "cam_housing",
           "face": "A",
@@ -1731,7 +1731,7 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_toa4dj3e780002/dot_toa4dj08b60003>side_L",
+            "joint": "mod_toa4tvb3360002/dot_toa4tveb070003>side_L",
             "index": 1,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
@@ -1740,7 +1740,7 @@
           "abf_tag": "ABF_D15"
         },
         {
-          "id": "dot_toa4dj08b60003>side_R:0:edge",
+          "id": "dot_toa4tveb070003>side_R:0:edge",
           "type": "drill",
           "op": "cam_edge_hole",
           "face": "E:u1",
@@ -1759,7 +1759,7 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_toa4dj3e780002/dot_toa4dj08b60003>side_R",
+            "joint": "mod_toa4tvb3360002/dot_toa4tveb070003>side_R",
             "index": 0,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
@@ -1768,7 +1768,7 @@
           "abf_tag": "ABF_D8"
         },
         {
-          "id": "dot_toa4dj08b60003>side_R:0:cam",
+          "id": "dot_toa4tveb070003>side_R:0:cam",
           "type": "drill",
           "op": "cam_housing",
           "face": "A",
@@ -1787,7 +1787,7 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_toa4dj3e780002/dot_toa4dj08b60003>side_R",
+            "joint": "mod_toa4tvb3360002/dot_toa4tveb070003>side_R",
             "index": 0,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
@@ -1796,7 +1796,7 @@
           "abf_tag": "ABF_D15"
         },
         {
-          "id": "dot_toa4dj08b60003>side_R:1:edge",
+          "id": "dot_toa4tveb070003>side_R:1:edge",
           "type": "drill",
           "op": "cam_edge_hole",
           "face": "E:u1",
@@ -1815,7 +1815,7 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_toa4dj3e780002/dot_toa4dj08b60003>side_R",
+            "joint": "mod_toa4tvb3360002/dot_toa4tveb070003>side_R",
             "index": 1,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
@@ -1824,7 +1824,7 @@
           "abf_tag": "ABF_D8"
         },
         {
-          "id": "dot_toa4dj08b60003>side_R:1:cam",
+          "id": "dot_toa4tveb070003>side_R:1:cam",
           "type": "drill",
           "op": "cam_housing",
           "face": "A",
@@ -1843,7 +1843,7 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_toa4dj3e780002/dot_toa4dj08b60003>side_R",
+            "joint": "mod_toa4tvb3360002/dot_toa4tveb070003>side_R",
             "index": 1,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
@@ -1873,11 +1873,11 @@
       ]
     },
     {
-      "id": "mod_toa4dj3e780002/door:side_L|side_R:0",
+      "id": "mod_toa4tvb3360002/door:side_L|side_R:0",
       "role": "door",
       "label": "Cánh",
-      "module_id": "mod_toa4dj3e780002",
-      "assembly_id": "asm_toa4dj75260001",
+      "module_id": "mod_toa4tvb3360002",
+      "assembly_id": "asm_toa4tvdff90001",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -2049,11 +2049,11 @@
       ]
     },
     {
-      "id": "mod_toa4dj3e780002/door:side_L|side_R:1",
+      "id": "mod_toa4tvb3360002/door:side_L|side_R:1",
       "role": "door",
       "label": "Cánh",
-      "module_id": "mod_toa4dj3e780002",
-      "assembly_id": "asm_toa4dj75260001",
+      "module_id": "mod_toa4tvb3360002",
+      "assembly_id": "asm_toa4tvdff90001",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -2225,11 +2225,11 @@
       ]
     },
     {
-      "id": "mod_toa4djac670007/top",
+      "id": "mod_toa4tv8d730007/top",
       "role": "top",
       "label": "Nóc chữ L",
-      "module_id": "mod_toa4djac670007",
-      "assembly_id": "asm_toa4dj41e40006",
+      "module_id": "mod_toa4tv8d730007",
+      "assembly_id": "asm_toa4tvc6d00006",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -2326,7 +2326,7 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_toa4djac670007/end_B>top",
+            "joint": "mod_toa4tv8d730007/end_B>top",
             "index": 0,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
@@ -2354,7 +2354,7 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_toa4djac670007/end_B>top",
+            "joint": "mod_toa4tv8d730007/end_B>top",
             "index": 1,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
@@ -2382,7 +2382,7 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_toa4djac670007/end_A>top",
+            "joint": "mod_toa4tv8d730007/end_A>top",
             "index": 0,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
@@ -2410,7 +2410,7 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_toa4djac670007/end_A>top",
+            "joint": "mod_toa4tv8d730007/end_A>top",
             "index": 1,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
@@ -2448,11 +2448,11 @@
       ]
     },
     {
-      "id": "mod_toa4djac670007/bottom",
+      "id": "mod_toa4tv8d730007/bottom",
       "role": "bottom",
       "label": "Đáy chữ L",
-      "module_id": "mod_toa4djac670007",
-      "assembly_id": "asm_toa4dj41e40006",
+      "module_id": "mod_toa4tv8d730007",
+      "assembly_id": "asm_toa4tvc6d00006",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -2549,7 +2549,7 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_toa4djac670007/end_B>bottom",
+            "joint": "mod_toa4tv8d730007/end_B>bottom",
             "index": 0,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
@@ -2577,7 +2577,7 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_toa4djac670007/end_B>bottom",
+            "joint": "mod_toa4tv8d730007/end_B>bottom",
             "index": 1,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
@@ -2605,7 +2605,7 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_toa4djac670007/end_A>bottom",
+            "joint": "mod_toa4tv8d730007/end_A>bottom",
             "index": 0,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
@@ -2633,7 +2633,7 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_toa4djac670007/end_A>bottom",
+            "joint": "mod_toa4tv8d730007/end_A>bottom",
             "index": 1,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
@@ -2671,11 +2671,11 @@
       ]
     },
     {
-      "id": "mod_toa4djac670007/end_A",
+      "id": "mod_toa4tv8d730007/end_A",
       "role": "l_end",
       "label": "Hồi chữ L",
-      "module_id": "mod_toa4djac670007",
-      "assembly_id": "asm_toa4dj41e40006",
+      "module_id": "mod_toa4tv8d730007",
+      "assembly_id": "asm_toa4tvc6d00006",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -2758,7 +2758,7 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_toa4djac670007/end_A>top",
+            "joint": "mod_toa4tv8d730007/end_A>top",
             "index": 0,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
@@ -2786,7 +2786,7 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_toa4djac670007/end_A>top",
+            "joint": "mod_toa4tv8d730007/end_A>top",
             "index": 0,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
@@ -2814,7 +2814,7 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_toa4djac670007/end_A>top",
+            "joint": "mod_toa4tv8d730007/end_A>top",
             "index": 1,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
@@ -2842,7 +2842,7 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_toa4djac670007/end_A>top",
+            "joint": "mod_toa4tv8d730007/end_A>top",
             "index": 1,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
@@ -2870,7 +2870,7 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_toa4djac670007/end_A>bottom",
+            "joint": "mod_toa4tv8d730007/end_A>bottom",
             "index": 0,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
@@ -2898,7 +2898,7 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_toa4djac670007/end_A>bottom",
+            "joint": "mod_toa4tv8d730007/end_A>bottom",
             "index": 0,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
@@ -2926,7 +2926,7 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_toa4djac670007/end_A>bottom",
+            "joint": "mod_toa4tv8d730007/end_A>bottom",
             "index": 1,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
@@ -2954,7 +2954,7 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_toa4djac670007/end_A>bottom",
+            "joint": "mod_toa4tv8d730007/end_A>bottom",
             "index": 1,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
@@ -2984,11 +2984,11 @@
       ]
     },
     {
-      "id": "mod_toa4djac670007/end_B",
+      "id": "mod_toa4tv8d730007/end_B",
       "role": "l_end",
       "label": "Hồi chữ L",
-      "module_id": "mod_toa4djac670007",
-      "assembly_id": "asm_toa4dj41e40006",
+      "module_id": "mod_toa4tv8d730007",
+      "assembly_id": "asm_toa4tvc6d00006",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -3071,7 +3071,7 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_toa4djac670007/end_B>top",
+            "joint": "mod_toa4tv8d730007/end_B>top",
             "index": 0,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
@@ -3099,7 +3099,7 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_toa4djac670007/end_B>top",
+            "joint": "mod_toa4tv8d730007/end_B>top",
             "index": 0,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
@@ -3127,7 +3127,7 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_toa4djac670007/end_B>top",
+            "joint": "mod_toa4tv8d730007/end_B>top",
             "index": 1,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
@@ -3155,7 +3155,7 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_toa4djac670007/end_B>top",
+            "joint": "mod_toa4tv8d730007/end_B>top",
             "index": 1,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
@@ -3183,7 +3183,7 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_toa4djac670007/end_B>bottom",
+            "joint": "mod_toa4tv8d730007/end_B>bottom",
             "index": 0,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
@@ -3211,7 +3211,7 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_toa4djac670007/end_B>bottom",
+            "joint": "mod_toa4tv8d730007/end_B>bottom",
             "index": 0,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
@@ -3239,7 +3239,7 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_toa4djac670007/end_B>bottom",
+            "joint": "mod_toa4tv8d730007/end_B>bottom",
             "index": 1,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
@@ -3267,7 +3267,7 @@
           "through": false,
           "source": {
             "kind": "cam",
-            "joint": "mod_toa4djac670007/end_B>bottom",
+            "joint": "mod_toa4tv8d730007/end_B>bottom",
             "index": 1,
             "preset": "Minifix 15 (DEMO)",
             "demo": true,
@@ -3297,11 +3297,11 @@
       ]
     },
     {
-      "id": "mod_toa4djac670007/back_A",
+      "id": "mod_toa4tv8d730007/back_A",
       "role": "back",
       "label": "Hậu",
-      "module_id": "mod_toa4djac670007",
-      "assembly_id": "asm_toa4dj41e40006",
+      "module_id": "mod_toa4tv8d730007",
+      "assembly_id": "asm_toa4tvc6d00006",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -3387,11 +3387,11 @@
       ]
     },
     {
-      "id": "mod_toa4djac670007/back_B",
+      "id": "mod_toa4tv8d730007/back_B",
       "role": "back",
       "label": "Hậu",
-      "module_id": "mod_toa4djac670007",
-      "assembly_id": "asm_toa4dj41e40006",
+      "module_id": "mod_toa4tv8d730007",
+      "assembly_id": "asm_toa4tvc6d00006",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -3477,11 +3477,11 @@
       ]
     },
     {
-      "id": "mod_toa4dj922b0009/side_L",
+      "id": "mod_toa4tv0ef70009/side_L",
       "role": "side",
       "label": "Hồi",
-      "module_id": "mod_toa4dj922b0009",
-      "assembly_id": "asm_toa4dj00bf0008",
+      "module_id": "mod_toa4tv0ef70009",
+      "assembly_id": "asm_toa4tv7af70008",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -3567,11 +3567,11 @@
       ]
     },
     {
-      "id": "mod_toa4dj922b0009/side_R",
+      "id": "mod_toa4tv0ef70009/side_R",
       "role": "side",
       "label": "Hồi",
-      "module_id": "mod_toa4dj922b0009",
-      "assembly_id": "asm_toa4dj00bf0008",
+      "module_id": "mod_toa4tv0ef70009",
+      "assembly_id": "asm_toa4tv7af70008",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -3635,7 +3635,7 @@
       },
       "features": [
         {
-          "id": "sec:mod_toa4dj922b0009/side_R~mod_toa4dj9309000a/side_L",
+          "id": "sec:mod_toa4tv0ef70009/side_R~mod_toa4tv7714000a/side_L",
           "type": "pocket",
           "op": "section",
           "face": "A",
@@ -3670,8 +3670,8 @@
           "approx": false,
           "source": {
             "kind": "section",
-            "pair": "mod_toa4dj922b0009/side_R~mod_toa4dj9309000a/side_L",
-            "other": "mod_toa4dj9309000a/side_L",
+            "pair": "mod_toa4tv0ef70009/side_R~mod_toa4tv7714000a/side_L",
+            "other": "mod_toa4tv7714000a/side_L",
             "mark": "pocket"
           },
           "abf_tag": "ABF_POCKET_Z7"
@@ -3698,11 +3698,11 @@
       ]
     },
     {
-      "id": "mod_toa4dj922b0009/top",
+      "id": "mod_toa4tv0ef70009/top",
       "role": "top",
       "label": "Nóc",
-      "module_id": "mod_toa4dj922b0009",
-      "assembly_id": "asm_toa4dj00bf0008",
+      "module_id": "mod_toa4tv0ef70009",
+      "assembly_id": "asm_toa4tv7af70008",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -3788,11 +3788,11 @@
       ]
     },
     {
-      "id": "mod_toa4dj922b0009/bottom",
+      "id": "mod_toa4tv0ef70009/bottom",
       "role": "bottom",
       "label": "Đáy",
-      "module_id": "mod_toa4dj922b0009",
-      "assembly_id": "asm_toa4dj00bf0008",
+      "module_id": "mod_toa4tv0ef70009",
+      "assembly_id": "asm_toa4tv7af70008",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -3878,11 +3878,11 @@
       ]
     },
     {
-      "id": "mod_toa4dj922b0009/plinth_F",
+      "id": "mod_toa4tv0ef70009/plinth_F",
       "role": "plinth",
       "label": "Len chân",
-      "module_id": "mod_toa4dj922b0009",
-      "assembly_id": "asm_toa4dj00bf0008",
+      "module_id": "mod_toa4tv0ef70009",
+      "assembly_id": "asm_toa4tv7af70008",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -3968,11 +3968,11 @@
       ]
     },
     {
-      "id": "mod_toa4dj922b0009/plinth_B",
+      "id": "mod_toa4tv0ef70009/plinth_B",
       "role": "plinth",
       "label": "Len chân",
-      "module_id": "mod_toa4dj922b0009",
-      "assembly_id": "asm_toa4dj00bf0008",
+      "module_id": "mod_toa4tv0ef70009",
+      "assembly_id": "asm_toa4tv7af70008",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -4058,11 +4058,11 @@
       ]
     },
     {
-      "id": "mod_toa4dj922b0009/back",
+      "id": "mod_toa4tv0ef70009/back",
       "role": "back",
       "label": "Hậu",
-      "module_id": "mod_toa4dj922b0009",
-      "assembly_id": "asm_toa4dj00bf0008",
+      "module_id": "mod_toa4tv0ef70009",
+      "assembly_id": "asm_toa4tv7af70008",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -4148,11 +4148,11 @@
       ]
     },
     {
-      "id": "mod_toa4dj9309000a/side_L",
+      "id": "mod_toa4tv7714000a/side_L",
       "role": "side",
       "label": "Hồi",
-      "module_id": "mod_toa4dj9309000a",
-      "assembly_id": "asm_toa4dj00bf0008",
+      "module_id": "mod_toa4tv7714000a",
+      "assembly_id": "asm_toa4tv7af70008",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -4267,11 +4267,11 @@
       ]
     },
     {
-      "id": "mod_toa4dj9309000a/side_R",
+      "id": "mod_toa4tv7714000a/side_R",
       "role": "side",
       "label": "Hồi",
-      "module_id": "mod_toa4dj9309000a",
-      "assembly_id": "asm_toa4dj00bf0008",
+      "module_id": "mod_toa4tv7714000a",
+      "assembly_id": "asm_toa4tv7af70008",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -4386,11 +4386,11 @@
       ]
     },
     {
-      "id": "mod_toa4dj9309000a/top",
+      "id": "mod_toa4tv7714000a/top",
       "role": "top",
       "label": "Nóc",
-      "module_id": "mod_toa4dj9309000a",
-      "assembly_id": "asm_toa4dj00bf0008",
+      "module_id": "mod_toa4tv7714000a",
+      "assembly_id": "asm_toa4tv7af70008",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -4505,11 +4505,11 @@
       ]
     },
     {
-      "id": "mod_toa4dj9309000a/bottom",
+      "id": "mod_toa4tv7714000a/bottom",
       "role": "bottom",
       "label": "Đáy",
-      "module_id": "mod_toa4dj9309000a",
-      "assembly_id": "asm_toa4dj00bf0008",
+      "module_id": "mod_toa4tv7714000a",
+      "assembly_id": "asm_toa4tv7af70008",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -4624,11 +4624,11 @@
       ]
     },
     {
-      "id": "mod_toa4dj9309000a/back",
+      "id": "mod_toa4tv7714000a/back",
       "role": "back",
       "label": "Hậu",
-      "module_id": "mod_toa4dj9309000a",
-      "assembly_id": "asm_toa4dj00bf0008",
+      "module_id": "mod_toa4tv7714000a",
+      "assembly_id": "asm_toa4tv7af70008",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -4714,11 +4714,11 @@
       ]
     },
     {
-      "id": "mod_toa4dj55d7000c/side_L",
+      "id": "mod_toa4tv2106000c/side_L",
       "role": "side",
       "label": "Hồi",
-      "module_id": "mod_toa4dj55d7000c",
-      "assembly_id": "asm_toa4dj037b000b",
+      "module_id": "mod_toa4tv2106000c",
+      "assembly_id": "asm_toa4tv76d1000b",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -4833,11 +4833,11 @@
       ]
     },
     {
-      "id": "mod_toa4dj55d7000c/side_R",
+      "id": "mod_toa4tv2106000c/side_R",
       "role": "side",
       "label": "Hồi",
-      "module_id": "mod_toa4dj55d7000c",
-      "assembly_id": "asm_toa4dj037b000b",
+      "module_id": "mod_toa4tv2106000c",
+      "assembly_id": "asm_toa4tv76d1000b",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -4952,11 +4952,11 @@
       ]
     },
     {
-      "id": "mod_toa4dj55d7000c/top",
+      "id": "mod_toa4tv2106000c/top",
       "role": "top",
       "label": "Nóc",
-      "module_id": "mod_toa4dj55d7000c",
-      "assembly_id": "asm_toa4dj037b000b",
+      "module_id": "mod_toa4tv2106000c",
+      "assembly_id": "asm_toa4tv76d1000b",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -5071,11 +5071,11 @@
       ]
     },
     {
-      "id": "mod_toa4dj55d7000c/bottom",
+      "id": "mod_toa4tv2106000c/bottom",
       "role": "bottom",
       "label": "Đáy",
-      "module_id": "mod_toa4dj55d7000c",
-      "assembly_id": "asm_toa4dj037b000b",
+      "module_id": "mod_toa4tv2106000c",
+      "assembly_id": "asm_toa4tv76d1000b",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -5190,11 +5190,11 @@
       ]
     },
     {
-      "id": "mod_toa4dj55d7000c/back",
+      "id": "mod_toa4tv2106000c/back",
       "role": "back",
       "label": "Hậu",
-      "module_id": "mod_toa4dj55d7000c",
-      "assembly_id": "asm_toa4dj037b000b",
+      "module_id": "mod_toa4tv2106000c",
+      "assembly_id": "asm_toa4tv76d1000b",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -5280,11 +5280,11 @@
       ]
     },
     {
-      "id": "mod_toa4dj55d7000c/dface:0",
+      "id": "mod_toa4tv2106000c/dface:0",
       "role": "drawer_face",
       "label": "Mặt ngăn kéo",
-      "module_id": "mod_toa4dj55d7000c",
-      "assembly_id": "asm_toa4dj037b000b",
+      "module_id": "mod_toa4tv2106000c",
+      "assembly_id": "asm_toa4tv76d1000b",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -5370,11 +5370,11 @@
       ]
     },
     {
-      "id": "mod_toa4dj55d7000c/dface:1",
+      "id": "mod_toa4tv2106000c/dface:1",
       "role": "drawer_face",
       "label": "Mặt ngăn kéo",
-      "module_id": "mod_toa4dj55d7000c",
-      "assembly_id": "asm_toa4dj037b000b",
+      "module_id": "mod_toa4tv2106000c",
+      "assembly_id": "asm_toa4tv76d1000b",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -5460,11 +5460,11 @@
       ]
     },
     {
-      "id": "mod_toa4dj55d7000c/dface:2",
+      "id": "mod_toa4tv2106000c/dface:2",
       "role": "drawer_face",
       "label": "Mặt ngăn kéo",
-      "module_id": "mod_toa4dj55d7000c",
-      "assembly_id": "asm_toa4dj037b000b",
+      "module_id": "mod_toa4tv2106000c",
+      "assembly_id": "asm_toa4tv76d1000b",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -5550,11 +5550,11 @@
       ]
     },
     {
-      "id": "mod_toa4dj55d7000c/dr_toa4dj3965000d:side_L",
+      "id": "mod_toa4tv2106000c/dr_toa4tva698000d:side_L",
       "role": "drawer_side",
       "label": "Hông thùng",
-      "module_id": "mod_toa4dj55d7000c",
-      "assembly_id": "asm_toa4dj037b000b",
+      "module_id": "mod_toa4tv2106000c",
+      "assembly_id": "asm_toa4tv76d1000b",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -5640,11 +5640,11 @@
       ]
     },
     {
-      "id": "mod_toa4dj55d7000c/dr_toa4dj3965000d:side_R",
+      "id": "mod_toa4tv2106000c/dr_toa4tva698000d:side_R",
       "role": "drawer_side",
       "label": "Hông thùng",
-      "module_id": "mod_toa4dj55d7000c",
-      "assembly_id": "asm_toa4dj037b000b",
+      "module_id": "mod_toa4tv2106000c",
+      "assembly_id": "asm_toa4tv76d1000b",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -5730,11 +5730,11 @@
       ]
     },
     {
-      "id": "mod_toa4dj55d7000c/dr_toa4dj3965000d:front",
+      "id": "mod_toa4tv2106000c/dr_toa4tva698000d:front",
       "role": "drawer_front",
       "label": "Đầu thùng",
-      "module_id": "mod_toa4dj55d7000c",
-      "assembly_id": "asm_toa4dj037b000b",
+      "module_id": "mod_toa4tv2106000c",
+      "assembly_id": "asm_toa4tv76d1000b",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -5820,11 +5820,11 @@
       ]
     },
     {
-      "id": "mod_toa4dj55d7000c/dr_toa4dj3965000d:back",
+      "id": "mod_toa4tv2106000c/dr_toa4tva698000d:back",
       "role": "drawer_back",
       "label": "Hậu thùng",
-      "module_id": "mod_toa4dj55d7000c",
-      "assembly_id": "asm_toa4dj037b000b",
+      "module_id": "mod_toa4tv2106000c",
+      "assembly_id": "asm_toa4tv76d1000b",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -5910,11 +5910,11 @@
       ]
     },
     {
-      "id": "mod_toa4dj55d7000c/dr_toa4dj3965000d:bottom",
+      "id": "mod_toa4tv2106000c/dr_toa4tva698000d:bottom",
       "role": "drawer_bottom",
       "label": "Đáy thùng",
-      "module_id": "mod_toa4dj55d7000c",
-      "assembly_id": "asm_toa4dj037b000b",
+      "module_id": "mod_toa4tv2106000c",
+      "assembly_id": "asm_toa4tv76d1000b",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -6000,11 +6000,11 @@
       ]
     },
     {
-      "id": "mod_toa4dj55d7000c/dr_toa4dj8dcd000e:side_L",
+      "id": "mod_toa4tv2106000c/dr_toa4tv536d000e:side_L",
       "role": "drawer_side",
       "label": "Hông thùng",
-      "module_id": "mod_toa4dj55d7000c",
-      "assembly_id": "asm_toa4dj037b000b",
+      "module_id": "mod_toa4tv2106000c",
+      "assembly_id": "asm_toa4tv76d1000b",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -6090,11 +6090,11 @@
       ]
     },
     {
-      "id": "mod_toa4dj55d7000c/dr_toa4dj8dcd000e:side_R",
+      "id": "mod_toa4tv2106000c/dr_toa4tv536d000e:side_R",
       "role": "drawer_side",
       "label": "Hông thùng",
-      "module_id": "mod_toa4dj55d7000c",
-      "assembly_id": "asm_toa4dj037b000b",
+      "module_id": "mod_toa4tv2106000c",
+      "assembly_id": "asm_toa4tv76d1000b",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -6180,11 +6180,11 @@
       ]
     },
     {
-      "id": "mod_toa4dj55d7000c/dr_toa4dj8dcd000e:front",
+      "id": "mod_toa4tv2106000c/dr_toa4tv536d000e:front",
       "role": "drawer_front",
       "label": "Đầu thùng",
-      "module_id": "mod_toa4dj55d7000c",
-      "assembly_id": "asm_toa4dj037b000b",
+      "module_id": "mod_toa4tv2106000c",
+      "assembly_id": "asm_toa4tv76d1000b",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -6270,11 +6270,11 @@
       ]
     },
     {
-      "id": "mod_toa4dj55d7000c/dr_toa4dj8dcd000e:back",
+      "id": "mod_toa4tv2106000c/dr_toa4tv536d000e:back",
       "role": "drawer_back",
       "label": "Hậu thùng",
-      "module_id": "mod_toa4dj55d7000c",
-      "assembly_id": "asm_toa4dj037b000b",
+      "module_id": "mod_toa4tv2106000c",
+      "assembly_id": "asm_toa4tv76d1000b",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -6360,11 +6360,11 @@
       ]
     },
     {
-      "id": "mod_toa4dj55d7000c/dr_toa4dj8dcd000e:bottom",
+      "id": "mod_toa4tv2106000c/dr_toa4tv536d000e:bottom",
       "role": "drawer_bottom",
       "label": "Đáy thùng",
-      "module_id": "mod_toa4dj55d7000c",
-      "assembly_id": "asm_toa4dj037b000b",
+      "module_id": "mod_toa4tv2106000c",
+      "assembly_id": "asm_toa4tv76d1000b",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -6450,11 +6450,11 @@
       ]
     },
     {
-      "id": "mod_toa4dj55d7000c/dr_toa4dja30d000f:side_L",
+      "id": "mod_toa4tv2106000c/dr_toa4tvfcf5000f:side_L",
       "role": "drawer_side",
       "label": "Hông thùng",
-      "module_id": "mod_toa4dj55d7000c",
-      "assembly_id": "asm_toa4dj037b000b",
+      "module_id": "mod_toa4tv2106000c",
+      "assembly_id": "asm_toa4tv76d1000b",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -6540,11 +6540,11 @@
       ]
     },
     {
-      "id": "mod_toa4dj55d7000c/dr_toa4dja30d000f:side_R",
+      "id": "mod_toa4tv2106000c/dr_toa4tvfcf5000f:side_R",
       "role": "drawer_side",
       "label": "Hông thùng",
-      "module_id": "mod_toa4dj55d7000c",
-      "assembly_id": "asm_toa4dj037b000b",
+      "module_id": "mod_toa4tv2106000c",
+      "assembly_id": "asm_toa4tv76d1000b",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -6630,11 +6630,11 @@
       ]
     },
     {
-      "id": "mod_toa4dj55d7000c/dr_toa4dja30d000f:front",
+      "id": "mod_toa4tv2106000c/dr_toa4tvfcf5000f:front",
       "role": "drawer_front",
       "label": "Đầu thùng",
-      "module_id": "mod_toa4dj55d7000c",
-      "assembly_id": "asm_toa4dj037b000b",
+      "module_id": "mod_toa4tv2106000c",
+      "assembly_id": "asm_toa4tv76d1000b",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -6720,11 +6720,11 @@
       ]
     },
     {
-      "id": "mod_toa4dj55d7000c/dr_toa4dja30d000f:back",
+      "id": "mod_toa4tv2106000c/dr_toa4tvfcf5000f:back",
       "role": "drawer_back",
       "label": "Hậu thùng",
-      "module_id": "mod_toa4dj55d7000c",
-      "assembly_id": "asm_toa4dj037b000b",
+      "module_id": "mod_toa4tv2106000c",
+      "assembly_id": "asm_toa4tv76d1000b",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -6810,11 +6810,11 @@
       ]
     },
     {
-      "id": "mod_toa4dj55d7000c/dr_toa4dja30d000f:bottom",
+      "id": "mod_toa4tv2106000c/dr_toa4tvfcf5000f:bottom",
       "role": "drawer_bottom",
       "label": "Đáy thùng",
-      "module_id": "mod_toa4dj55d7000c",
-      "assembly_id": "asm_toa4dj037b000b",
+      "module_id": "mod_toa4tv2106000c",
+      "assembly_id": "asm_toa4tv76d1000b",
       "material": null,
       "grain": "u",
       "kind": "flat",
@@ -6905,77 +6905,77 @@
       "code": "DEMO_PRESET",
       "level": "warning",
       "message": "Thông số từ preset DEMO (Minifix 15 (DEMO)) — chưa kiểm chứng xưởng",
-      "part": "mod_toa4dj3e780002/side_L",
+      "part": "mod_toa4tvb3360002/side_L",
       "feature": "top>side_L:0:bolt"
     },
     {
       "code": "DEMO_PRESET",
       "level": "warning",
       "message": "Thông số từ preset DEMO (Minifix 15 (DEMO)) — chưa kiểm chứng xưởng",
-      "part": "mod_toa4dj3e780002/side_R",
+      "part": "mod_toa4tvb3360002/side_R",
       "feature": "top>side_R:0:bolt"
     },
     {
       "code": "DEMO_PRESET",
       "level": "warning",
       "message": "Thông số từ preset DEMO (Minifix 15 (DEMO)) — chưa kiểm chứng xưởng",
-      "part": "mod_toa4dj3e780002/top",
+      "part": "mod_toa4tvb3360002/top",
       "feature": "top>side_L:0:edge"
     },
     {
       "code": "DEMO_PRESET",
       "level": "warning",
       "message": "Thông số từ preset DEMO (Minifix 15 (DEMO)) — chưa kiểm chứng xưởng",
-      "part": "mod_toa4dj3e780002/bottom",
+      "part": "mod_toa4tvb3360002/bottom",
       "feature": "bottom>side_L:0:edge"
     },
     {
       "code": "DEMO_PRESET",
       "level": "warning",
       "message": "Thông số từ preset DEMO (Minifix 15 (DEMO)) — chưa kiểm chứng xưởng",
-      "part": "mod_toa4dj3e780002/dot_toa4dj08b60003",
-      "feature": "dot_toa4dj08b60003>side_L:0:edge"
+      "part": "mod_toa4tvb3360002/dot_toa4tveb070003",
+      "feature": "dot_toa4tveb070003>side_L:0:edge"
     },
     {
       "code": "DEMO_PRESET",
       "level": "warning",
       "message": "Thông số từ preset DEMO (Mặc định (DEMO)) — chưa kiểm chứng xưởng",
-      "part": "mod_toa4dj3e780002/door:side_L|side_R:0",
+      "part": "mod_toa4tvb3360002/door:side_L|side_R:0",
       "feature": "door:side_L|side_R:0:hinge:0"
     },
     {
       "code": "DEMO_PRESET",
       "level": "warning",
       "message": "Thông số từ preset DEMO (Mặc định (DEMO)) — chưa kiểm chứng xưởng",
-      "part": "mod_toa4dj3e780002/door:side_L|side_R:1",
+      "part": "mod_toa4tvb3360002/door:side_L|side_R:1",
       "feature": "door:side_L|side_R:1:hinge:0"
     },
     {
       "code": "DEMO_PRESET",
       "level": "warning",
       "message": "Thông số từ preset DEMO (Minifix 15 (DEMO)) — chưa kiểm chứng xưởng",
-      "part": "mod_toa4djac670007/top",
+      "part": "mod_toa4tv8d730007/top",
       "feature": "end_B>top:0:bolt"
     },
     {
       "code": "DEMO_PRESET",
       "level": "warning",
       "message": "Thông số từ preset DEMO (Minifix 15 (DEMO)) — chưa kiểm chứng xưởng",
-      "part": "mod_toa4djac670007/bottom",
+      "part": "mod_toa4tv8d730007/bottom",
       "feature": "end_B>bottom:0:bolt"
     },
     {
       "code": "DEMO_PRESET",
       "level": "warning",
       "message": "Thông số từ preset DEMO (Minifix 15 (DEMO)) — chưa kiểm chứng xưởng",
-      "part": "mod_toa4djac670007/end_A",
+      "part": "mod_toa4tv8d730007/end_A",
       "feature": "end_A>top:0:edge"
     },
     {
       "code": "DEMO_PRESET",
       "level": "warning",
       "message": "Thông số từ preset DEMO (Minifix 15 (DEMO)) — chưa kiểm chứng xưởng",
-      "part": "mod_toa4djac670007/end_B",
+      "part": "mod_toa4tv8d730007/end_B",
       "feature": "end_B>top:0:edge"
     }
   ]

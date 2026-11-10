@@ -14,6 +14,10 @@ module HungLoan
         def scope_assemblies(model)
           sel = Actions.selected_assemblies
           return sel if sel.any?
+          scope_all(model)
+        end
+
+        def scope_all(model)
           found = []
           walk = lambda do |ents, depth|
             ents.grep(Sketchup::Group).each do |g|

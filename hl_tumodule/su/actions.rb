@@ -173,6 +173,19 @@ module HungLoan
           end
         end
 
+        # ---- Dựng lại toàn bộ tủ trong model (sau khi đổi Cài đặt chung)
+        def regen_all
+          asms = Export.scope_all(model)
+          return 0 if asms.empty?
+          M.operation('Cập nhật tủ theo cài đặt chung') do
+            asms.each do |asm|
+              ids = Store.modules_in(asm).map { |m| Store.id(m) }
+              M.update!(asm, regen: ids)
+            end
+          end
+          asms.size
+        end
+
         # ---- Chế độ chọn
         def path_to(e)
           chain = []

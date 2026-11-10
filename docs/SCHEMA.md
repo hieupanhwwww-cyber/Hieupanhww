@@ -76,7 +76,7 @@ Trạng thái tách bạch: `geometry_valid`, `has_unsupported`, `shop_params_un
 
 Thư mục: `%APPDATA%/HungLoanTuModule` (Windows) hoặc `~/Library/Application Support/HungLoanTuModule` (macOS).
 `library.json` `{schema, folders[{id,name,parent}], links[{folder,template}], settings{template_id:{...}}}`,
-`hinge_presets.json`, `cam_presets.json`, `work.json`. File sao lưu: `{format: HLTM-LIBRARY-BACKUP, schema, plugin_version, catalog[], folders, links, settings}`.
+`hinge_presets.json`, `cam_presets.json`, `work.json`, `abf_ops.json` `{op: {layer, instance}}` (tên layer/instance gia công, sửa ở Cài đặt chung). File sao lưu: `{format: HLTM-LIBRARY-BACKUP, schema, plugin_version, catalog[], folders, links, settings}`.
 Migration: trường không còn dùng/giá trị hết hợp lệ bị bỏ và liệt kê (`Library.migrate`).
 
 ## 7. Hợp đồng ánh xạ ABF/Nesting
