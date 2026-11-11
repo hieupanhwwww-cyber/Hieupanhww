@@ -1,52 +1,52 @@
 ﻿id,ten,vai_tro,module,vat_lieu,dai_mm,rong_mm,day_mm,so_thao_tac
-mod_toa5xo79660002/side_L,Hồi Trái,side,mod_toa5xo79660002,,580.0,1200.0,17.0,7
-mod_toa5xo79660002/side_R,Hồi Phải,side,mod_toa5xo79660002,,580.0,1200.0,17.0,7
-mod_toa5xo79660002/top,Đình,top,mod_toa5xo79660002,,866.0,580.0,17.0,9
-mod_toa5xo79660002/bottom,Đáy,bottom,mod_toa5xo79660002,,866.0,580.0,17.0,9
-mod_toa5xo79660002/plinth_F,Chân Trước,plinth,mod_toa5xo79660002,,866.0,50.0,17.0,0
-mod_toa5xo79660002/plinth_B,Chân Sau,plinth,mod_toa5xo79660002,,866.0,50.0,17.0,0
-mod_toa5xo79660002/back,Hậu,back,mod_toa5xo79660002,,882.0,1132.0,7.0,0
-mod_toa5xo79660002/dot_toa5xob0000003,Đợt 1,shelf,mod_toa5xo79660002,,866.0,558.0,17.0,8
-mod_toa5xo79660002/door:side_L|side_R:0,Cánh Trái,door,mod_toa5xo79660002,,447.0,1146.0,17.0,3
-mod_toa5xo79660002/door:side_L|side_R:1,Cánh Phải,door,mod_toa5xo79660002,,447.0,1146.0,17.0,3
-mod_toa5xo24a80007/top,Đình chữ L,top,mod_toa5xo24a80007,,1600.0,1200.0,17.0,4
-mod_toa5xo24a80007/bottom,Đáy chữ L,bottom,mod_toa5xo24a80007,,1600.0,1200.0,17.0,4
-mod_toa5xo24a80007/end_A,Hồi nhánh A,l_end,mod_toa5xo24a80007,,400.0,766.0,17.0,8
-mod_toa5xo24a80007/end_B,Hồi nhánh B,l_end,mod_toa5xo24a80007,,400.0,766.0,17.0,8
-mod_toa5xo24a80007/back_A,Hậu nhánh A,back,mod_toa5xo24a80007,,1583.0,766.0,7.0,0
-mod_toa5xo24a80007/back_B,Hậu nhánh B,back,mod_toa5xo24a80007,,1176.0,766.0,7.0,0
-mod_toa5xo9c540009/side_L,Hồi Trái,side,mod_toa5xo9c540009,,580.0,883.0,17.0,0
-mod_toa5xo9c540009/side_R,Hồi Phải,side,mod_toa5xo9c540009,,580.0,883.0,17.0,1
-mod_toa5xo9c540009/top,Đình,top,mod_toa5xo9c540009,,900.0,580.0,17.0,0
-mod_toa5xo9c540009/bottom,Đáy,bottom,mod_toa5xo9c540009,,866.0,580.0,17.0,0
-mod_toa5xo9c540009/plinth_F,Chân Trước,plinth,mod_toa5xo9c540009,,866.0,50.0,17.0,0
-mod_toa5xo9c540009/plinth_B,Chân Sau,plinth,mod_toa5xo9c540009,,866.0,50.0,17.0,0
-mod_toa5xo9c540009/back,Hậu,back,mod_toa5xo9c540009,,866.0,816.0,7.0,0
-mod_toa5xo95c1000a/side_L,Hồi Trái,side,mod_toa5xo95c1000a,,350.0,883.0,17.0,1
-mod_toa5xo95c1000a/side_R,Hồi Phải,side,mod_toa5xo95c1000a,,350.0,883.0,17.0,1
-mod_toa5xo95c1000a/top,Đình,top,mod_toa5xo95c1000a,,400.0,350.0,17.0,1
-mod_toa5xo95c1000a/bottom,Đáy,bottom,mod_toa5xo95c1000a,,366.0,350.0,17.0,1
-mod_toa5xo95c1000a/back,Hậu,back,mod_toa5xo95c1000a,,382.0,882.0,7.0,0
-mod_toa5xo2bf0000c/side_L,Hồi Trái,side,mod_toa5xo2bf0000c,,500.0,703.0,17.0,1
-mod_toa5xo2bf0000c/side_R,Hồi Phải,side,mod_toa5xo2bf0000c,,500.0,703.0,17.0,1
-mod_toa5xo2bf0000c/top,Đình,top,mod_toa5xo2bf0000c,,600.0,500.0,17.0,1
-mod_toa5xo2bf0000c/bottom,Đáy,bottom,mod_toa5xo2bf0000c,,566.0,500.0,17.0,1
-mod_toa5xo2bf0000c/back,Hậu,back,mod_toa5xo2bf0000c,,582.0,702.0,7.0,0
-mod_toa5xo2bf0000c/dface:0,Mặt Ngăn Kéo 1,drawer_face,mod_toa5xo2bf0000c,,596.0,214.333,17.0,0
-mod_toa5xo2bf0000c/dface:1,Mặt Ngăn Kéo 2,drawer_face,mod_toa5xo2bf0000c,,596.0,214.333,17.0,0
-mod_toa5xo2bf0000c/dface:2,Mặt Ngăn Kéo 3,drawer_face,mod_toa5xo2bf0000c,,596.0,214.333,17.0,0
-mod_toa5xo2bf0000c/dr_toa5xo29ba000d:side_L,Thành Trái NK,drawer_side,mod_toa5xo2bf0000c,,450.0,150.0,15.0,0
-mod_toa5xo2bf0000c/dr_toa5xo29ba000d:side_R,Thành Phải NK,drawer_side,mod_toa5xo2bf0000c,,450.0,150.0,15.0,0
-mod_toa5xo2bf0000c/dr_toa5xo29ba000d:front,Thành Trước NK,drawer_front,mod_toa5xo2bf0000c,,510.0,143.0,15.0,0
-mod_toa5xo2bf0000c/dr_toa5xo29ba000d:back,Thành Sau NK,drawer_back,mod_toa5xo2bf0000c,,510.0,143.0,15.0,0
-mod_toa5xo2bf0000c/dr_toa5xo29ba000d:bottom,Tấm Đáy NK,drawer_bottom,mod_toa5xo2bf0000c,,540.0,450.0,7.0,0
-mod_toa5xo2bf0000c/dr_toa5xo6a67000e:side_L,Thành Trái NK,drawer_side,mod_toa5xo2bf0000c,,450.0,150.0,15.0,0
-mod_toa5xo2bf0000c/dr_toa5xo6a67000e:side_R,Thành Phải NK,drawer_side,mod_toa5xo2bf0000c,,450.0,150.0,15.0,0
-mod_toa5xo2bf0000c/dr_toa5xo6a67000e:front,Thành Trước NK,drawer_front,mod_toa5xo2bf0000c,,510.0,143.0,15.0,0
-mod_toa5xo2bf0000c/dr_toa5xo6a67000e:back,Thành Sau NK,drawer_back,mod_toa5xo2bf0000c,,510.0,143.0,15.0,0
-mod_toa5xo2bf0000c/dr_toa5xo6a67000e:bottom,Tấm Đáy NK,drawer_bottom,mod_toa5xo2bf0000c,,540.0,450.0,7.0,0
-mod_toa5xo2bf0000c/dr_toa5xod66f000f:side_L,Thành Trái NK,drawer_side,mod_toa5xo2bf0000c,,450.0,150.0,15.0,0
-mod_toa5xo2bf0000c/dr_toa5xod66f000f:side_R,Thành Phải NK,drawer_side,mod_toa5xo2bf0000c,,450.0,150.0,15.0,0
-mod_toa5xo2bf0000c/dr_toa5xod66f000f:front,Thành Trước NK,drawer_front,mod_toa5xo2bf0000c,,510.0,143.0,15.0,0
-mod_toa5xo2bf0000c/dr_toa5xod66f000f:back,Thành Sau NK,drawer_back,mod_toa5xo2bf0000c,,510.0,143.0,15.0,0
-mod_toa5xo2bf0000c/dr_toa5xod66f000f:bottom,Tấm Đáy NK,drawer_bottom,mod_toa5xo2bf0000c,,540.0,450.0,7.0,0
+mod_tobeucf8980002/side_L,Hồi Trái,side,mod_tobeucf8980002,,580.0,1200.0,17.0,7
+mod_tobeucf8980002/side_R,Hồi Phải,side,mod_tobeucf8980002,,580.0,1200.0,17.0,7
+mod_tobeucf8980002/top,Đình,top,mod_tobeucf8980002,,866.0,580.0,17.0,9
+mod_tobeucf8980002/bottom,Đáy,bottom,mod_tobeucf8980002,,866.0,580.0,17.0,9
+mod_tobeucf8980002/plinth_F,Chân Trước,plinth,mod_tobeucf8980002,,866.0,50.0,17.0,0
+mod_tobeucf8980002/plinth_B,Chân Sau,plinth,mod_tobeucf8980002,,866.0,50.0,17.0,0
+mod_tobeucf8980002/back,Hậu,back,mod_tobeucf8980002,,882.0,1132.0,7.0,0
+mod_tobeucf8980002/dot_tobeuca4f00003,Đợt 1,shelf,mod_tobeucf8980002,,866.0,558.0,17.0,8
+mod_tobeucf8980002/door:side_L|side_R:0,Cánh Trái,door,mod_tobeucf8980002,,447.0,1146.0,17.0,3
+mod_tobeucf8980002/door:side_L|side_R:1,Cánh Phải,door,mod_tobeucf8980002,,447.0,1146.0,17.0,3
+mod_tobeuca7320007/top,Đình chữ L,top,mod_tobeuca7320007,,1600.0,1200.0,17.0,4
+mod_tobeuca7320007/bottom,Đáy chữ L,bottom,mod_tobeuca7320007,,1600.0,1200.0,17.0,4
+mod_tobeuca7320007/end_A,Hồi nhánh A,l_end,mod_tobeuca7320007,,400.0,766.0,17.0,8
+mod_tobeuca7320007/end_B,Hồi nhánh B,l_end,mod_tobeuca7320007,,400.0,766.0,17.0,8
+mod_tobeuca7320007/back_A,Hậu nhánh A,back,mod_tobeuca7320007,,1583.0,766.0,7.0,0
+mod_tobeuca7320007/back_B,Hậu nhánh B,back,mod_tobeuca7320007,,1176.0,766.0,7.0,0
+mod_tobeuc2f6f0009/side_L,Hồi Trái,side,mod_tobeuc2f6f0009,,580.0,883.0,17.0,0
+mod_tobeuc2f6f0009/side_R,Hồi Phải,side,mod_tobeuc2f6f0009,,580.0,883.0,17.0,1
+mod_tobeuc2f6f0009/top,Đình,top,mod_tobeuc2f6f0009,,900.0,580.0,17.0,0
+mod_tobeuc2f6f0009/bottom,Đáy,bottom,mod_tobeuc2f6f0009,,866.0,580.0,17.0,0
+mod_tobeuc2f6f0009/plinth_F,Chân Trước,plinth,mod_tobeuc2f6f0009,,866.0,50.0,17.0,0
+mod_tobeuc2f6f0009/plinth_B,Chân Sau,plinth,mod_tobeuc2f6f0009,,866.0,50.0,17.0,0
+mod_tobeuc2f6f0009/back,Hậu,back,mod_tobeuc2f6f0009,,866.0,816.0,7.0,0
+mod_tobeuc0b97000a/side_L,Hồi Trái,side,mod_tobeuc0b97000a,,350.0,883.0,17.0,1
+mod_tobeuc0b97000a/side_R,Hồi Phải,side,mod_tobeuc0b97000a,,350.0,883.0,17.0,1
+mod_tobeuc0b97000a/top,Đình,top,mod_tobeuc0b97000a,,400.0,350.0,17.0,1
+mod_tobeuc0b97000a/bottom,Đáy,bottom,mod_tobeuc0b97000a,,366.0,350.0,17.0,1
+mod_tobeuc0b97000a/back,Hậu,back,mod_tobeuc0b97000a,,382.0,882.0,7.0,0
+mod_tobeuc6d4f000c/side_L,Hồi Trái,side,mod_tobeuc6d4f000c,,500.0,703.0,17.0,1
+mod_tobeuc6d4f000c/side_R,Hồi Phải,side,mod_tobeuc6d4f000c,,500.0,703.0,17.0,1
+mod_tobeuc6d4f000c/top,Đình,top,mod_tobeuc6d4f000c,,600.0,500.0,17.0,1
+mod_tobeuc6d4f000c/bottom,Đáy,bottom,mod_tobeuc6d4f000c,,566.0,500.0,17.0,1
+mod_tobeuc6d4f000c/back,Hậu,back,mod_tobeuc6d4f000c,,582.0,702.0,7.0,0
+mod_tobeuc6d4f000c/dface:0,Mặt Ngăn Kéo 1,drawer_face,mod_tobeuc6d4f000c,,596.0,214.333,17.0,0
+mod_tobeuc6d4f000c/dface:1,Mặt Ngăn Kéo 2,drawer_face,mod_tobeuc6d4f000c,,596.0,214.333,17.0,0
+mod_tobeuc6d4f000c/dface:2,Mặt Ngăn Kéo 3,drawer_face,mod_tobeuc6d4f000c,,596.0,214.333,17.0,0
+mod_tobeuc6d4f000c/dr_tobeucc4a4000d:side_L,Thành Trái NK,drawer_side,mod_tobeuc6d4f000c,,450.0,150.0,15.0,0
+mod_tobeuc6d4f000c/dr_tobeucc4a4000d:side_R,Thành Phải NK,drawer_side,mod_tobeuc6d4f000c,,450.0,150.0,15.0,0
+mod_tobeuc6d4f000c/dr_tobeucc4a4000d:front,Thành Trước NK,drawer_front,mod_tobeuc6d4f000c,,510.0,143.0,15.0,0
+mod_tobeuc6d4f000c/dr_tobeucc4a4000d:back,Thành Sau NK,drawer_back,mod_tobeuc6d4f000c,,510.0,143.0,15.0,0
+mod_tobeuc6d4f000c/dr_tobeucc4a4000d:bottom,Tấm Đáy NK,drawer_bottom,mod_tobeuc6d4f000c,,540.0,450.0,7.0,0
+mod_tobeuc6d4f000c/dr_tobeucad5e000e:side_L,Thành Trái NK,drawer_side,mod_tobeuc6d4f000c,,450.0,150.0,15.0,0
+mod_tobeuc6d4f000c/dr_tobeucad5e000e:side_R,Thành Phải NK,drawer_side,mod_tobeuc6d4f000c,,450.0,150.0,15.0,0
+mod_tobeuc6d4f000c/dr_tobeucad5e000e:front,Thành Trước NK,drawer_front,mod_tobeuc6d4f000c,,510.0,143.0,15.0,0
+mod_tobeuc6d4f000c/dr_tobeucad5e000e:back,Thành Sau NK,drawer_back,mod_tobeuc6d4f000c,,510.0,143.0,15.0,0
+mod_tobeuc6d4f000c/dr_tobeucad5e000e:bottom,Tấm Đáy NK,drawer_bottom,mod_tobeuc6d4f000c,,540.0,450.0,7.0,0
+mod_tobeuc6d4f000c/dr_tobeuc45cc000f:side_L,Thành Trái NK,drawer_side,mod_tobeuc6d4f000c,,450.0,150.0,15.0,0
+mod_tobeuc6d4f000c/dr_tobeuc45cc000f:side_R,Thành Phải NK,drawer_side,mod_tobeuc6d4f000c,,450.0,150.0,15.0,0
+mod_tobeuc6d4f000c/dr_tobeuc45cc000f:front,Thành Trước NK,drawer_front,mod_tobeuc6d4f000c,,510.0,143.0,15.0,0
+mod_tobeuc6d4f000c/dr_tobeuc45cc000f:back,Thành Sau NK,drawer_back,mod_tobeuc6d4f000c,,510.0,143.0,15.0,0
+mod_tobeuc6d4f000c/dr_tobeuc45cc000f:bottom,Tấm Đáy NK,drawer_bottom,mod_tobeuc6d4f000c,,540.0,450.0,7.0,0

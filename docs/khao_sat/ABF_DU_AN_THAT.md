@@ -38,6 +38,9 @@ Layer khác có trong dự án: `ABF_HM`, `ABF_D3`, `TAM_HAU`.
 - Mặc định: cốc cam sâu 13, chốt sâu 13, rãnh hậu sâu 9, nới rộng 2 (intersect-x).
 - Ba tên setting (`CAM_17MM`, `BẢN LỀ A - Loại A`, `SOI ÂM 9MM - RÃNH HẬU`) sửa được trong **Cài đặt chung**.
 
+## 4b. Cập nhật 11/11/2026
+Hình học bên trong từng nhóm và layer của nhóm/cạnh đã đọc được trực tiếp — xem `ABF_HINH_HOC_THAT.md`. Mục 5 dưới đây chỉ còn ID và hệ tọa độ của pháp tuyến là chưa chắc.
+
 ## 5. Chưa chắc chắn
 - ID trong `minifix-group-a/b-id` là `persistent_id` hay loại ID khác của ABF (giá trị quan sát 244942–301377) — plugin dùng `persistent_id`.
 - `minifix-up-face-normal` tính trong hệ tọa độ nào — plugin dùng pháp tuyến mặt đặt cốc cam trong hệ thế giới.

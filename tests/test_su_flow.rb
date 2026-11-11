@@ -360,7 +360,7 @@ class TestSUFlow < Minitest::Test
     top = S::Store.panels_in(g).find { |x| x.get_attribute(S::Store::DICT, 'local_id') == 'top' }
     cam_g = top.entities.items.find { |e| e.is_a?(Sketchup::Group) && e.name == 'LoCam' }
     assert cam_g
-    assert_equal 'XUONG_CAM15', cam_g.layer
+    assert_equal ['XUONG_CAM15'], cam_g.entities.items.map(&:layer).compact.uniq
     parts, = S::Export.check(model)
     feats = parts.flat_map { |x| x['features'] }
     assert_includes feats.map { |f| f['abf_tag'] }, 'XUONG_RANH_HAU'
@@ -377,6 +377,8 @@ class TestSUFlow < Minitest::Test
     pg = lambda { |lid| S::Store.panels_in(g).find { |x| x.get_attribute(S::Store::DICT, 'local_id') == lid } }
     kids = lambda { |lid, name| pg.call(lid).entities.items.select { |e| e.is_a?(Sketchup::Group) && e.name == name } }
     abf = lambda { |e, k| e.get_attribute('ABF', k) }
+    elay = lambda { |grp| grp.entities.items.map(&:layer).compact.uniq } # layer của CẠNH bên trong nhóm
+    nface = lambda { |grp| grp.entities.items.count { |e| e.is_a?(Sketchup::Face) } }
     top = pg.call('top'); side = pg.call('side_L'); back = pg.call('back')
     cams = kids.call('top', '_ABF_minifixBolts')
     assert_equal 4, cams.size, 'mỗi cốc cam Ø15 là một nhóm riêng trên tấm mang cam'
@@ -385,15 +387,20 @@ class TestSUFlow < Minitest::Test
     assert_equal true, abf.call(c0, 'is-minifix-part-b')
     assert_equal 'CAM_17MM', abf.call(c0, 'setting-name')
     assert_kind_of Geom::Vector3d, abf.call(c0, 'minifix-up-face-normal')
-    assert_equal 'ABF-D15', c0.layer
+    assert_nil c0.layer, 'nhóm cam nằm ở Layer0 như ABF thật'
+    assert_equal ['ABF-D15'], elay.call(c0), 'CẠNH của cốc cam nằm trên layer ABF-D15'
+    assert_equal 0, nface.call(c0), 'chỉ có cạnh, không cần mặt'
     bases = kids.call('side_L', '_ABF_minifixPlasticBase')
     assert(bases.any? { |e| abf.call(e, 'minifix-group-b-id') == top.persistent_id && abf.call(e, 'is-minifix-part-a') == true })
-    assert_equal 'ABF-D5', bases[0].layer
+    assert_equal ['ABF-D5'], elay.call(bases[0])
     sd = kids.call('top', '_ABF_sideDrill'); sdd = kids.call('top', '_ABF_sideDrillDepth')
     assert_equal cams.size, sd.size, 'số lỗ cạnh = số cốc cam trên cùng tấm (như dự án ABF thật)'
     assert_equal cams.size, sdd.size
     assert_empty kids.call('side_L', '_ABF_sideDrillDepth').select { |e| abf.call(e, 'minifix-group-a-id') == side.persistent_id }
-    assert_equal 'ABF-DSIDE-8', sd[0].layer
+    assert_equal ['ABF-DSIDE-8'], elay.call(sd[0])
+    assert_equal ['ABF-DSIDE-8'], elay.call(sdd[0]), 'chữ nhật độ sâu: 4 cạnh trên ABF-DSIDE-8'
+    assert_equal 4, sdd[0].entities.items.count { |e| e.is_a?(Sketchup::Edge) }
+    assert_equal 0, nface.call(sdd[0])
     assert_includes cams.map(&:persistent_id), abf.call(sd[0], 'face-drill-group-id'), 'lỗ cạnh trỏ tới nhóm cốc cam Ø15'
     assert_equal true, abf.call(sdd[0], 'is-side-drill-depth')
     assert_includes [side.persistent_id, pg.call('side_R').persistent_id], abf.call(sdd[0], 'minifix-group-a-id')
@@ -404,11 +411,15 @@ class TestSUFlow < Minitest::Test
     assert_equal true, abf.call(inter, 'is-intersect')
     assert_in_delta 2.0, abf.call(inter, 'intersect-x'), 1e-9
     assert_equal 'SOI ÂM 9MM - RÃNH HẬU', abf.call(inter, 'setting-name')
-    assert_equal 'ABF_SOI HAU', inter.layer
+    assert_equal 'ABF_SOI HAU', inter.layer, 'nhóm rãnh hậu nằm trên layer'
+    assert_equal 1, nface.call(inter), 'rãnh hậu có mặt'
+    assert_equal ['ABF_SOI HAU'], inter.entities.items.select { |e| e.is_a?(Sketchup::Face) }.map(&:layer)
     door = S::Store.panels_in(g).find { |x| x.get_attribute(S::Store::DICT, 'role') == 'door' }
     cups = door.entities.items.select { |e| e.is_a?(Sketchup::Group) && e.name == 'ABF_D35' }
     refute_empty cups
     assert_equal true, abf.call(cups[0], 'is-hinge-part-b')
+    assert_equal 'ABF_D35', cups[0].layer
+    assert_equal %w[ABF_D3 ABF_D35], elay.call(cups[0]).sort, 'viền cốc trên ABF_D35 + lỗ mồi Ø3 trên ABF_D3'
     assert_equal 'BẢN LỀ A - Loại A', abf.call(cups[0], 'setting-name')
     # đổi tên setting trong Cài đặt chung → đối tượng mang tên mới
     S::Commands.run('general')
@@ -467,6 +478,27 @@ class TestSUFlow < Minitest::Test
     assert_equal n, UI.messages.size, 'cùng một chỗ không báo lại trong 30 giây'
     # lỗi dữ liệu người dùng: chỉ thông báo, không ghi nhật ký lỗi
     assert_equal :x, S::Safe.guard('v', default: :x) { raise CORE::ValidationError, 'số sai' }
+  end
+
+  def test_diagnostics_embedded_in_model_on_save
+    S::Safe.guard('thử ghi chẩn đoán') { raise 'lỗi mẫu để ghi vào file' }
+    S::Safe.selftest = ['KẾT QUẢ: 3 đạt, 1 lỗi']
+    S::Observers::MOD.onPreSaveModel(model)
+    info = JSON.parse(model.get_attribute('HungLoan_TuModule_Diag', 'info'))
+    assert_equal HungLoan::TuModule::VERSION, info['plugin']
+    assert(info['errors'].any? { |e| e['message'].include?('lỗi mẫu để ghi vào file') })
+    assert_equal ['KẾT QUẢ: 3 đạt, 1 lỗi'], info['selftest']
+    assert_equal '_ABF_minifixBolts', info['abf_ops']['cam_housing']['instance']
+    assert_in_delta 33.0, info['cam']['cam_offset'], 1e-9
+  end
+
+  def test_old_demo_cam_preset_migrates_to_shop_numbers
+    S::Prefs.save_cam_presets([CORE::Config::CAM_PRESET_DEMO.merge('name' => 'Minifix xưởng', 'demo' => false, 'cam_offset' => 24.0, 'end_setback' => 50.0)])
+    c = S::Prefs.cam_presets.first
+    assert_in_delta 33.0, c['cam_offset'], 1e-9
+    assert_in_delta 60.0, c['end_setback'], 1e-9
+    S::Prefs.save_cam_presets([c.merge('cam_offset' => 30.0)])
+    assert_in_delta 30.0, S::Prefs.cam_presets.first['cam_offset'], 1e-9, 'số người dùng tự đặt được giữ'
   end
 
   def test_tool_errors_are_contained

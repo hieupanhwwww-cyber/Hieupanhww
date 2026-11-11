@@ -23,9 +23,13 @@ module HungLoan
         @shown = {}
         @session_logged = false
         @last = nil
+        @mem = []          # lỗi trong phiên (ghi vào file .skp khi Save)
+        @selftest = nil
+        DIAG_DICT = 'HungLoan_TuModule_Diag'.freeze
 
         class << self
-          attr_reader :captured, :last
+          attr_reader :captured, :last, :mem
+          attr_accessor :selftest
 
           def log_path
             Prefs.path('loi.log')
@@ -49,8 +53,31 @@ module HungLoan
               (e.backtrace || []).first(14).each { |l| f.puts("    #{l.to_s.sub(TuModule::DIR, '…')}") }
             end
             @last = { 'where' => where, 'class' => e.class.to_s, 'message' => e.message, 'backtrace' => (e.backtrace || []).first(14) }
+            @mem << { 't' => Time.now.strftime('%d/%m %H:%M:%S'), 'where' => where.to_s, 'class' => e.class.to_s, 'message' => e.message.to_s[0, 300],
+                      'bt' => (e.backtrace || []).first(6).map { |l| l.to_s.sub(TuModule::DIR, '…')[0, 160] } }
+            @mem.shift while @mem.size > 30
           rescue StandardError
             nil
+          end
+
+          # ---- CHẨN ĐOÁN ĐI KÈM FILE: ghi vào attribute của model ngay trước khi Save, để chỉ cần gửi file .skp là đủ.
+          def diag_data
+            cam = begin
+              Prefs.cam_presets.first
+            rescue StandardError
+              {}
+            end
+            { 'plugin' => TuModule::VERSION, 'sketchup' => Sketchup.version.to_s, 'platform' => RUBY_PLATFORM, 'ruby' => RUBY_VERSION,
+              'saved_at' => Time.now.strftime('%Y-%m-%d %H:%M:%S'), 'errors' => @mem,
+              'selftest' => (@selftest || []).last(160),
+              'abf_ops' => Core::AbfRules.ops, 'abf_settings' => Core::AbfRules.settings,
+              'cam' => cam.reject { |k, _| k == 'count_rules' } }
+          end
+
+          def write_diag(model)
+            model.set_attribute(DIAG_DICT, 'info', JSON.generate(diag_data))
+          rescue StandardError => e
+            log('ghi chẩn đoán', e) rescue nil
           end
 
           # ---- thông báo (có chế độ im lặng cho tự kiểm tra)

@@ -817,3 +817,70 @@ class TestPanelNames < Minitest::Test
     assert_equal 'Hồi Trái', Builder.build(p)['panels'].find { |x| x['local_id'] == 'side_L' }['label']
   end
 end
+
+class TestAbfRealGeometry < Minitest::Test
+  def teardown; AbfRules.settings = nil; end
+
+  def built
+    p = H.params('hl.khung_tu.v1', 'top_joint' => 'inset', 'bottom_joint' => 'inset', 'back_mode' => 'groove')
+    p['joints']['enabled'] = true
+    Builder.build(p)
+  end
+
+  def test_shop_cam_numbers
+    r = built
+    top = H.by(r, 'top')
+    cam = top['features'].find { |f| f['op'] == 'cam_housing' }
+    edge = top['features'].find { |f| f['op'] == 'cam_edge_hole' && f['source']['index'] == cam['source']['index'] && f['source']['joint'] == cam['source']['joint'] }
+    assert_in_delta 33.0, (cam['pos'][0] - edge['pos'][0]).abs, 1e-9, 'tâm cốc cam cách mép 33 mm (dự án ABF của xưởng)'
+    assert_in_delta 60.0, edge['pos'][1], 1e-9, 'cam đầu cách đầu cạnh 60 mm'
+    assert_in_delta 13.0, cam['depth'], 1e-9
+    errs = Mfg.validate(Mfg.parts(r['panels']), r['joints']).select { |i| i['level'] == 'error' }
+    assert_empty errs, errs.first(2).inspect
+  end
+
+  def test_depth_rect_lies_on_cam_face
+    r = built
+    top = H.by(r, 'top')
+    cam = top['features'].find { |f| f['op'] == 'cam_housing' }
+    edge = top['features'].find { |f| f['op'] == 'cam_edge_hole' }
+    rect = AbfRules.side_depth_rect(edge, cam['pos'][2])
+    assert(rect.all? { |q| (q[2] - cam['pos'][2]).abs < 1e-9 }, 'dấu độ sâu nằm trên mặt có cốc cam, không ở giữa độ dày')
+    us = rect.map { |q| q[0] }; vs = rect.map { |q| q[1] }
+    assert_in_delta 34.0, us.max - us.min, 1e-9
+    assert_in_delta 8.0, vs.max - vs.min, 1e-9
+    assert_in_delta edge['pos'][0], us.min, 1e-9, 'bắt đầu từ mép tấm'
+    assert_in_delta edge['pos'][1], (vs.max + vs.min) / 2, 1e-9, 'tim trùng trục lỗ'
+  end
+
+  def test_intersect_rect_exact_back_thickness_and_extension
+    r = built
+    side = H.by(r, 'side_L')
+    g = side['features'].find { |f| f['op'] == 'back_groove' }
+    rr = AbfRules.intersect_rect(g, 2.0)
+    assert_in_delta 7.0, rr[2] - rr[0], 1e-9, 'rộng đúng độ dày hậu 7 mm'
+    assert_in_delta side['h'] + 4.0, rr[3] - rr[1], 1e-9, 'dài thêm 2 mm mỗi đầu'
+    assert_in_delta (g['rect'][0] + g['rect'][2]) / 2, (rr[0] + rr[2]) / 2, 1e-9
+    top = H.by(r, 'top')
+    gt = top['features'].find { |f| f['op'] == 'back_groove' }
+    rt = AbfRules.intersect_rect(gt, 2.0)
+    assert_in_delta 7.0, rt[3] - rt[1], 1e-9
+    assert_in_delta top['w'] + 4.0, rt[2] - rt[0], 1e-9
+  end
+
+  def test_cup_outline_clipped_and_pilot_settings
+    f = { 'pos' => [22.5, 100.0, 0.0], 'diameter' => 35.0 }
+    o = AbfRules.cup_outline(f, 13.0)
+    vs = o.map { |q| q[1] }; us = o.map { |q| q[0] }
+    assert_in_delta 26.0, vs.max - vs.min, 1e-9, 'viền cốc cao 26 mm như dự án thật'
+    assert_in_delta 35.0, us.max - us.min, 1e-6
+    full = AbfRules.cup_outline(f, 0)
+    assert_in_delta 35.0, full.map { |q| q[1] }.max - full.map { |q| q[1] }.min, 1e-6
+    assert_equal 'ABF_D3', AbfRules.tag_for(f.merge('diameter' => 3.0), 'hinge_pilot')
+    st, errs = AbfRules.clean_settings('hinge_mark' => 'cup', 'pilot_d' => '4')
+    assert_empty errs
+    assert_equal 'cup', st['hinge_mark']
+    _, e2 = AbfRules.clean_settings('hinge_mark' => 'xyz')
+    assert e2.key?('set.hinge_mark')
+  end
+end

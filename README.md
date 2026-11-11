@@ -133,6 +133,10 @@ nên ba tên setting trong *Cài đặt chung › Tên setting trong ABF* phải
 - Tick “Cập nhật luôn mọi tủ…” rồi **Lưu cài đặt**: tủ đã đặt được vẽ lại dấu theo tên mới. Ô sai báo đỏ, không lưu.
   “Tên mặc định” chỉ nạp lại tên gốc vào bảng, bấm Lưu mới áp dụng. Tag cũ không còn dùng vẫn nằm trong bảng Tags của SketchUp (xóa bằng Purge nếu muốn).
 
+### Gửi thông tin cho kỹ thuật (từ 1.6.0)
+Chỉ cần **bấm Save rồi gửi file `.skp`**. Khi lưu, plugin tự ghi vào file: phiên bản plugin và SketchUp, các lỗi gần nhất,
+kết quả “Tự kiểm tra” (nếu đã chạy) và cấu hình ABF đang dùng.
+
 ### Khi gặp lỗi (từ 1.5.0)
 1. **Extensions › Tủ Module Hùng Loan › Tự kiểm tra plugin…** → bấm Có. Chạy 10–30 giây, tự thêm rồi xóa vài tủ thử. Kết quả ghi vào `tu_kiem_tra.txt`
    trong thư mục dữ liệu (đường dẫn hiện trong hộp thoại cuối).

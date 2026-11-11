@@ -87,7 +87,14 @@ module HungLoan
         def cam_presets
           list = read_json('cam_presets.json', nil)
           list = [C::Config::CAM_PRESET_DEMO.dup] unless list.is_a?(Array) && list.any?
-          list
+          # Bộ đã lưu còn nguyên số DEMO cũ (tâm cốc 24, cách đầu 50) → dùng số đo từ dự án ABF của xưởng (33 / 60).
+          list.map do |h|
+            h = C::Config::CAM_PRESET_DEMO.merge(h)
+            if h['cam_offset'].to_f == 24.0 && h['end_setback'].to_f == 50.0
+              h = h.merge('cam_offset' => C::Config::CAM_PRESET_DEMO['cam_offset'], 'end_setback' => C::Config::CAM_PRESET_DEMO['end_setback'])
+            end
+            h
+          end
         end
 
         def save_cam_presets(list) write_json('cam_presets.json', list) end
@@ -106,6 +113,11 @@ module HungLoan
           raw = read_json('abf_ops.json', nil) || {}
           ops_raw = raw.key?('ops') ? raw['ops'] : raw # bản 1.3 lưu phẳng
           ops_raw = C::AbfRules.migrate_ops(ops_raw) unless raw['version'].to_i >= 2
+          # Bản cũ có thể đã lưu tên nhóm cam trùng tên layer → trả về tên nhóm đúng của ABF.
+          %w[cam_housing cam_bolt cam_edge_hole].each do |k|
+            o = ops_raw[k]
+            ops_raw[k] = C::AbfRules::DEFAULT_OPS[k].dup if o.is_a?(Hash) && o['instance'].to_s == o['layer'].to_s
+          end
           cfg, errs = C::AbfRules.clean_ops(ops_raw)
           C::AbfRules.ops = errs.empty? ? cfg : C::AbfRules::DEFAULT_OPS
           st, serr = C::AbfRules.clean_settings(raw['settings'] || {})

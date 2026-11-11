@@ -83,7 +83,7 @@ module HungLoan
         class ModelObs < Sketchup::ModelObserver
           def onTransactionUndo(_m) Observers.later_reattach end
           def onTransactionRedo(_m) Observers.later_reattach end
-          def onPostSaveModel(_m) nil end
+          def onPreSaveModel(m) Safe.write_diag(m) end
         end
 
         class AppObs < Sketchup::AppObserver

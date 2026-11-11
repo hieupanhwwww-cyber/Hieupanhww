@@ -1,5 +1,16 @@
 # Nhật ký thay đổi
 
+## 1.6.0 — 11/11/2026 — Dựng đối tượng ABF theo hình học thật
+Căn cứ: đọc trực tiếp hình học trong dự án ABF thật bằng `tools/skp_read.py` (`docs/khao_sat/ABF_HINH_HOC_THAT.md`).
+- Cam/chốt/lỗ cạnh: nhóm ở Layer0, **cạnh nằm trên layer ABF**, không vẽ mặt (đúng cấu trúc ABF tạo).
+- **Dấu độ sâu lỗ cạnh** chuyển lên **mặt có cốc cam** (trước ở giữa độ dày nên ABF ghi độ sâu -1).
+- Số của xưởng: tâm cốc cam cách mép **33**, cam đầu cách đầu cạnh **60**. Bộ cam đã lưu còn số DEMO cũ (24/50) được tự chuyển.
+- **Bản lề**: viền cốc trên `ABF_D35` + **lỗ mồi Ø3 ở tâm trên `ABF_D3`** như dự án của xưởng. Cài đặt chung cho chọn “khoan cả cốc”.
+- **Rãnh hậu**: `_ABF_Intersect` rộng đúng độ dày hậu, dài thêm intersect-x mỗi đầu; nhóm, mặt, cạnh đều trên `ABF_SOI HAU`.
+- **Chẩn đoán đi kèm file**: khi Save, plugin ghi phiên bản, lỗi gần nhất, kết quả tự kiểm tra và cấu hình ABF vào file `.skp`
+  → chỉ cần gửi file `.skp`.
+- Thêm `tools/skp_read.py` (đọc nhóm/layer/đỉnh/cạnh/mặt của file `.skp` ngoài SketchUp).
+
 ## 1.5.0 — 10/11/2026 — Chống lỗi, tự kiểm tra
 Căn cứ: `test.skp` — ABF đã nhận 19/19 tấm và 56 bộ cam từ plugin (`docs/khao_sat/ABF_KET_QUA_TEST.md`).
 - **Lớp an toàn (`su/safe.rb`)**: mọi lệnh, mọi callback công cụ chuột (rê, vẽ, click, phím, gõ số) được bọc. Lỗi Ruby không còn làm đứng

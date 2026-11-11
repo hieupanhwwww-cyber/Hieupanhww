@@ -216,7 +216,7 @@ module HungLoan
               end
               pn['features'] << {
                 'id' => "#{pn['id']}:back_groove", 'type' => 'groove', 'op' => 'back_groove', 'face' => face,
-                'rect' => rect, 'depth' => gd, 'through' => false, 'width' => gy1 - gy0,
+                'rect' => rect, 'depth' => gd, 'through' => false, 'width' => gy1 - gy0, 'board_t' => tb,
                 'path' => axis_along == :v ? [[(rect[0] + rect[2]) / 2, 0.0], [(rect[0] + rect[2]) / 2, pn['h']]] :
                                              [[0.0, (rect[1] + rect[3]) / 2], [pn['w'], (rect[1] + rect[3]) / 2]],
                 'carve' => bk['carve'] == true, 'source' => { 'kind' => 'back_groove', 'other' => backs.first && backs.first['local_id'] }

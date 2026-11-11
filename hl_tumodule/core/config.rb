@@ -39,10 +39,10 @@ module HungLoan
           'name' => 'Minifix 15 (DEMO)',
           'demo' => true,
           'cam_diameter' => 15.0, 'cam_depth' => 13.0,   # G-code xưởng khoan Z4 trên ván 17 = sâu 13
-          'cam_offset' => 24.0,          # tâm cốc cam cách mặt tiếp xúc
+          'cam_offset' => 33.0,          # tâm cốc cam cách mép tấm — đo trên dự án ABF của xưởng (294 bộ)
           'edge_diameter' => 8.0, 'edge_depth' => 34.0, # lỗ cạnh tấm mang cam
           'bolt_diameter' => 5.0, 'bolt_depth' => 13.0, # lỗ chốt cam trên mặt tấm kia
-          'end_setback' => 50.0,
+          'end_setback' => 60.0,         # cam đầu cách đầu cạnh — dự án ABF của xưởng
           'count_rules' => [[150.0, 1], [600.0, 2], [1000.0, 3], [1.0e9, 4]],
           'min_thickness' => 15.0
         }.freeze

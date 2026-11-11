@@ -14,7 +14,7 @@ Cột "Thực tế ABF" để trống: điền sau khi nạp bản gia công và
 | plinth_F | Chân Trước | 866.0 × 50.0 × 17.0 | 0 |  | |
 | plinth_B | Chân Sau | 866.0 × 50.0 × 17.0 | 0 |  | |
 | back | Hậu | 882.0 × 1132.0 × 7.0 | 0 |  | |
-| dot_toa5xob0000003 | Đợt 1 | 866.0 × 558.0 × 17.0 | 8 | cam_edge_hole×4 cam_housing×4 | |
+| dot_tobeuca4f00003 | Đợt 1 | 866.0 × 558.0 × 17.0 | 8 | cam_edge_hole×4 cam_housing×4 | |
 | door:side_L/side_R:0 | Cánh Trái | 447.0 × 1146.0 × 17.0 | 3 | hinge_cup×3 | |
 | door:side_L/side_R:1 | Cánh Phải | 447.0 × 1146.0 × 17.0 | 3 | hinge_cup×3 | |
 | top | Đình chữ L | 1600.0 × 1200.0 × 17.0 | 4 | cam_bolt×4 | |
@@ -43,18 +43,18 @@ Cột "Thực tế ABF" để trống: điền sau khi nạp bản gia công và
 | dface:0 | Mặt Ngăn Kéo 1 | 596.0 × 214.3 × 17.0 | 0 |  | |
 | dface:1 | Mặt Ngăn Kéo 2 | 596.0 × 214.3 × 17.0 | 0 |  | |
 | dface:2 | Mặt Ngăn Kéo 3 | 596.0 × 214.3 × 17.0 | 0 |  | |
-| dr_toa5xo29ba000d:side_L | Thành Trái NK | 450.0 × 150.0 × 15.0 | 0 |  | |
-| dr_toa5xo29ba000d:side_R | Thành Phải NK | 450.0 × 150.0 × 15.0 | 0 |  | |
-| dr_toa5xo29ba000d:front | Thành Trước NK | 510.0 × 143.0 × 15.0 | 0 |  | |
-| dr_toa5xo29ba000d:back | Thành Sau NK | 510.0 × 143.0 × 15.0 | 0 |  | |
-| dr_toa5xo29ba000d:bottom | Tấm Đáy NK | 540.0 × 450.0 × 7.0 | 0 |  | |
-| dr_toa5xo6a67000e:side_L | Thành Trái NK | 450.0 × 150.0 × 15.0 | 0 |  | |
-| dr_toa5xo6a67000e:side_R | Thành Phải NK | 450.0 × 150.0 × 15.0 | 0 |  | |
-| dr_toa5xo6a67000e:front | Thành Trước NK | 510.0 × 143.0 × 15.0 | 0 |  | |
-| dr_toa5xo6a67000e:back | Thành Sau NK | 510.0 × 143.0 × 15.0 | 0 |  | |
-| dr_toa5xo6a67000e:bottom | Tấm Đáy NK | 540.0 × 450.0 × 7.0 | 0 |  | |
-| dr_toa5xod66f000f:side_L | Thành Trái NK | 450.0 × 150.0 × 15.0 | 0 |  | |
-| dr_toa5xod66f000f:side_R | Thành Phải NK | 450.0 × 150.0 × 15.0 | 0 |  | |
-| dr_toa5xod66f000f:front | Thành Trước NK | 510.0 × 143.0 × 15.0 | 0 |  | |
-| dr_toa5xod66f000f:back | Thành Sau NK | 510.0 × 143.0 × 15.0 | 0 |  | |
-| dr_toa5xod66f000f:bottom | Tấm Đáy NK | 540.0 × 450.0 × 7.0 | 0 |  | |
+| dr_tobeucc4a4000d:side_L | Thành Trái NK | 450.0 × 150.0 × 15.0 | 0 |  | |
+| dr_tobeucc4a4000d:side_R | Thành Phải NK | 450.0 × 150.0 × 15.0 | 0 |  | |
+| dr_tobeucc4a4000d:front | Thành Trước NK | 510.0 × 143.0 × 15.0 | 0 |  | |
+| dr_tobeucc4a4000d:back | Thành Sau NK | 510.0 × 143.0 × 15.0 | 0 |  | |
+| dr_tobeucc4a4000d:bottom | Tấm Đáy NK | 540.0 × 450.0 × 7.0 | 0 |  | |
+| dr_tobeucad5e000e:side_L | Thành Trái NK | 450.0 × 150.0 × 15.0 | 0 |  | |
+| dr_tobeucad5e000e:side_R | Thành Phải NK | 450.0 × 150.0 × 15.0 | 0 |  | |
+| dr_tobeucad5e000e:front | Thành Trước NK | 510.0 × 143.0 × 15.0 | 0 |  | |
+| dr_tobeucad5e000e:back | Thành Sau NK | 510.0 × 143.0 × 15.0 | 0 |  | |
+| dr_tobeucad5e000e:bottom | Tấm Đáy NK | 540.0 × 450.0 × 7.0 | 0 |  | |
+| dr_tobeuc45cc000f:side_L | Thành Trái NK | 450.0 × 150.0 × 15.0 | 0 |  | |
+| dr_tobeuc45cc000f:side_R | Thành Phải NK | 450.0 × 150.0 × 15.0 | 0 |  | |
+| dr_tobeuc45cc000f:front | Thành Trước NK | 510.0 × 143.0 × 15.0 | 0 |  | |
+| dr_tobeuc45cc000f:back | Thành Sau NK | 510.0 × 143.0 × 15.0 | 0 |  | |
+| dr_tobeuc45cc000f:bottom | Tấm Đáy NK | 540.0 × 450.0 × 7.0 | 0 |  | |

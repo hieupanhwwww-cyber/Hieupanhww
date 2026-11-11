@@ -309,13 +309,14 @@ module HungLoan
         def finish(t0)
           @lines << ''
           @lines << "KẾT QUẢ: #{@pass} đạt, #{@fail} lỗi · #{(Time.now - t0).round(1)} giây"
+          Safe.selftest = @lines.dup
           path = Prefs.path('tu_kiem_tra.txt')
           File.write(path, @lines.join("\n") + "\n", encoding: 'UTF-8')
           if File.exist?(Safe.log_path)
             File.open(path, 'a:UTF-8') { |f| f.puts("\n--- NHẬT KÝ LỖI (#{Safe.log_path}) ---"); f.puts(File.read(Safe.log_path, encoding: 'UTF-8').lines.last(120).join) }
           end
-          msg = if @fail.zero? then "Tất cả #{@pass} bước đều đạt.\nBáo cáo: #{path}"
-                else "#{@pass} bước đạt, #{@fail} bước LỖI.\n\nBáo cáo chi tiết (gửi file này cho kỹ thuật):\n#{path}"
+          msg = if @fail.zero? then "Tất cả #{@pass} bước đều đạt.\nBáo cáo: #{path}\n\nKết quả cũng được ghi vào file .skp khi bạn bấm Save."
+                else "#{@pass} bước đạt, #{@fail} bước LỖI.\n\nBáo cáo: #{path}\n\nCách gửi dễ nhất: bấm Save rồi gửi file .skp — kết quả đã nằm trong file."
                 end
           Safe.msgbox(msg, MB_MULTILINE)
         end

@@ -24,10 +24,10 @@ module HungLoan
 
         # BẢNG TÊN GIA CÔNG (sửa trong "Cài đặt chung"): mỗi loại thao tác có tên LAYER (tag) và tên INSTANCE (nhóm).
         # Dùng được {D} = đường kính lỗ, {Z} = độ sâu (mm) trong tên.
-        OP_KEYS = %w[cam_housing cam_edge_hole cam_side_depth cam_bolt hinge_cup back_groove section section_through].freeze
+        OP_KEYS = %w[cam_housing cam_edge_hole cam_side_depth cam_bolt hinge_cup hinge_pilot back_groove section section_through].freeze
         OP_TITLES = {
           'cam_housing' => 'Cốc cam Ø15 (tấm mang cam)', 'cam_edge_hole' => 'Lỗ cạnh (khoan ngang)', 'cam_side_depth' => 'Dấu độ sâu lỗ cạnh',
-          'cam_bolt' => 'Lỗ Ø5 trên mặt tấm đối diện', 'hinge_cup' => 'Lỗ cốc bản lề', 'back_groove' => 'Rãnh hậu (soi âm)',
+          'cam_bolt' => 'Lỗ Ø5 trên mặt tấm đối diện', 'hinge_cup' => 'Bản lề (nhóm + viền cốc)', 'hinge_pilot' => 'Lỗ mồi tâm bản lề', 'back_groove' => 'Rãnh hậu (soi âm)',
           'section' => 'Tiết diện (khoét sâu)', 'section_through' => 'Tiết diện (cắt xuyên)'
         }.freeze
         # MẶC ĐỊNH = đúng tên nhóm/layer do công cụ ABF tạo, đọc từ dự án ABF thật của xưởng (CHAU_NAM_CNC/Untitled.skp).
@@ -37,6 +37,7 @@ module HungLoan
           'cam_side_depth' => { 'layer' => 'ABF-DSIDE-{D}', 'instance' => '_ABF_sideDrillDepth' },
           'cam_bolt' => { 'layer' => 'ABF-D{D}', 'instance' => '_ABF_minifixPlasticBase' },
           'hinge_cup' => { 'layer' => 'ABF_D{D}', 'instance' => 'ABF_D{D}' },
+          'hinge_pilot' => { 'layer' => 'ABF_D{D}', 'instance' => 'ABF_D{D}' },
           'back_groove' => { 'layer' => 'ABF_SOI HAU', 'instance' => '_ABF_Intersect' },
           'section' => { 'layer' => 'ABF_SOI HAU', 'instance' => '_ABF_Intersect' },
           'section_through' => { 'layer' => 'ABF_CatTrong', 'instance' => 'ABF_CatTrong' }
@@ -57,10 +58,14 @@ module HungLoan
 
         # TÊN SETTING ABF: ABF lấy độ sâu/dao theo "setting-name" gắn trên từng đối tượng → phải trùng tên setting trong ABF của xưởng.
         DEFAULT_SETTINGS = {
-          'cam' => 'CAM_17MM', 'hinge' => 'BẢN LỀ A - Loại A', 'groove' => 'SOI ÂM 9MM - RÃNH HẬU', 'intersect_x' => 2.0
+          'cam' => 'CAM_17MM', 'hinge' => 'BẢN LỀ A - Loại A', 'groove' => 'SOI ÂM 9MM - RÃNH HẬU', 'intersect_x' => 2.0,
+          'hinge_mark' => 'pilot', 'pilot_d' => 3.0, 'cup_clip' => 13.0
         }.freeze
+        HINGE_MARKS = [['pilot', 'Lỗ mồi ở tâm + viền cốc (như dự án ABF của xưởng)'], ['cup', 'Khoan cả cốc (vòng tròn đủ trên layer cốc)']].freeze
         SETTING_TITLES = { 'cam' => 'Setting cam Minifix', 'hinge' => 'Setting bản lề', 'groove' => 'Setting rãnh hậu (Intersect)',
-                           'intersect_x' => 'Nới rộng rãnh hậu — intersect-x (mm)' }.freeze
+                           'intersect_x' => 'Rãnh hậu dài thêm mỗi đầu — intersect-x (mm)',
+                           'hinge_mark' => 'Dấu bản lề', 'pilot_d' => 'Đường kính lỗ mồi bản lề (mm)',
+                           'cup_clip' => 'Viền cốc: cắt phẳng cách tâm (mm, 0 = tròn đủ)' }.freeze
         DICT = 'ABF'.freeze
 
         @settings = nil
@@ -95,6 +100,14 @@ module HungLoan
           x = (raw || {}).key?('intersect_x') ? Util.num(raw['intersect_x']) : DEFAULT_SETTINGS['intersect_x']
           errs['set.intersect_x'] = 'Cần số từ 0 đến 10' if x.nil? || x < 0 || x > 10
           out['intersect_x'] = x.to_f
+          hm = (raw || {}).key?('hinge_mark') ? raw['hinge_mark'].to_s : DEFAULT_SETTINGS['hinge_mark']
+          errs['set.hinge_mark'] = 'Chọn pilot hoặc cup' unless %w[pilot cup].include?(hm)
+          out['hinge_mark'] = hm
+          { 'pilot_d' => [0.5, 20], 'cup_clip' => [0, 100] }.each do |k, (lo, hi)|
+            v = (raw || {}).key?(k) ? Util.num(raw[k]) : DEFAULT_SETTINGS[k]
+            errs["set.#{k}"] = "Cần số từ #{lo} đến #{hi}" if v.nil? || v < lo || v > hi
+            out[k] = v.to_f
+          end
           [out, errs]
         end
 
@@ -185,16 +198,47 @@ module HungLoan
           expand((ops[key] || DEFAULT_OPS[key])['instance'], f)
         end
 
-        # Chữ nhật dấu độ sâu lỗ cạnh (dài = độ sâu, rộng = đường kính) nằm ở mặt phẳng giữa độ dày tấm.
-        def side_depth_rect(f)
+        # Chữ nhật dấu độ sâu lỗ cạnh (dài = độ sâu, rộng = đường kính). Theo dự án ABF thật: nằm TRÊN MẶT VÁN CÓ CỐC CAM
+        # (w = cao độ mặt đó), bắt đầu từ mép tấm, tim trùng trục lỗ. Không truyền w → dùng cao độ của lỗ (giữa độ dày).
+        def side_depth_rect(f, w = nil)
           p = f['pos']; d = f['dir']
           l = Math.hypot(d[0], d[1])
           return nil if l < 1e-9
+          z = w.nil? ? p[2] : w.to_f
           ux = d[0] / l; uy = d[1] / l
           px = -uy * f['diameter'] / 2.0; py = ux * f['diameter'] / 2.0
           dep = f['depth'].to_f
-          [[p[0] + px, p[1] + py, p[2]], [p[0] + ux * dep + px, p[1] + uy * dep + py, p[2]],
-           [p[0] + ux * dep - px, p[1] + uy * dep - py, p[2]], [p[0] - px, p[1] - py, p[2]]]
+          [[p[0] + px, p[1] + py, z], [p[0] + ux * dep + px, p[1] + uy * dep + py, z],
+           [p[0] + ux * dep - px, p[1] + uy * dep - py, z], [p[0] - px, p[1] - py, z]]
+        end
+
+        # Viền cốc bản lề: vòng tròn Ø cốc, cắt phẳng hai phía cách tâm `clip` theo chiều cao cánh (v). clip <= 0 → tròn đủ.
+        def cup_outline(f, clip, seg = 24)
+          r = f['diameter'] / 2.0
+          cu = f['pos'][0]; cv = f['pos'][1]
+          pts = (0...seg).map do |i|
+            a = 2 * Math::PI * i / seg
+            dv = r * Math.sin(a)
+            dv = [[dv, clip].min, -clip].max if clip.to_f > 0 && clip < r
+            [cu + r * Math.cos(a), cv + dv, f['pos'][2]]
+          end
+          out = []
+          pts.each { |q| out << q unless out.last && (out.last[0] - q[0]).abs < 1e-6 && (out.last[1] - q[1]).abs < 1e-6 }
+          out.pop if out.size > 2 && (out.first[0] - out.last[0]).abs < 1e-6 && (out.first[1] - out.last[1]).abs < 1e-6
+          out
+        end
+
+        # Chữ nhật _ABF_Intersect của rãnh hậu: rộng ĐÚNG độ dày tấm hậu, dài thêm intersect-x mỗi đầu (theo dự án thật).
+        def intersect_rect(f, ext)
+          r = f['rect']
+          bt = (f['board_t'] || [(r[2] - r[0]).abs, (r[3] - r[1]).abs].min).to_f
+          if (r[2] - r[0]).abs <= (r[3] - r[1]).abs # rãnh chạy theo v
+            c = (r[0] + r[2]) / 2.0
+            [c - bt / 2.0, r[1] - ext, c + bt / 2.0, r[3] + ext]
+          else
+            c = (r[1] + r[3]) / 2.0
+            [r[0] - ext, c - bt / 2.0, r[2] + ext, c + bt / 2.0]
+          end
         end
 
         def color_for(tag, f)

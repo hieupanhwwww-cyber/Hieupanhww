@@ -126,7 +126,7 @@ module Sketchup
     def attribute_dictionaries; nil; end
     def hidden?; false; end
     def locked?; false; end
-    def layer; nil; end
+    attr_accessor :layer
     def curve; nil; end
     def get_attribute(d, k, default = nil) (@attrs[d] || {}).fetch(k, default) end
     def set_attribute(d, k, v) (@attrs[d] ||= {})[k] = v.is_a?(Array) ? v.dup : v; v end
@@ -150,6 +150,7 @@ module Sketchup
       @normal = Geom::Vector3d.new(*n).normalize
     end
     def reverse!; @normal = Geom::Vector3d.new(-@normal.x, -@normal.y, -@normal.z); self; end
+    def edges; @edges ||= Array.new(@pts.size) { Edge.new }; end
     def pushpull(d) @pushed = d; $mock_log << [:pushpull, d]; nil end
     def area; 1.0; end
   end

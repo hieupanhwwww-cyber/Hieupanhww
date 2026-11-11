@@ -207,7 +207,10 @@ module HungLoan
           cam = Prefs.cam_presets.first
           { 'ops' => A::OP_KEYS.map { |k| { 'key' => k, 'title' => A::OP_TITLES[k], 'layer' => A.ops[k]['layer'], 'instance' => A.ops[k]['instance'],
                                             'def_layer' => A::DEFAULT_OPS[k]['layer'], 'def_instance' => A::DEFAULT_OPS[k]['instance'] } },
-            'settings' => A::DEFAULT_SETTINGS.keys.map { |k| { 'key' => k, 'label' => A::SETTING_TITLES[k], 'value' => A.settings[k], 'default' => A::DEFAULT_SETTINGS[k] } },
+            'settings' => A::DEFAULT_SETTINGS.keys.map { |k|
+              { 'key' => k, 'label' => A::SETTING_TITLES[k], 'value' => A.settings[k], 'default' => A::DEFAULT_SETTINGS[k],
+                'type' => (k == 'hinge_mark' ? 'enum' : (A::DEFAULT_SETTINGS[k].is_a?(Numeric) ? 'mm' : 'text')), 'options' => (k == 'hinge_mark' ? A::HINGE_MARKS : nil) }
+            },
             'cam' => CAM_KEYS.map { |k, label| { 'key' => k, 'label' => label, 'value' => cam[k] } },
             'cam_name' => cam['name'], 'cam_demo' => cam['demo'] ? true : false }
         end
