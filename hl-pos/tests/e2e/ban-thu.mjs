@@ -96,10 +96,12 @@ run(async () => {
 
   // 11. Mất mạng
   await p.goto(`${APP}/ban-hang`); await p.waitForSelector(`text=${N.TAB}`); await tap(p, N.TAB);
-  await p.context().setOffline(true); await p.waitForTimeout(500);
-  const off = (await p.locator('text=Mất mạng').count()) > 0 && (await p.locator('section', { hasText: 'Giỏ hàng' }).locator('button').last().isDisabled());
-  await p.context().setOffline(false); await p.waitForTimeout(500);
-  check('11. mất mạng: hiện thanh đỏ, khóa Thanh toán; có mạng lại thì mở', off && (await p.locator('[role="alert"]').count()) === 0 && !(await p.locator('button:has-text("Thanh toán")').isDisabled()));
+  const state = () => p.evaluate(() => ({ alert: document.querySelectorAll('[role="alert"]').length, btn: [...document.querySelectorAll('button')].filter((b) => /Thanh toán|Mất mạng/.test(b.textContent)).map((b) => b.disabled) }));
+  await p.context().setOffline(true); await p.waitForSelector('[role="alert"]', { timeout: 5000 }).catch(() => {});
+  const off = await state();
+  await p.context().setOffline(false); await p.waitForSelector('[role="alert"]', { state: 'detached', timeout: 5000 }).catch(() => {});
+  const on = await state();
+  check('11. mất mạng: hiện thanh đỏ, khóa Thanh toán; có mạng lại thì mở', off.alert === 1 && off.btn[0] === true && on.alert === 0 && on.btn[0] === false, JSON.stringify({ off, on }));
 
   const end = await stock();
   check('kho cuối cùng khớp 3 hóa đơn', end['MAU-TAB01'] === 8 && end['MAU-KE01'] === 8 && end['MAU-GHE01'] === 7 && end['MAU-BTP01'] === 9 && end['MAU-MDF17'] === 29 && end['MAU-BL01'] === 99 && end['MAU-RAY45'] === 39, JSON.stringify(end));
