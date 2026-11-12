@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   description: 'Quản lý bán hàng – Nội Thất Hùng Loan',
 };
 
-export const viewport: Viewport = { themeColor: '#8b5e3c' };
+export const viewport: Viewport = { themeColor: '#8b5e3c', viewportFit: 'cover' };
 
 export default function RootLayout({ children }: LayoutProps<'/'>) {
   return (
