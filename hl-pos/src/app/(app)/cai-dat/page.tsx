@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { supabase, errorText } from '@/lib/supabase/client';
 import { useProfile } from '@/lib/useProfile';
 import { StoreForm } from '@/components/StoreForm';
@@ -22,6 +23,12 @@ export default function SettingsPage() {
       </section>
       <StoreForm canEdit={isOwner} />
       {isOwner && <Members myId={me.id} />}
+      {isOwner && (
+        <section className="card flex flex-wrap items-center justify-between gap-2">
+          <div><div className="font-semibold">Chuyển dữ liệu từ Sổ Nội Thất</div><div className="text-sm text-muted">Nhập khách, đơn, phiếu thu, phát sinh, danh mục, sổ thu chi từ file sao lưu.</div></div>
+          <Link className="btn-ghost" href="/cai-dat/nhap-so-noi-that">Nhập từ Sổ Nội Thất</Link>
+        </section>
+      )}
     </div>
   );
 }

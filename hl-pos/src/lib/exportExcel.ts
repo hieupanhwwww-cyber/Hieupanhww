@@ -2,7 +2,8 @@ import ExcelJS from 'exceljs';
 
 export const SHEET_NAMES: Record<string, string> = {
   hang_hoa: 'Hàng hóa', phieu_kho: 'Phiếu kho', hoa_don: 'Hóa đơn', dong_hoa_don: 'Dòng hóa đơn',
-  don_noi_that: 'Đơn nội thất', dot_thanh_toan: 'Đợt thanh toán', nguoi_dung: 'Người dùng',
+  don_noi_that: 'Đơn nội thất', nguoi_dung: 'Người dùng', khach_hang: 'Khách hàng', bao_gia_dong: 'Báo giá (dòng)',
+  phieu_thu: 'Phiếu thu', phat_sinh: 'Phát sinh', so_thu_chi: 'Sổ thu chi', danh_muc: 'Danh mục',
 };
 
 type Data = Record<string, Record<string, unknown>[]>;

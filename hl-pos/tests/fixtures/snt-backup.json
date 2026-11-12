@@ -1,0 +1,61 @@
+{
+  "format": "so-noi-that", "version": 2, "exportedAt": "2026-11-10T08:00:00.000Z",
+  "data": {
+    "customers": [
+      { "id": "c1", "name": "Chị Lan", "phone": "0912 111 222", "address": "Hai Bà Trưng, Hà Nội", "createdAt": "2026-09-01T00:00:00Z" },
+      { "id": "c2", "name": "Anh Tuấn", "phone": "0912 333 444", "address": "Nam Từ Liêm", "createdAt": "2026-10-01T00:00:00Z" },
+      { "id": "cdemo", "name": "Chị Mai (mẫu)", "phone": "0900 000 004", "address": "", "demo": true }
+    ],
+    "catalog": [
+      { "id": "k1", "name": "Tủ áo cánh lùa", "material": "MDF chống ẩm", "unit": "m²", "price": 3500000 },
+      { "id": "k2", "name": "Giường ngủ 1m8", "unit": "bộ", "price": 8000000 }
+    ],
+    "costs": [
+      { "id": "k_k1", "cost": 2200000 },
+      { "id": "o_o1", "rows": { "r1": 2100000 }, "chg": { "g1": 1500000 }, "ship": 600000 }
+    ],
+    "cash": [
+      { "id": "t1", "type": "out", "date": "2026-10-05", "amount": 3000000, "cat": "Nhân công, thợ", "note": "Thợ lắp", "oid": "o1", "method": "cash", "createdAt": "2026-10-05T10:00:00Z" },
+      { "id": "t2", "type": "in", "date": "2026-10-06", "amount": 200000, "cat": "Bán phế liệu", "note": "", "oid": "", "method": "cash" }
+    ],
+    "app": [ { "id": "settings", "shopName": "Nội Thất Hùng Loan" } ],
+    "orders": [
+      {
+        "id": "o1", "code": "BG2609-01", "status": "building", "customerId": "c1", "closedAt": "2026-09-20", "createdAt": "2026-09-15T02:00:00Z",
+        "draft": null,
+        "versions": [
+          { "no": 1, "closedAt": "2026-09-20", "sub": 24000000, "disc": 0, "total": 24000000,
+            "quote": { "date": "2026-09-15", "customer": { "name": "Chị Lan", "phone": "0912 111 222", "address": "Hai Bà Trưng, Hà Nội" }, "project": "Phòng ngủ master",
+              "rows": [ { "id": "r1", "name": "Tủ áo cánh lùa", "material": "MDF", "unit": "m²", "qty": 6.24, "price": 3500000, "dims": { "a": 2400, "b": 2600, "n": 1, "u": "mm" } },
+                        { "id": "r2", "name": "Giường ngủ 1m8", "material": "", "unit": "bộ", "qty": 1, "price": 2160000, "dims": null } ],
+              "discount": { "type": "amount", "value": 0 }, "note": "Bảo hành 36 tháng", "terms": "Cọc 50%",
+              "plan": [ { "id": "d1", "label": "Đặt cọc khi ký hợp đồng", "pct": 50, "trigger": "sign" }, { "id": "d2", "label": "Khi bắt đầu lắp đặt", "pct": 40, "trigger": "progress" }, { "id": "d3", "label": "Sau nghiệm thu, bàn giao", "pct": 0, "trigger": "accept" } ] },
+            "sign": { "img": "data:image/png;base64,iVBORw0KGgo=", "name": "Chị Lan", "at": "2026-09-20T03:00:00Z", "hash": "0123456789ABCDEF" } },
+          { "no": 2, "closedAt": "2026-10-02", "sub": 26000000, "disc": 500000, "total": 25500000,
+            "quote": { "date": "2026-10-01", "customer": { "name": "Chị Lan", "phone": "0912 111 222", "address": "Hai Bà Trưng, Hà Nội" }, "project": "Phòng ngủ master",
+              "rows": [ { "id": "r1", "name": "Tủ áo cánh lùa", "material": "MDF", "unit": "m²", "qty": 6.24, "price": 3500000, "dims": { "a": 2400, "b": 2600, "n": 1, "u": "mm" } },
+                        { "id": "r3", "name": "Giường ngủ 1m8", "material": "", "unit": "bộ", "qty": 1, "price": 4160000, "dims": null } ],
+              "discount": { "type": "amount", "value": 500000 }, "note": "", "terms": "",
+              "plan": [ { "id": "d1", "label": "Đặt cọc khi ký hợp đồng", "pct": 50, "trigger": "sign" }, { "id": "d2", "label": "Khi bắt đầu lắp đặt", "pct": 40, "trigger": "progress" }, { "id": "d3", "label": "Sau nghiệm thu, bàn giao", "pct": 0, "trigger": "accept" } ] } }
+        ],
+        "plan": [ { "id": "d1", "label": "Đặt cọc khi ký hợp đồng", "pct": 50, "trigger": "sign", "due": "", "reached": false }, { "id": "d2", "label": "Khi bắt đầu lắp đặt", "pct": 40, "trigger": "progress", "due": "2026-11-01", "reached": false }, { "id": "d3", "label": "Sau nghiệm thu, bàn giao", "pct": 0, "trigger": "accept" } ],
+        "payments": [ { "id": "p1", "no": 1, "amount": 12000000, "date": "2026-09-20", "method": "transfer", "note": "Đặt cọc khi chốt đơn", "createdAt": "2026-09-20T03:00:00Z" },
+                      { "id": "p2", "amount": 5000000, "date": "2026-10-15", "method": "cash", "note": "Đợt 2", "createdAt": "2026-10-15T03:00:00Z" } ],
+        "payReqs": [ { "id": "q1", "amount": 3000000, "date": "2026-11-01", "method": "cash", "note": "", "byName": "Sale Minh", "status": "pending" } ],
+        "changes": [ { "id": "g1", "sign": 1, "title": "Thêm kệ sách", "amount": 2400000, "note": "", "status": "confirmed", "createdAt": "2026-10-10T00:00:00Z", "confirmedAt": "2026-10-10" },
+                     { "id": "g2", "sign": -1, "title": "Bỏ đèn LED", "amount": 1080000, "note": "Khách tự lắp", "status": "pending", "createdAt": "2026-10-20T00:00:00Z" } ],
+        "attachments": [ { "id": "a1", "name": "anh-hien-trang.jpg", "type": "image/jpeg" } ],
+        "notes": [ { "id": "n1", "text": "Khách muốn xong trước ngày 30", "at": "2026-09-21T00:00:00Z" } ],
+        "log": [ { "at": "2026-09-15T02:00:00Z", "text": "Tạo báo giá" }, { "at": "2026-09-20T03:00:00Z", "text": "Chốt đơn ngày 20/09/2026: 24.000.000 đ", "by": "Hiếu" } ],
+        "handover": null, "payDue": ""
+      },
+      {
+        "id": "o2", "code": "BG2611-01", "status": "quote", "customerId": "c2", "createdAt": "2026-11-05T00:00:00Z", "closedAt": null,
+        "draft": { "date": "2026-11-05", "customer": { "name": "Anh Tuấn", "phone": "0912 333 444", "address": "Nam Từ Liêm" }, "project": "Phòng ngủ con",
+          "rows": [ { "id": "s1", "name": "Bàn học", "unit": "bộ", "qty": 1, "price": 4500000 } ], "discount": { "type": "percent", "value": 10 }, "note": "", "terms": "", "plan": [] },
+        "versions": [], "payments": [], "changes": [], "attachments": [], "notes": [], "log": []
+      },
+      { "id": "odemo", "code": "BG2611-M1", "status": "quote", "demo": true, "draft": { "date": "2026-11-01", "customer": { "name": "Chị Mai (mẫu)", "phone": "", "address": "" }, "project": "", "rows": [], "discount": { "type": "amount", "value": 0 }, "plan": [] }, "versions": [], "payments": [], "changes": [] }
+    ]
+  }
+}

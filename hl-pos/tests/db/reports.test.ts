@@ -88,7 +88,7 @@ describe('báo cáo (chỉ chủ)', () => {
 
   it('xuất toàn bộ dữ liệu có đủ các bảng và giá vốn', async () => {
     const [r] = await asUser(owner, (q) => q('select export_all() as d'));
-    expect(Object.keys(r.d).sort()).toEqual(['khach_hang', 'don_noi_that', 'bao_gia_dong', 'phieu_thu', 'hang_hoa', 'hoa_don', 'nguoi_dung', 'phieu_kho', 'dong_hoa_don'].sort());
+    expect(Object.keys(r.d).sort()).toEqual(['khach_hang', 'don_noi_that', 'bao_gia_dong', 'phieu_thu', 'phat_sinh', 'so_thu_chi', 'danh_muc', 'hang_hoa', 'hoa_don', 'nguoi_dung', 'phieu_kho', 'dong_hoa_don'].sort());
     expect(r.d.hang_hoa.find((p: { ma: string }) => p.ma === 'A').gia_von).toBe(60000);
     expect(r.d.hoa_don).toHaveLength(3);
   });
