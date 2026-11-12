@@ -44,8 +44,8 @@ export default function SellPage() {
   }
 
   return (
-    <div className="grid gap-4 lg:grid-cols-[1fr_380px]">
-      <section className="space-y-3">
+    <div className="grid grid-cols-1 gap-4 lg:grid-cols-[1fr_380px]">
+      <section className="min-w-0 space-y-3">
         <h1 className="text-xl font-bold">Bán hàng</h1>
         <input className="input" placeholder="Tìm theo tên hoặc mã…" value={query} onChange={(e) => setQuery(e.target.value)} />
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 xl:grid-cols-4">
@@ -66,7 +66,7 @@ export default function SellPage() {
         </div>
       </section>
 
-      <section className="card h-fit space-y-3 lg:sticky lg:top-4">
+      <section className="card h-fit min-w-0 space-y-3 lg:sticky lg:top-4">
         <h2 className="font-semibold">Giỏ hàng</h2>
         {!cart.length && <p className="text-sm text-muted">Chạm vào món để thêm.</p>}
         <ul className="divide-y divide-line">

@@ -73,6 +73,23 @@ export function check(name, ok, detail = '') {
 }
 /** Bọc toàn bộ kịch bản: luôn dọn tài khoản thử, exit code ≠ 0 nếu có FAIL. */
 export async function run(fn) {
-  try { await fn(); } catch (e) { failed++; console.log('FAIL  (dừng giữa chừng) ' + String(e.message).split('\n')[0]); }
+  try { await fn(); } catch (e) { failed++; console.log('FAIL  (dừng giữa chừng) ' + String(e.message).split('\n').slice(0, 12).join('\n      ')); }
   finally { await cleanupUsers().catch((e) => console.log('!!! lỗi khi dọn: ' + e.message)); await browser?.close(); process.exit(failed ? 1 : 0); }
+}
+
+export const PUBLISHABLE = process.env.SB_PUBLISHABLE ?? 'sb_publishable_bQgmnnUkyJIvt1ttus1cSw_-kO1FABU'; // khóa công khai
+/** Gọi thẳng API dữ liệu bằng phiên của một tài khoản (để thử "lách giao diện"). */
+export async function restAs(user, path) {
+  const t = await (await fetch(`${SB}/auth/v1/token?grant_type=password`, { method: 'POST', headers: { apikey: PUBLISHABLE, 'content-type': 'application/json' }, body: JSON.stringify({ email: user.email, password: user.password }) })).json();
+  const r = await fetch(`${SB}/rest/v1/${path}`, { headers: { apikey: PUBLISHABLE, Authorization: `Bearer ${t.access_token}` } });
+  return { status: r.status, body: await r.json().catch(() => null) };
+}
+export const vnd = (n) => `${Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')} đ`;
+/** Số trang và khổ giấy (mm) của một file PDF do Chromium in ra. */
+export function pdfInfo(buf) {
+  const s = buf.toString('latin1');
+  const pages = (s.match(/\/Type\s*\/Page[^s]/g) ?? []).length;
+  const m = s.match(/\/MediaBox\s*\[\s*([\d.]+)\s+([\d.]+)\s+([\d.]+)\s+([\d.]+)\s*\]/);
+  const mm = (pt) => Math.round((Number(pt) / 72) * 25.4);
+  return { pages, w: m ? mm(m[3]) : 0, h: m ? mm(m[4]) : 0 };
 }
