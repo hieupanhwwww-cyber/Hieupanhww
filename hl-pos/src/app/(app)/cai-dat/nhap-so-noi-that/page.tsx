@@ -41,14 +41,20 @@ export default function ImportPage() {
       // đối chiếu từng đơn: số máy chủ so với số tính lại từ file
       const codeOf = new Map(r.renamed.map((x) => [x.from, x.to]));
       const codes = payload.orders.map((o) => codeOf.get(o.code) ?? o.code);
-      const { data: rows } = await supabase().from('orders').select('code, order_totals(total, paid, due)').in('code', codes);
-      const app = new Map((rows ?? []).map((x) => { const t = (Array.isArray(x.order_totals) ? x.order_totals[0] : x.order_totals) as { total: number; paid: number; due: number } | null; return [x.code, t ? { total: Number(t.total), paid: Number(t.paid), due: Number(t.due) } : null]; }));
+      const sb = supabase();
+      const { data: os, error: e1 } = await sb.from('orders').select('id, code').in('code', codes);
+      if (e1) throw e1;
+      const { data: ts, error: e2 } = await sb.from('order_totals').select('order_id, total, paid, due').in('order_id', (os ?? []).map((x) => x.id));
+      if (e2) throw e2;
+      const byId = new Map((ts ?? []).map((t) => [t.order_id, { total: Number(t.total), paid: Number(t.paid), due: Number(t.due) }]));
+      const app = new Map((os ?? []).map((x) => [x.code, byId.get(x.id) ?? null]));
       setChecks(payload.orders.map((o) => { const c = codeOf.get(o.code) ?? o.code; return { code: c, customer: (o.versions.at(-1)?.quote ?? o.draft)?.customer.name ?? '', exp: expectedTotals(o), app: app.get(c) ?? null }; }));
     } catch (e) { setError(errorText(e)); }
     setBusy(false);
   }
 
   const bad = checks.filter((c) => !c.app || c.app.total !== c.exp.total || c.app.paid !== c.exp.paid || c.app.due !== c.exp.due);
+  const checkFailed = !!result && payload !== null && payload.orders.length > 0 && checks.length === 0;
   const n = payload ? { pays: payload.orders.reduce((s, o) => s + o.payments.length, 0), chg: payload.orders.reduce((s, o) => s + o.changes.length, 0) } : null;
 
   return (
@@ -87,8 +93,9 @@ export default function ImportPage() {
             {result.existed.orders ? ` Đã có từ trước (bỏ qua): ${result.existed.orders} đơn.` : ''}</p>
           {result.renamed.length > 0 && <p className="text-sm text-amber-800">Đổi mã vì trùng đơn đang có: {result.renamed.map((r) => `${r.from} → ${r.to}`).join(', ')}</p>}
           {result.mismatch.length > 0 && <p className="text-sm text-amber-800">Tổng bản chốt trong file khác số tính lại: {result.mismatch.map((m) => `${m.code} bản ${m.version}: file ${formatVnd(m.file)}, tính lại ${formatVnd(m.app)}`).join('; ')}</p>}
-          <div className={`rounded-xl p-2 text-sm ${bad.length ? 'bg-red-50 text-danger' : 'bg-green-50 text-ok'}`} data-check={bad.length ? 'bad' : 'ok'}>
-            {bad.length ? `${bad.length} đơn có số khác nhau, xem dòng tô đỏ bên dưới.` : `Đối chiếu ${checks.length} đơn: giá trị, đã thu, còn nợ khớp hết với Sổ Nội Thất.`}
+          <div className={`rounded-xl p-2 text-sm ${bad.length || checkFailed ? 'bg-red-50 text-danger' : 'bg-green-50 text-ok'}`} data-check={bad.length || checkFailed ? 'bad' : 'ok'}>
+            {checkFailed ? 'Chưa đối chiếu được số tiền (lỗi đọc dữ liệu). Mở Danh sách đơn để kiểm tra, hoặc tải lại trang rồi nhập lại file (không bị trùng).'
+              : bad.length ? `${bad.length} đơn có số khác nhau, xem dòng tô đỏ bên dưới.` : `Đối chiếu ${checks.length} đơn: giá trị, đã thu, còn nợ khớp hết với Sổ Nội Thất.`}
           </div>
           <div className="overflow-x-auto">
             <table className="w-full min-w-[520px] text-sm">
