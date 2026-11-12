@@ -18,7 +18,7 @@ export async function POST(req: Request) {
   if (password.length < 8) return NextResponse.json({ error: 'Mật khẩu tối thiểu 8 ký tự.' }, { status: 400 });
 
   const { error } = await adminSupabase().auth.admin.createUser({
-    email, password, email_confirm: true, user_metadata: { full_name: fullName },
+    email, password, email_confirm: true, user_metadata: { full_name: fullName }, app_metadata: { hl_staff: true },
   });
   if (error) {
     const msg = /already/i.test(error.message) ? 'Email này đã có tài khoản.' : error.message;

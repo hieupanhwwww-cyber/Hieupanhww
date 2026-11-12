@@ -16,7 +16,7 @@ export async function sql(text: string, params?: unknown[]): Promise<Row[]> {
 /** Tạo tài khoản đăng nhập + đặt vai trò. Trả về id. */
 export async function createUser(role: 'owner' | 'staff', name = 'Người thử'): Promise<string> {
   const [u] = await sql(
-    `insert into auth.users (email, raw_user_meta_data) values ($1, $2) returning id`,
+    `insert into auth.users (email, raw_user_meta_data, raw_app_meta_data) values ($1, $2, '{"hl_staff":true}') returning id`,
     [`${crypto.randomUUID()}@test.local`, { full_name: name }],
   );
   if (await tableExists('profiles')) {

@@ -40,8 +40,8 @@ alter table public.sale_item_costs enable row level security;
 revoke all on public.sales, public.sale_items, public.sale_item_costs from anon, authenticated;
 revoke all on sequence public.sale_code_seq from anon, authenticated;
 grant select on public.sales, public.sale_items, public.sale_item_costs to authenticated;
-create policy sales_read on public.sales for select to authenticated using (true);
-create policy sale_items_read on public.sale_items for select to authenticated using (true);
+create policy sales_read on public.sales for select to authenticated using (public.is_member());
+create policy sale_items_read on public.sale_items for select to authenticated using (public.is_member());
 create policy sale_costs_owner_read on public.sale_item_costs for select to authenticated using (public.is_owner());
 
 -- p_items: [{"product_id": "...", "quantity": 2}, ...]

@@ -36,8 +36,8 @@ alter table public.order_payments enable row level security;
 revoke all on public.interior_orders, public.order_payments from anon, authenticated;
 revoke all on sequence public.order_code_seq from anon, authenticated;
 grant select on public.interior_orders, public.order_payments to authenticated;
-create policy orders_read on public.interior_orders for select to authenticated using (true);
-create policy payments_read on public.order_payments for select to authenticated using (true);
+create policy orders_read on public.interior_orders for select to authenticated using (public.is_member());
+create policy payments_read on public.order_payments for select to authenticated using (public.is_member());
 
 create view public.order_balances with (security_invoker = true) as
   select o.id as order_id,

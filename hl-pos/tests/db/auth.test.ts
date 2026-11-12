@@ -5,8 +5,8 @@ import { resetDb } from './helpers';
 describe('tài khoản và vai trò', () => {
   beforeEach(resetDb);
 
-  it('tạo tài khoản mới thì có hồ sơ vai trò nhân viên', async () => {
-    const [u] = await sql(`insert into auth.users (email, raw_user_meta_data) values ('a@x.vn', '{"full_name":"Lan"}') returning id`);
+  it('tài khoản do chủ tạo thì có hồ sơ vai trò nhân viên', async () => {
+    const [u] = await sql(`insert into auth.users (email, raw_user_meta_data, raw_app_meta_data) values ('a@x.vn', '{"full_name":"Lan"}', '{"hl_staff":true}') returning id`);
     const [p] = await sql('select role, full_name from profiles where id = $1', [u.id]);
     expect(p).toEqual({ role: 'staff', full_name: 'Lan' });
   });
@@ -58,5 +58,19 @@ describe('tài khoản và vai trò', () => {
   it('không ai thêm hồ sơ trực tiếp qua API', async () => {
     const owner = await createUser('owner');
     await expect(asUser(owner, (q) => q(`insert into profiles (id, role) values (gen_random_uuid(), 'owner')`))).rejects.toThrow();
+  });
+
+  it('tài khoản người lạ tự đăng ký (không do chủ tạo) không có quyền gì', async () => {
+    const [u] = await sql(`insert into auth.users (email) values ('la@x.vn') returning id`);
+    expect(await sql('select * from profiles where id = $1', [u.id])).toEqual([]);
+    const owner = await createUser('owner');
+    await asUser(owner, (q) => q(`select save_product(null, 'A', 'A', 'goods', 'cái', 1, 0, 1)`));
+    for (const t of ['profiles', 'store_settings', 'products', 'stock_movements', 'sales', 'sale_items', 'interior_orders', 'order_payments', 'product_stock', 'order_balances']) {
+      expect(await asUser(u.id, (q) => q(`select * from ${t}`))).toEqual([]);
+    }
+    const [p] = await sql('select id from products');
+    await expect(asUser(u.id, (q) => q(`select record_stock($1, 'in', 5, 'x')`, [p.id]))).rejects.toThrow(/Chưa đăng nhập|không có quyền/);
+    await expect(asUser(u.id, (q) => q(`select create_sale($1::jsonb, 0, 'cash')`, [JSON.stringify([{ product_id: p.id, quantity: 1 }])]))).rejects.toThrow();
+    await expect(asUser(u.id, (q) => q(`select create_order('X', '', '', 1, '[{"label":"a","amount":1}]')`))).rejects.toThrow();
   });
 });

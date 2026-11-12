@@ -37,8 +37,8 @@ alter table public.stock_movements enable row level security;
 revoke all on public.products, public.product_costs, public.stock_movements from anon, authenticated;
 grant select on public.products, public.stock_movements to authenticated;
 grant select on public.product_costs to authenticated;
-create policy products_read on public.products for select to authenticated using (true);
-create policy movements_read on public.stock_movements for select to authenticated using (true);
+create policy products_read on public.products for select to authenticated using (public.is_member());
+create policy movements_read on public.stock_movements for select to authenticated using (public.is_member());
 create policy costs_owner_read on public.product_costs for select to authenticated using (public.is_owner());
 
 create view public.product_stock with (security_invoker = true) as
@@ -51,9 +51,11 @@ create view public.product_stock with (security_invoker = true) as
 revoke all on public.product_stock from anon;
 grant select on public.product_stock to authenticated;
 
-create function public.require_login() returns void language plpgsql stable as $$
+create function public.require_login() returns void language plpgsql stable
+security definer set search_path = public as $$
 begin
   if auth.uid() is null then raise exception 'Chưa đăng nhập'; end if;
+  if not public.is_member() then raise exception 'Tài khoản không có quyền dùng app'; end if;
 end $$;
 
 create function public.require_owner() returns void language plpgsql stable
