@@ -4,6 +4,7 @@ import { Pool, type PoolClient } from 'pg';
 const pool = new Pool({ connectionString: inject('dbUrl'), max: 6 });
 afterAll(() => pool.end());
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type Row = Record<string, any>;
 export type Q = (text: string, params?: unknown[]) => Promise<Row[]>;
 

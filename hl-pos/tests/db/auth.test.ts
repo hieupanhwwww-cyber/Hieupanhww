@@ -1,0 +1,62 @@
+import { describe, it, expect, beforeEach } from 'vitest';
+import { sql, createUser, asUser, asAnon } from './helpers';
+import { resetDb } from './helpers';
+
+describe('tài khoản và vai trò', () => {
+  beforeEach(resetDb);
+
+  it('tạo tài khoản mới thì có hồ sơ vai trò nhân viên', async () => {
+    const [u] = await sql(`insert into auth.users (email, raw_user_meta_data) values ('a@x.vn', '{"full_name":"Lan"}') returning id`);
+    const [p] = await sql('select role, full_name from profiles where id = $1', [u.id]);
+    expect(p).toEqual({ role: 'staff', full_name: 'Lan' });
+  });
+
+  it('nhân viên không tự nâng mình lên chủ', async () => {
+    const staff = await createUser('staff');
+    await asUser(staff, (q) => q(`update profiles set role = 'owner' where id = $1`, [staff]));
+    const [p] = await sql('select role from profiles where id = $1', [staff]);
+    expect(p.role).toBe('staff');
+  });
+
+  it('chủ đổi được vai trò nhân viên', async () => {
+    const owner = await createUser('owner');
+    const staff = await createUser('staff');
+    await asUser(owner, (q) => q(`update profiles set role = 'owner' where id = $1`, [staff]));
+    const [p] = await sql('select role from profiles where id = $1', [staff]);
+    expect(p.role).toBe('owner');
+  });
+
+  it('is_owner() đúng theo vai trò', async () => {
+    const owner = await createUser('owner');
+    const staff = await createUser('staff');
+    expect((await asUser(owner, (q) => q('select is_owner() as v')))[0].v).toBe(true);
+    expect((await asUser(staff, (q) => q('select is_owner() as v')))[0].v).toBe(false);
+  });
+
+  it('khách chưa đăng nhập không đọc được hồ sơ và thông tin cửa hàng', async () => {
+    await createUser('owner');
+    await expect(asAnon((q) => q('select * from profiles'))).rejects.toThrow();
+    await expect(asAnon((q) => q('select * from store_settings'))).rejects.toThrow();
+  });
+
+  it('thông tin cửa hàng: ai cũng đọc được, chỉ chủ sửa được', async () => {
+    const owner = await createUser('owner');
+    const staff = await createUser('staff');
+    const [s] = await asUser(staff, (q) => q('select name, address, phone from store_settings'));
+    expect(s).toEqual({
+      name: 'Nội Thất Hùng Loan',
+      address: 'Làng nghề Hà Lâm 1 – Thư Lâm – Hà Nội',
+      phone: '0916.771.586 – 0961.761.868',
+    });
+    await asUser(staff, (q) => q(`update store_settings set name = 'X'`));
+    expect((await sql('select name from store_settings'))[0].name).toBe('Nội Thất Hùng Loan');
+    await asUser(owner, (q) => q(`update store_settings set note = 'Cảm ơn quý khách'`));
+    expect((await sql('select note from store_settings'))[0].note).toBe('Cảm ơn quý khách');
+    await sql(`update store_settings set note = null`);
+  });
+
+  it('không ai thêm hồ sơ trực tiếp qua API', async () => {
+    const owner = await createUser('owner');
+    await expect(asUser(owner, (q) => q(`insert into profiles (id, role) values (gen_random_uuid(), 'owner')`))).rejects.toThrow();
+  });
+});
