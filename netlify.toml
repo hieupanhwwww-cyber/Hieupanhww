@@ -1,0 +1,8 @@
+# Cấu hình cho Netlify: app nằm trong thư mục hl-pos
+[build]
+  base = "hl-pos"
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  NODE_VERSION = "22"
