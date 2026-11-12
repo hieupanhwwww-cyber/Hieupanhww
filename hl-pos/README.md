@@ -16,7 +16,7 @@ App bán hàng, kho và đơn nội thất. Chạy trên điện thoại, iPad, 
 1. Vào https://supabase.com → **Start your project** → đăng nhập bằng GitHub hoặc email.
 2. **New project**: tên `hl-ban-hang`, đặt mật khẩu database (ghi lại), Region chọn **Singapore** (gần Việt Nam nhất) → **Create**.
 3. Đợi 1–2 phút. Vào **SQL Editor** (menu trái) → **New query**.
-4. Mở lần lượt từng file trong thư mục `supabase/migrations/` **theo đúng thứ tự** `0001` → `0005`, sao chép toàn bộ nội dung, dán vào ô, bấm **Run**. Mỗi file phải báo `Success`.
+4. Mở file `supabase/cai-dat-mot-lan.sql`, chọn hết (Ctrl+A), sao chép, dán vào ô SQL Editor, bấm **Run**. Phải báo `Success. No rows returned`.
 5. **Chặn người lạ tự đăng ký:** Authentication → Sign In / Providers → tắt **Allow new users to sign up** → Save.
    (App đã tự chặn quyền của tài khoản lạ, bước này khóa thêm một lớp.)
 
