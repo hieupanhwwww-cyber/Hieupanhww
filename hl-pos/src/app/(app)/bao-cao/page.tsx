@@ -5,6 +5,7 @@ import { supabase, errorText } from '@/lib/supabase/client';
 import { useProfile } from '@/lib/useProfile';
 import { STATUS_LABEL, type OrderStatus } from '@/lib/orders';
 import { formatVnd, formatQty } from '@/lib/money';
+import { BooksTabs } from '@/components/BooksTabs';
 
 type Revenue = { period: string; invoices: number; revenue: number; cost: number; profit: number; order_collected: number };
 type Top = { product_id: string; name: string; quantity: number; revenue: number };
@@ -87,8 +88,9 @@ function Reports() {
 
   return (
     <div className="space-y-4">
+      <BooksTabs />
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <h1 className="text-xl font-bold">Báo cáo</h1>
+        <h1 className="text-xl font-bold">Báo cáo bán lẻ</h1>
         <button className="btn-ghost" onClick={exportAll} disabled={exporting}>{exporting ? 'Đang xuất…' : '⬇ Xuất Excel sao lưu'}</button>
       </div>
 

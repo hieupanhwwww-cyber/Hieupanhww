@@ -6,6 +6,8 @@ import { listOrders, type OrderHead } from '@/lib/ordersApi';
 import { STATUS, orderMoney, dueNowAmount, overdueAmount, dotLabel, fmtDate, type Order, type OrderStatus } from '@/lib/orderMoney';
 import { matches } from '@/lib/products';
 import { formatVnd } from '@/lib/money';
+import { loadSettings } from '@/lib/settings';
+import { TodayPanel } from '@/components/orders/TodayPanel';
 
 type Filter = 'all' | OrderStatus | 'due';
 type Item = { head: OrderHead; order: Order };
@@ -15,8 +17,12 @@ export default function OrdersPage() {
   const [error, setError] = useState('');
   const [filter, setFilter] = useState<Filter>('all');
   const [query, setQuery] = useState('');
+  const [followDays, setFollowDays] = useState(3);
 
-  useEffect(() => { listOrders().then(setItems, (e) => setError(errorText(e))); }, []);
+  useEffect(() => {
+    listOrders().then(setItems, (e) => setError(errorText(e)));
+    loadSettings().then((s) => setFollowDays(s.follow_days), () => {});
+  }, []);
 
   const shown = useMemo(() => (items ?? []).filter(({ head, order }) =>
     (filter === 'all' || (filter === 'due' ? dueNowAmount(order) > 0 : head.status === filter)) &&
@@ -28,8 +34,9 @@ export default function OrdersPage() {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-bold">Đơn nội thất</h1>
-        <Link className="btn-primary" href="/don-noi-that/moi/sua">+ Báo giá mới</Link>
+        <div className="flex gap-2"><Link className="btn-ghost" href="/danh-muc">Danh mục</Link><Link className="btn-primary" href="/don-noi-that/moi/sua">+ Báo giá mới</Link></div>
       </div>
+      {items && items.length > 0 && <TodayPanel items={items} followDays={followDays} />}
       <input className="input" placeholder="Tìm tên khách, SĐT, mã đơn, công trình…" value={query} onChange={(e) => setQuery(e.target.value)} />
       <div className="flex flex-wrap gap-2">
         {([['all', 'Tất cả'], ...(Object.keys(STATUS) as OrderStatus[]).map((s) => [s, STATUS[s].label]), ['due', `Cần thu (${dueCount})`]] as [Filter, string][]).map(([k, label]) => (

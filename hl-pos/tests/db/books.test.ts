@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { sql, createUser, asUser, resetDb, type Q } from './helpers';
-import { row, quote, saveDraft, closeOrder, pay } from './orders-helpers';
+import { row, quote, saveDraft, closeOrder } from './orders-helpers';
 
 const saveCat = (q: Q, name: string, price: number, cost: number | null, id: string | null = null) =>
   q(`select save_catalog_item($1, $2, 'MDF', 'bộ', $3, $4) as id`, [id, name, price, cost]).then((r) => r[0].id as string);

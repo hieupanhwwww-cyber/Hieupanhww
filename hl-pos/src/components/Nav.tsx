@@ -7,7 +7,7 @@ const ITEMS = [
   { href: '/ban-hang', label: 'Bán hàng', icon: '🛒' },
   { href: '/hang-hoa', label: 'Hàng hóa', icon: '📦' },
   { href: '/don-noi-that', label: 'Đơn nội thất', icon: '🛏️' },
-  { href: '/bao-cao', label: 'Báo cáo', icon: '📊', ownerOnly: true },
+  { href: '/cong-so', label: 'Sổ sách', icon: '📊', ownerOnly: true, also: ['/bao-cao', '/so-thu-chi', '/danh-muc'] },
   { href: '/cai-dat', label: 'Cài đặt', icon: '⚙️' },
 ];
 
@@ -20,7 +20,7 @@ export function Nav() {
       <div className="hidden md:block px-4 py-5 font-bold text-brand">Nội Thất Hùng Loan</div>
       <ul className="flex md:flex-col">
         {items.map((i) => {
-          const active = path.startsWith(i.href);
+          const active = path.startsWith(i.href) || ('also' in i && (i.also as string[]).some((x) => path.startsWith(x)));
           return (
             <li key={i.href} className="flex-1">
               <Link

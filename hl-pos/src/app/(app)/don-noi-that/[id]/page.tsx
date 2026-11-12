@@ -17,6 +17,7 @@ import { Modal } from '@/components/Modal';
 import { MoneyInput } from '@/components/MoneyInput';
 import { VietQr } from '@/components/orders/VietQr';
 import { AddMaterial } from '@/components/orders/AddMaterial';
+import { ProfitSection } from '@/components/orders/ProfitSection';
 
 export default function OrderPage() {
   const { id } = useParams<{ id: string }>();
@@ -203,6 +204,7 @@ export default function OrderPage() {
         </section>
       )}
 
+      {isOwner && closed && <ProfitSection full={full} />}
       {closed && <ChangesSection full={full} names={names} isOwner={isOwner} myId={me.id} act={act} />}
       {closed && <HandoverSection full={full} names={names} isOwner={isOwner} myId={me.id} act={act} settings={settings} />}
       <NotesSection full={full} names={names} isOwner={isOwner} myId={me.id} act={act} />
