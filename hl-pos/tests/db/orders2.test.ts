@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { sql, createUser, asUser, asAnon, resetDb } from './helpers';
 
 import { row, quote, saveDraft, closeOrder, pay } from './orders-helpers';
+import { orderMoney, type Order, type Quote } from '../../src/lib/orderMoney';
 const totals = async (id: string) => (await sql('select base, changes, total, paid, due, over from order_totals where order_id = $1', [id]))[0];
 
 describe('đơn nội thất kiểu mới', () => {
@@ -148,6 +149,36 @@ describe('đơn nội thất kiểu mới', () => {
     const [o] = await sql(`select plan->1 as d2, plan->0 as d1 from orders where id=$1`, [a.order_id]);
     expect(o.d2).toMatchObject({ id: 'd2', due: '2026-12-01', reached: true, pct: 40 });
     expect(o.d1.due ?? '').toBe('');
+  });
+
+  it('đơn không chia đợt: đặt ngày hẹn trả cho khoản duy nhất', async () => {
+    const a = await asUser(staff, (q) => saveDraft(q, null, quote({ plan: [] })));
+    await asUser(staff, (q) => closeOrder(q, a.order_id));
+    await asUser(staff, (q) => q(`select set_plan_row($1, 'all', '2026-12-15', false)`, [a.order_id]));
+    expect((await sql('select pay_due::text from orders where id=$1', [a.order_id]))[0].pay_due).toBe('2026-12-15');
+  });
+
+  it('số của máy chủ (order_totals) khớp orderMoney trên trình duyệt', async () => {
+    const cases: { qt: object; deposit: number; pays: number[] }[] = [
+      { qt: quote(), deposit: 2_250_000, pays: [1_000_000] },
+      { qt: quote({ rows: [row('A', 2.88, 1_850_000), row('B', 3, 333_333)], discount: { type: 'amount', value: 123_456 } }), deposit: 0, pays: [] },
+      { qt: quote({ rows: [row('C', 1, 10_000_000)], discount: { type: 'percent', value: 7.5 }, plan: [] }), deposit: 5_000_000, pays: [6_000_000] },
+    ];
+    for (const c of cases) {
+      const a = await asUser(staff, (q) => saveDraft(q, null, c.qt));
+      await asUser(staff, (q) => closeOrder(q, a.order_id, c.deposit));
+      for (const p of c.pays) await asUser(staff, (q) => pay(q, a.order_id, p));
+      const [o] = await sql('select status, plan from orders where id=$1', [a.order_id]);
+      const vs = await sql('select version_no, quote, sub, disc, total, closed_at::text from order_quotes where order_id=$1 order by version_no', [a.order_id]);
+      const ps = await sql('select id, no, amount, date::text, method, note, deposit from order_payments where order_id=$1 order by no', [a.order_id]);
+      const order: Order = { id: a.order_id, code: a.code, status: o.status, draft: null, plan: o.plan, payDue: '', closedAt: '2026-11-12', handover: null, changes: [],
+        versions: vs.map((v) => ({ no: v.version_no, quote: v.quote as Quote, sub: Number(v.sub), disc: Number(v.disc), total: Number(v.total), closedAt: v.closed_at, sign: null })),
+        payments: ps.map((p) => ({ ...p, amount: Number(p.amount) })) as Order['payments'] };
+      const m = orderMoney(order, { today: '2026-11-12' });
+      const t = await totals(a.order_id);
+      expect({ total: Number(t.total), paid: Number(t.paid), due: Number(t.due), over: Number(t.over) }).toEqual({ total: m.total, paid: m.paid, due: m.due, over: m.over });
+      expect(m.rows.reduce((s2, r) => s2 + r.amount, 0)).toBe(Math.max(0, m.total));
+    }
   });
 
   it('xóa đơn: chỉ chủ, chỉ đơn đang báo giá chưa có phiếu thu', async () => {

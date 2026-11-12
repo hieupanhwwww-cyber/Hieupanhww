@@ -685,6 +685,7 @@ create table public.orders (
   closed_at date,
   follow_at date,
   plan jsonb not null default '[]'::jsonb,
+  pay_due date,                           -- đơn không chia đợt: ngày hẹn trả khoản duy nhất
   handover jsonb,
   rev int not null default 1,
   created_by uuid references auth.users (id) on delete set null default auth.uid(),
@@ -1003,6 +1004,11 @@ language plpgsql security definer set search_path = public as $$
 declare v_n int;
 begin
   perform public.require_login();
+  if p_plan_id = 'all' then  -- đơn không chia đợt
+    update orders set pay_due = p_due, updated_at = now() where id = p_order_id and status <> 'quote' and jsonb_array_length(plan) = 0;
+    if not found then raise exception 'Không tìm thấy đợt thanh toán'; end if;
+    return;
+  end if;
   update orders set plan = (
       select jsonb_agg(case when e.value ->> 'id' = p_plan_id
                then (e.value - 'due' - 'reached') || jsonb_strip_nulls(jsonb_build_object('due', p_due::text, 'reached', case when coalesce(p_reached, false) then true end))
