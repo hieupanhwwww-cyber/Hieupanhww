@@ -65,13 +65,13 @@ describe('tài khoản và vai trò', () => {
     expect(await sql('select * from profiles where id = $1', [u.id])).toEqual([]);
     const owner = await createUser('owner');
     await asUser(owner, (q) => q(`select save_product(null, 'A', 'A', 'goods', 'cái', 1, 0, 1)`));
-    for (const t of ['profiles', 'store_settings', 'products', 'stock_movements', 'sales', 'sale_items', 'interior_orders', 'order_payments', 'product_stock', 'order_balances']) {
+    for (const t of ['profiles', 'store_settings', 'products', 'stock_movements', 'sales', 'sale_items', 'orders', 'order_quotes', 'order_payments', 'customers', 'product_stock', 'order_totals']) {
       expect(await asUser(u.id, (q) => q(`select * from ${t}`))).toEqual([]);
     }
     const [p] = await sql('select id from products');
     await expect(asUser(u.id, (q) => q(`select record_stock($1, 'in', 5, 'x')`, [p.id]))).rejects.toThrow(/Chưa đăng nhập|không có quyền/);
     await expect(asUser(u.id, (q) => q(`select create_sale($1::jsonb, 0, 'cash')`, [JSON.stringify([{ product_id: p.id, quantity: 1 }])]))).rejects.toThrow();
-    await expect(asUser(u.id, (q) => q(`select create_order('X', '', '', 1, '[{"label":"a","amount":1}]')`))).rejects.toThrow();
+    await expect(asUser(u.id, (q) => q(`select save_quote_draft(null, '{"customer":{"name":"X"}}'::jsonb, null)`))).rejects.toThrow();
   });
 
   it('cờ do chủ tạo được ghi sau khi tạo tài khoản thì vẫn có hồ sơ nhân viên', async () => {

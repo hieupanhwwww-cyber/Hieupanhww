@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { sql, createUser, asUser, resetDb } from './helpers';
+import { quote, row, saveDraft, closeOrder, pay } from './orders-helpers';
 
 describe('báo cáo (chỉ chủ)', () => {
   let owner: string, staff: string, a: string, b: string;
@@ -41,10 +42,15 @@ describe('báo cáo (chỉ chủ)', () => {
     expect(rows).toEqual([{ period: '2026-11-01', invoices: 3, revenue: '390000', profit: '170000' }]);
   });
 
+  const order = async (name: string, total: number) => {
+    const a = await asUser(staff, (q) => saveDraft(q, null, quote({ customer: { name, phone: '', address: '' }, rows: [row('Tủ', 1, total)], discount: { type: 'amount', value: 0 } })));
+    await asUser(staff, (q) => closeOrder(q, a.order_id));
+    return a.order_id;
+  };
+
   it('tiền thu từ đơn nội thất tính theo ngày thu', async () => {
-    const id = (await asUser(staff, (q) => q(`select create_order('Anh Nam', '', '', 30000000, '[{"label":"Cọc","amount":10000000},{"label":"Cuối","amount":20000000}]') as id`)))[0].id;
-    const [p] = await sql('select id from order_payments where order_id = $1 order by sort limit 1', [id]);
-    await asUser(staff, (q) => q(`select set_payment_paid($1, true, '2026-11-11')`, [p.id]));
+    const id = await order('Anh Nam', 30_000_000);
+    await asUser(staff, (q) => pay(q, id, 10_000_000, '2026-11-11'));
     const rows = await asUser(owner, (q) => q(`select period::text, order_collected from report_revenue('2026-11-01', '2026-11-30', 'day') order by period`));
     expect(rows).toEqual([{ period: '2026-11-10', order_collected: '0' }, { period: '2026-11-11', order_collected: '10000000' }]);
   });
@@ -62,12 +68,11 @@ describe('báo cáo (chỉ chủ)', () => {
     expect(rows).toEqual([{ code: 'B', stock: '1' }]);
   });
 
-  it('khách còn nợ chỉ gồm đơn chưa thu đủ', async () => {
-    const mk = (name: string) => asUser(staff, (q) => q(`select create_order($1, '', '', 10000000, '[{"label":"Một lần","amount":10000000}]') as id`, [name])).then((r) => r[0].id);
-    await mk('Còn nợ');
-    const paid = await mk('Đã trả');
-    const [p] = await sql('select id from order_payments where order_id = $1', [paid]);
-    await asUser(staff, (q) => q(`select set_payment_paid($1, true, current_date)`, [p.id]));
+  it('khách còn nợ chỉ gồm đơn đã chốt chưa thu đủ', async () => {
+    await order('Còn nợ', 10_000_000);
+    const paid = await order('Đã trả', 10_000_000);
+    await asUser(staff, (q) => pay(q, paid, 10_000_000));
+    await asUser(staff, (q) => saveDraft(q, null, quote({ customer: { name: 'Mới báo giá', phone: '', address: '' } })));
     const rows = await asUser(owner, (q) => q(`select customer_name, remaining from report_order_debts()`));
     expect(rows).toEqual([{ customer_name: 'Còn nợ', remaining: '10000000' }]);
   });
@@ -83,7 +88,7 @@ describe('báo cáo (chỉ chủ)', () => {
 
   it('xuất toàn bộ dữ liệu có đủ các bảng và giá vốn', async () => {
     const [r] = await asUser(owner, (q) => q('select export_all() as d'));
-    expect(Object.keys(r.d).sort()).toEqual(['don_noi_that', 'dot_thanh_toan', 'hang_hoa', 'hoa_don', 'nguoi_dung', 'phieu_kho', 'dong_hoa_don'].sort());
+    expect(Object.keys(r.d).sort()).toEqual(['khach_hang', 'don_noi_that', 'bao_gia_dong', 'phieu_thu', 'hang_hoa', 'hoa_don', 'nguoi_dung', 'phieu_kho', 'dong_hoa_don'].sort());
     expect(r.d.hang_hoa.find((p: { ma: string }) => p.ma === 'A').gia_von).toBe(60000);
     expect(r.d.hoa_don).toHaveLength(3);
   });
