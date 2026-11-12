@@ -2,8 +2,8 @@
 import { useEffect, useState } from 'react';
 import { supabase, errorText } from '@/lib/supabase/client';
 import { useProfile } from '@/lib/useProfile';
+import { StoreForm } from '@/components/StoreForm';
 
-type Store = { name: string; address: string; phone: string; note: string | null };
 type Member = { id: string; full_name: string; role: 'owner' | 'staff' };
 
 export default function SettingsPage() {
@@ -23,46 +23,6 @@ export default function SettingsPage() {
       <StoreForm canEdit={isOwner} />
       {isOwner && <Members myId={me.id} />}
     </div>
-  );
-}
-
-function StoreForm({ canEdit }: { canEdit: boolean }) {
-  const [store, setStore] = useState<Store | null>(null);
-  const [msg, setMsg] = useState('');
-  const [busy, setBusy] = useState(false);
-
-  useEffect(() => {
-    supabase().from('store_settings').select('name, address, phone, note').single()
-      .then(({ data, error }) => (error ? setMsg(errorText(error)) : setStore(data as Store)));
-  }, []);
-
-  async function save(e: React.FormEvent) {
-    e.preventDefault();
-    if (!store) return;
-    setBusy(true);
-    const { error } = await supabase().from('store_settings').update(store).eq('id', 1);
-    setBusy(false);
-    setMsg(error ? errorText(error) : 'Đã lưu.');
-  }
-
-  if (!store) return <section className="card text-muted">{msg || 'Đang tải…'}</section>;
-  const field = (key: keyof Store, label: string) => (
-    <div>
-      <label className="label">{label}</label>
-      <input className="input" disabled={!canEdit} value={store[key] ?? ''}
-        onChange={(e) => setStore({ ...store, [key]: e.target.value })} />
-    </div>
-  );
-  return (
-    <form onSubmit={save} className="card space-y-3">
-      <h2 className="font-semibold">Thông tin in trên hóa đơn</h2>
-      {field('name', 'Tên cửa hàng')}
-      {field('address', 'Địa chỉ')}
-      {field('phone', 'Điện thoại')}
-      {field('note', 'Lời nhắn cuối hóa đơn')}
-      {canEdit && <button className="btn-primary" disabled={busy}>Lưu</button>}
-      {msg && <p className="text-sm text-muted">{msg}</p>}
-    </form>
   );
 }
 

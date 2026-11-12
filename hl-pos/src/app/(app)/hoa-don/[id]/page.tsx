@@ -72,6 +72,7 @@ export default function InvoicePage() {
         <Link className="btn-ghost" href="/ban-hang">Bán đơn mới</Link>
       </div>
       {msg && <p className="no-print text-sm text-muted">{msg}</p>}
+      <style>{`@page { size: A5; margin: 8mm; }`}</style>
       <div className="overflow-x-auto rounded-xl border border-line print:overflow-visible print:border-0">
         <InvoiceA5 ref={ref} {...data} />
       </div>

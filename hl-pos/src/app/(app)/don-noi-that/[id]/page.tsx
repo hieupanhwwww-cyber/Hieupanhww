@@ -1,249 +1,278 @@
 'use client';
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { supabase, errorText } from '@/lib/supabase/client';
-import { STATUSES, STATUS_LABEL, orderRemaining, scheduleWarning, type OrderStatus } from '@/lib/orders';
-import { loadProducts, matches, type Product } from '@/lib/products';
-import { formatVnd, formatQty } from '@/lib/money';
+import { useProfile } from '@/lib/useProfile';
+import { getOrder, closeOrder, addPayment, deletePayment, setStatus, setPlanRow, setFollowAt, deleteOrder, type OrderFull } from '@/lib/ordersApi';
+import { loadSettings, type Settings } from '@/lib/settings';
+import { loadProducts, type Product } from '@/lib/products';
+import {
+  STATUS, PLAN_STATE, PAY_METHOD, TRIGGERS, orderMoney, quoteTotals, planOver, planWarnText, dotLabel, payNote, receiptNo, fmtDate, fmtQty, vnToday, addDays,
+  type OrderStatus, type MoneyRow,
+} from '@/lib/orderMoney';
+import { formatVnd } from '@/lib/money';
 import { Modal } from '@/components/Modal';
 import { MoneyInput } from '@/components/MoneyInput';
+import { VietQr } from '@/components/orders/VietQr';
+import { AddMaterial } from '@/components/orders/AddMaterial';
 
-type Order = { id: string; code: string; customer_name: string; phone: string; address: string; total_value: number; status: OrderStatus; note: string | null; created_at: string };
-type Payment = { id: string; label: string; amount: number; paid: boolean; paid_at: string | null };
-type Material = { id: string; quantity: number; created_at: string; product_id: string };
-
-const today = () => new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Ho_Chi_Minh' });
-
-export default function OrderDetailPage() {
+export default function OrderPage() {
   const { id } = useParams<{ id: string }>();
-  const [order, setOrder] = useState<Order | null>(null);
-  const [pays, setPays] = useState<Payment[]>([]);
-  const [mats, setMats] = useState<Material[]>([]);
+  const router = useRouter();
+  const me = useProfile();
+  const isOwner = me.role === 'owner';
+  const [full, setFull] = useState<OrderFull | null>(null);
+  const [settings, setSettings] = useState<Settings | null>(null);
   const [products, setProducts] = useState<Product[]>([]);
+  const [names, setNames] = useState<Record<string, string>>({});
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
-  const [editing, setEditing] = useState(false);
-  const [editPay, setEditPay] = useState<Payment | 'new' | null>(null);
-  const [addingMat, setAddingMat] = useState(false);
+  const [modal, setModal] = useState<null | 'close' | 'pay' | 'material' | { due: MoneyRow }>(null);
+  const [payPreset, setPayPreset] = useState<{ amount: number; note: string } | null>(null);
   const [version, setVersion] = useState(0);
   const reload = () => setVersion((v) => v + 1);
 
   useEffect(() => {
-    const sb = supabase();
-    Promise.all([
-      sb.from('interior_orders').select('id, code, customer_name, phone, address, total_value, status, note, created_at').eq('id', id).single(),
-      sb.from('order_payments').select('id, label, amount, paid, paid_at').eq('order_id', id).order('sort'),
-      sb.from('stock_movements').select('id, quantity, created_at, product_id').eq('order_id', id).order('created_at'),
-      loadProducts(false),
-    ]).then(([o, p, m, prods]) => {
-      const err = o.error ?? p.error ?? m.error;
-      if (err || !o.data) { setError(err ? errorText(err) : 'Không tìm thấy đơn.'); return; }
-      setOrder({ ...o.data, total_value: Number(o.data.total_value) } as Order);
-      setPays((p.data ?? []).map((x) => ({ ...x, amount: Number(x.amount) })) as Payment[]);
-      setMats((m.data ?? []).map((x) => ({ ...x, quantity: Number(x.quantity) })) as Material[]);
-      setProducts(prods);
-    }, (e) => setError(errorText(e)));
+    Promise.all([getOrder(id), loadSettings(), loadProducts(false), supabase().from('profiles').select('id, full_name')])
+      .then(([f, st, ps, pr]) => {
+        setFull(f); setSettings(st); setProducts(ps);
+        setNames(Object.fromEntries((pr.data ?? []).map((x) => [x.id, x.full_name])));
+      }, (e) => setError(errorText(e)));
   }, [id, version]);
 
   const productById = useMemo(() => new Map(products.map((p) => [p.id, p])), [products]);
 
-  async function call(fn: string, args: Record<string, unknown>) {
-    setBusy(true);
-    setError('');
-    const { error } = await supabase().rpc(fn, args);
+  async function act(fn: () => Promise<unknown>) {
+    setBusy(true); setError('');
+    try { await fn(); reload(); } catch (e) { setError(errorText(e)); }
     setBusy(false);
-    if (error) setError(errorText(error)); else reload();
   }
 
-  if (!order) return <p className={error ? 'text-danger' : 'text-muted'}>{error || 'Đang tải đơn…'}</p>;
-  const remaining = orderRemaining(order.total_value, pays);
-  const warn = scheduleWarning(order.total_value, pays);
+  if (!full || !settings) return <p className={error ? 'text-danger' : 'text-muted'}>{error || 'Đang tải đơn…'}</p>;
+  const { head, order } = full;
+  const m = orderMoney(order);
+  const closed = head.status !== 'quote';
+  const draftTotal = order.draft ? quoteTotals(order.draft).total : 0;
+  const startPay = (amount: number, note: string) => { setPayPreset({ amount, note }); setModal('pay'); };
 
   return (
     <div className="space-y-4">
       <Link href="/don-noi-that" className="text-sm text-muted">← Danh sách đơn</Link>
+
       <section className="card space-y-1">
         <div className="flex items-start justify-between gap-2">
-          <h1 className="text-xl font-bold">{order.customer_name}</h1>
-          <button className="btn-ghost py-1 text-sm" onClick={() => setEditing(true)}>Sửa</button>
+          <div>
+            <h1 className="text-xl font-bold">{head.customer_name}</h1>
+            <div className="text-sm text-muted">{head.code}{head.project ? ` · ${head.project}` : ''}</div>
+          </div>
+          <span className={`chip ${STATUS[head.status].cls}`}>{STATUS[head.status].label}</span>
         </div>
-        <div className="text-sm text-muted">{order.code} · tạo {new Date(order.created_at).toLocaleDateString('vi-VN')}</div>
-        {order.phone && <div>📞 <a className="text-brand" href={`tel:${order.phone}`}>{order.phone}</a></div>}
-        {order.address && <div>📍 {order.address}</div>}
-        {order.note && <div className="text-sm text-muted">Ghi chú: {order.note}</div>}
+        {head.customer_phone && <div>📞 <a className="text-brand" href={`tel:${head.customer_phone.replace(/[^\d+]/g, '')}`}>{head.customer_phone}</a></div>}
+        {order.draft?.customer.address || order.versions.at(-1)?.quote.customer.address ? <div>📍 {(order.draft ?? order.versions.at(-1)!.quote).customer.address}</div> : null}
       </section>
 
+      {/* ---------- báo giá ---------- */}
       <section className="card space-y-3">
-        <h2 className="font-semibold">Tiến độ</h2>
-        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-          {STATUSES.map((s, i) => {
-            const cur = STATUSES.indexOf(order.status);
-            return (
-              <button key={s} disabled={busy} onClick={() => call('set_order_status', { p_order_id: order.id, p_status: s })}
-                className={`btn py-2 text-sm ${i === cur ? 'bg-brand text-white' : i < cur ? 'bg-brand-soft text-brand' : 'border border-line bg-surface text-muted'}`}>
-                {i < cur ? '✓ ' : ''}{STATUS_LABEL[s]}
-              </button>
-            );
-          })}
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <h2 className="font-semibold">Báo giá</h2>
+          <div className="flex flex-wrap gap-2">
+            {order.draft && <Link className="btn-ghost py-1.5 text-sm" href={`/don-noi-that/${id}/sua`}>{closed ? 'Tiếp tục sửa bản mới' : 'Sửa báo giá'}</Link>}
+            {order.draft && <Link className="btn-ghost py-1.5 text-sm" href={`/in/bao-gia/${id}?ban=nhap`}>Xem / In {closed ? 'bản đang sửa' : ''}</Link>}
+            {closed && <Link className="btn-ghost py-1.5 text-sm" href={`/in/bao-gia/${id}`}>Xem / In bản chốt</Link>}
+          </div>
         </div>
-      </section>
-
-      <section className="card space-y-3">
-        <div className="flex items-center justify-between">
-          <h2 className="font-semibold">Thanh toán</h2>
-          <button className="btn-ghost py-1 text-sm" onClick={() => setEditPay('new')}>+ Thêm đợt</button>
-        </div>
-        <ul className="divide-y divide-line">
-          {pays.map((p) => (
-            <li key={p.id} className="flex items-center gap-3 py-2">
-              <div className="flex-1">
-                <div className="font-medium">{p.label} · {formatVnd(p.amount)}</div>
-                <div className="text-sm text-muted">{p.paid ? `Đã thu ngày ${new Date(p.paid_at!).toLocaleDateString('vi-VN')}` : 'Chưa thu'}</div>
-              </div>
-              {!p.paid && <button className="btn-ghost py-1 text-sm" onClick={() => setEditPay(p)}>Sửa</button>}
-              <button disabled={busy} onClick={() => call('set_payment_paid', { p_payment_id: p.id, p_paid: !p.paid, p_paid_at: p.paid ? null : today() })}
-                className={p.paid ? 'btn-ghost py-1 text-sm' : 'btn-primary py-1 text-sm'}>
-                {p.paid ? 'Bỏ đánh dấu' : 'Đã thu'}
-              </button>
-            </li>
-          ))}
-        </ul>
-        {warn && <p className="text-sm text-amber-700">⚠ {warn}</p>}
-        <div className="flex justify-between border-t border-line pt-3">
-          <span>Giá trị đơn {formatVnd(order.total_value)}</span>
-          <span className={`font-bold ${remaining > 0 ? 'text-danger' : 'text-ok'}`}>{remaining > 0 ? `Còn nợ ${formatVnd(remaining)}` : 'Đã thu đủ'}</span>
-        </div>
-      </section>
-
-      <section className="card space-y-3">
-        <div className="flex items-center justify-between">
-          <h2 className="font-semibold">Vật tư đã dùng</h2>
-          <button className="btn-ghost py-1 text-sm" onClick={() => setAddingMat(true)}>+ Thêm vật tư</button>
-        </div>
-        {!mats.length ? <p className="text-sm text-muted">Chưa ghi vật tư.</p> : (
+        {!closed && order.draft && (
+          <>
+            <div className="flex justify-between"><span>Tổng báo giá</span><b data-quote-total>{formatVnd(draftTotal)}</b></div>
+            {head.follow_at && <div className="text-sm text-muted">Hẹn gọi lại: {fmtDate(head.follow_at)}</div>}
+            <div className="flex flex-wrap gap-2">
+              <button className="btn-primary" onClick={() => setModal('close')} disabled={busy}>Chốt đơn</button>
+              <button className="btn-ghost text-sm" disabled={busy} onClick={() => act(() => setFollowAt(id, addDays(vnToday(), settings.follow_days || 3)))}>Đã gọi, hẹn lại sau {settings.follow_days || 3} ngày</button>
+              {isOwner && <button className="btn-danger text-sm" disabled={busy} onClick={() => { if (confirm(`Xóa báo giá ${head.code}?`)) act(async () => { await deleteOrder(id); router.replace('/don-noi-that'); }); }}>Xóa báo giá</button>}
+            </div>
+          </>
+        )}
+        {closed && (
           <ul className="divide-y divide-line text-sm">
-            {mats.map((m) => {
-              const p = productById.get(m.product_id);
-              return (
-                <li key={m.id} className="flex justify-between py-2">
-                  <span>{p?.name ?? '—'} <span className="text-muted">· {new Date(m.created_at).toLocaleDateString('vi-VN')}</span></span>
-                  <span>{formatQty(m.quantity)} {p?.unit}</span>
-                </li>
-              );
-            })}
+            {[...order.versions].reverse().map((v) => (
+              <li key={v.no} className="flex items-center justify-between py-1.5">
+                <span>Bản {v.no} · chốt {fmtDate(v.closedAt)}{v.no === order.versions.length ? ' (hiện hành)' : ''}</span>
+                <span className="flex items-center gap-3"><b>{formatVnd(v.total)}</b><Link className="text-brand underline" href={`/in/bao-gia/${id}?ban=${v.no}`}>In</Link></span>
+              </li>
+            ))}
           </ul>
         )}
       </section>
 
+      {/* ---------- tiền ---------- */}
+      {closed && (
+        <section className="card space-y-3" data-money>
+          <div className="grid grid-cols-3 gap-2 text-center">
+            <div><div className="text-xs text-muted">Giá trị đơn</div><div className="font-bold">{formatVnd(m.total)}</div></div>
+            <div><div className="text-xs text-muted">Đã thu</div><div className="font-bold text-ok">{formatVnd(m.paid)}</div></div>
+            <div><div className="text-xs text-muted">{m.over > 0 ? 'Trả thừa' : 'Còn nợ'}</div><div className={`font-bold ${m.due > 0 ? 'text-danger' : 'text-ok'}`} data-due>{formatVnd(m.over > 0 ? m.over : m.due)}</div></div>
+          </div>
+          <ul className="space-y-2">
+            {m.rows.map((r) => (
+              <li key={r.id} className="rounded-xl border border-line p-3" data-plan-row={r.n}>
+                <div className="flex items-start justify-between gap-2">
+                  <div>
+                    <div className="font-medium">{dotLabel(r)}{r.label && !r.one ? `: ${r.label}` : ''}</div>
+                    <div className="text-xs text-muted">{TRIGGERS[r.trigger]}{r.due ? ` · hạn ${fmtDate(r.due)}` : ''}</div>
+                  </div>
+                  <div className="text-right">
+                    <div className="font-semibold">{formatVnd(r.amount)}</div>
+                    <span className={`chip ${PLAN_STATE[r.state].cls}`} data-state={r.state}>{PLAN_STATE[r.state].label}</span>
+                  </div>
+                </div>
+                {r.paid > 0 && r.left > 0 && <div className="mt-1 text-sm text-muted">Đã thu {formatVnd(r.paid)}, còn {formatVnd(r.left)}</div>}
+                {r.left > 0 && (
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    <button className="btn-primary py-1.5 text-sm" onClick={() => startPay(r.left, payNote(r))}>Thu {formatVnd(r.left)}</button>
+                    <button className="btn-ghost py-1.5 text-sm" onClick={() => setModal({ due: r })}>Hẹn ngày / mốc</button>
+                  </div>
+                )}
+                {r.left > 0 && (r.state === 'due' || r.state === 'overdue') && <div className="mt-2"><VietQr settings={settings} code={head.code} n={r.one ? 0 : r.n} amount={r.left} size={140} /></div>}
+              </li>
+            ))}
+          </ul>
+          {!settings.bank_bin && <p className="text-xs text-muted">Nhập tài khoản ngân hàng ở Cài đặt để hiện mã VietQR cho khách quét.</p>}
+          <button className="btn-ghost w-full" onClick={() => startPay(m.next?.left ?? 0, '')}>+ Ghi thu tiền khác</button>
+
+          {order.payments.length > 0 && (
+            <div>
+              <h3 className="mb-1 text-sm font-semibold">Phiếu thu</h3>
+              <ul className="divide-y divide-line text-sm">
+                {order.payments.map((p) => (
+                  <li key={p.id} className="flex flex-wrap items-center justify-between gap-2 py-2" data-receipt={p.no}>
+                    <div>
+                      <div className="font-medium">{receiptNo(head.code, p.no)} · {formatVnd(p.amount)}</div>
+                      <div className="text-xs text-muted">{fmtDate(p.date)} · {PAY_METHOD[p.method]}{p.note ? ` · ${p.note}` : ''}{full.payMeta[p.id]?.created_by ? ` · ${names[full.payMeta[p.id].created_by!] ?? ''}` : ''}</div>
+                    </div>
+                    <div className="flex gap-2">
+                      <Link className="btn-ghost px-3 py-1 text-sm" href={`/in/phieu-thu/${id}?so=${p.no}`}>In phiếu</Link>
+                      {isOwner && <button className="btn-danger px-3 py-1 text-sm" disabled={busy} onClick={() => { if (confirm(`Xóa phiếu thu ${receiptNo(head.code, p.no)} (${formatVnd(p.amount)})?`)) act(() => deletePayment(p.id)); }}>Xóa</button>}
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </section>
+      )}
+
+      {/* ---------- tiến độ ---------- */}
+      {closed && (
+        <section className="card space-y-2">
+          <h2 className="font-semibold">Tiến độ</h2>
+          <div className="grid grid-cols-3 gap-2">
+            {(['closed', 'building', 'done'] as OrderStatus[]).map((s) => (
+              <button key={s} disabled={busy} onClick={() => act(() => setStatus(id, s))}
+                className={`btn py-2 text-sm ${head.status === s ? 'bg-brand text-white' : 'border border-line bg-surface text-muted'}`}>{STATUS[s].label}</button>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* ---------- vật tư ---------- */}
+      {closed && (
+        <section className="card space-y-2">
+          <div className="flex items-center justify-between">
+            <h2 className="font-semibold">Vật tư đã dùng</h2>
+            <button className="btn-ghost py-1 text-sm" onClick={() => setModal('material')}>+ Thêm vật tư</button>
+          </div>
+          {!full.materials.length ? <p className="text-sm text-muted">Chưa ghi vật tư.</p> : (
+            <ul className="divide-y divide-line text-sm">
+              {full.materials.map((x) => { const p = productById.get(x.product_id); return (
+                <li key={x.id} className="flex justify-between py-1.5"><span>{p?.name ?? '—'} <span className="text-muted">· {fmtDate(x.created_at.slice(0, 10))}</span></span><span>{fmtQty(x.quantity)} {p?.unit}</span></li>
+              ); })}
+            </ul>
+          )}
+        </section>
+      )}
+
+      {/* ---------- nhật ký ---------- */}
+      <section className="card">
+        <h2 className="mb-1 font-semibold">Nhật ký</h2>
+        <ul className="space-y-1 text-sm">
+          {full.log.map((l) => (
+            <li key={l.id}><span className="text-muted">{new Date(l.at).toLocaleString('vi-VN', { dateStyle: 'short', timeStyle: 'short' })}{l.by && names[l.by] ? ` · ${names[l.by]}` : ''}:</span> {l.text}</li>
+          ))}
+        </ul>
+      </section>
+
       {error && <p className="text-danger">{error}</p>}
-      {editing && <EditOrder order={order} onClose={() => setEditing(false)} onSaved={() => { setEditing(false); reload(); }} />}
-      {editPay && <EditPayment orderId={order.id} payment={editPay === 'new' ? null : editPay} onClose={() => setEditPay(null)} onSaved={() => { setEditPay(null); reload(); }} />}
-      {addingMat && <AddMaterial orderId={order.id} products={products.filter((p) => p.active)} onClose={() => setAddingMat(false)} onSaved={() => { setAddingMat(false); reload(); }} />}
+
+      {modal === 'close' && order.draft && <CloseForm total={draftTotal} plan={order.draft.plan} onClose={() => setModal(null)}
+        onSave={(a) => act(async () => { await closeOrder(id, a); setModal(null); })} />}
+      {modal === 'pay' && <PayForm preset={payPreset} code={head.code} settings={settings} due={m.due} onClose={() => setModal(null)}
+        onSave={(a) => act(async () => { const r = await addPayment(id, a); setModal(null); router.push(`/in/phieu-thu/${id}?so=${r.no}&moi=1`); })} />}
+      {modal === 'material' && <AddMaterial orderId={id} products={products.filter((p) => p.active)} onClose={() => setModal(null)} onSaved={() => { setModal(null); reload(); }} />}
+      {modal && typeof modal === 'object' && <DueForm row={modal.due} onClose={() => setModal(null)}
+        onSave={(due, reached) => act(async () => { await setPlanRow(id, modal.due.id, due, reached); setModal(null); })} />}
     </div>
   );
 }
 
-function EditOrder({ order, onClose, onSaved }: { order: Order; onClose: () => void; onSaved: () => void }) {
-  const [f, setF] = useState({ ...order, note: order.note ?? '' });
-  const [error, setError] = useState('');
-  async function save(e: React.FormEvent) {
-    e.preventDefault();
-    const { error } = await supabase().rpc('update_order', {
-      p_order_id: order.id, p_customer_name: f.customer_name, p_phone: f.phone, p_address: f.address,
-      p_total_value: f.total_value, p_note: f.note.trim() || null,
-    });
-    if (error) setError(errorText(error)); else onSaved();
-  }
+function CloseForm({ total, plan, onClose, onSave }: { total: number; plan: OrderFull['order']['plan']; onClose: () => void; onSave: (a: { date: string; deposit: number; method: 'transfer' | 'cash'; sign: null }) => void }) {
+  const firstPct = plan.length > 1 ? (plan[0].fixed ? plan[0].amt ?? 0 : Math.round((total * plan[0].pct) / 100)) : 0;
+  const [date, setDate] = useState(vnToday());
+  const [deposit, setDeposit] = useState(firstPct);
+  const [method, setMethod] = useState<'transfer' | 'cash'>('transfer');
+  const over = planOver(plan, total);
   return (
-    <Modal title="Sửa đơn" onClose={onClose}>
-      <form onSubmit={save} className="space-y-3">
-        <div><label className="label">Tên khách</label><input className="input" required value={f.customer_name} onChange={(e) => setF({ ...f, customer_name: e.target.value })} /></div>
-        <div><label className="label">Điện thoại</label><input className="input" value={f.phone} onChange={(e) => setF({ ...f, phone: e.target.value })} /></div>
-        <div><label className="label">Địa chỉ</label><input className="input" value={f.address} onChange={(e) => setF({ ...f, address: e.target.value })} /></div>
-        <div><label className="label">Giá trị đơn</label><MoneyInput value={f.total_value} onChange={(n) => setF({ ...f, total_value: n })} /></div>
-        <div><label className="label">Ghi chú</label><textarea className="input" rows={2} value={f.note} onChange={(e) => setF({ ...f, note: e.target.value })} /></div>
-        {error && <p className="text-sm text-danger">{error}</p>}
-        <button className="btn-primary w-full">Lưu</button>
+    <Modal title="Chốt đơn" onClose={onClose}>
+      <form className="space-y-3" onSubmit={(e) => { e.preventDefault(); onSave({ date, deposit, method, sign: null }); }}>
+        <p className="text-sm">Sau khi chốt, báo giá <b>{formatVnd(total)}</b> được khóa lại. Muốn đổi thì tạo bản sửa.</p>
+        {over && <p className="text-sm text-danger">{planWarnText(plan, total)} Sửa lịch thanh toán trước khi chốt.</p>}
+        <div><label className="label" htmlFor="c-date">Ngày chốt</label><input id="c-date" type="date" className="input" value={date} onChange={(e) => setDate(e.target.value)} /></div>
+        <div><label className="label" htmlFor="c-dep">Tiền cọc nhận ngay (để 0 nếu chưa nhận)</label><MoneyInput id="c-dep" value={deposit} onChange={setDeposit} /></div>
+        {deposit > 0 && <MethodPick method={method} onChange={setMethod} />}
+        <button className="btn-primary w-full" disabled={over}>Chốt đơn</button>
       </form>
     </Modal>
   );
 }
 
-function EditPayment({ orderId, payment, onClose, onSaved }: { orderId: string; payment: Payment | null; onClose: () => void; onSaved: () => void }) {
-  const [label, setLabel] = useState(payment?.label ?? '');
-  const [amount, setAmount] = useState(payment?.amount ?? 0);
-  const [error, setError] = useState('');
-  async function save(e: React.FormEvent) {
-    e.preventDefault();
-    if (amount <= 0) { setError('Số tiền phải lớn hơn 0.'); return; }
-    const { error } = await supabase().rpc('save_payment', { p_id: payment?.id ?? null, p_order_id: orderId, p_label: label, p_amount: amount });
-    if (error) setError(errorText(error)); else onSaved();
-  }
-  async function remove() {
-    if (!payment || !confirm(`Xóa đợt "${payment.label}"?`)) return;
-    const { error } = await supabase().rpc('delete_payment', { p_id: payment.id });
-    if (error) setError(errorText(error)); else onSaved();
-  }
+function MethodPick({ method, onChange }: { method: 'transfer' | 'cash'; onChange: (m: 'transfer' | 'cash') => void }) {
   return (
-    <Modal title={payment ? 'Sửa đợt thanh toán' : 'Thêm đợt thanh toán'} onClose={onClose}>
-      <form onSubmit={save} className="space-y-3">
-        <div><label className="label">Tên đợt</label><input className="input" required value={label} onChange={(e) => setLabel(e.target.value)} /></div>
-        <div><label className="label">Số tiền</label><MoneyInput value={amount} onChange={setAmount} /></div>
-        {error && <p className="text-sm text-danger">{error}</p>}
-        <button className="btn-primary w-full">Lưu</button>
-        {payment && <button type="button" className="btn-danger w-full" onClick={remove}>Xóa đợt này</button>}
+    <div className="grid grid-cols-2 gap-2">
+      {(['transfer', 'cash'] as const).map((k) => <button type="button" key={k} className={method === k ? 'btn-primary' : 'btn-ghost'} onClick={() => onChange(k)}>{PAY_METHOD[k]}</button>)}
+    </div>
+  );
+}
+
+function PayForm({ preset, code, settings, due, onClose, onSave }: { preset: { amount: number; note: string } | null; code: string; settings: Settings; due: number; onClose: () => void; onSave: (a: { amount: number; date: string; method: 'transfer' | 'cash'; note: string }) => void }) {
+  const [amount, setAmount] = useState(preset?.amount ?? 0);
+  const [date, setDate] = useState(vnToday());
+  const [method, setMethod] = useState<'transfer' | 'cash'>('transfer');
+  const [note, setNote] = useState(preset?.note ?? '');
+  const [busy, setBusy] = useState(false);
+  return (
+    <Modal title="Thu tiền" onClose={onClose}>
+      <form className="space-y-3" onSubmit={(e) => { e.preventDefault(); if (amount > 0 && !busy) { setBusy(true); onSave({ amount, date, method, note }); } }}>
+        <div><label className="label" htmlFor="p-amt">Số tiền</label><MoneyInput id="p-amt" value={amount} onChange={setAmount} /></div>
+        {amount > due && <p className="text-sm text-amber-800">Số này lớn hơn còn nợ ({formatVnd(due)}). Phần dư sẽ hiện là &quot;trả thừa&quot;.</p>}
+        <div><label className="label" htmlFor="p-date">Ngày thu</label><input id="p-date" type="date" className="input" value={date} onChange={(e) => setDate(e.target.value)} /></div>
+        <MethodPick method={method} onChange={setMethod} />
+        {method === 'transfer' && amount > 0 && <VietQr settings={settings} code={code} n={0} amount={amount} size={120} />}
+        <div><label className="label" htmlFor="p-note">Ghi chú</label><input id="p-note" className="input" value={note} onChange={(e) => setNote(e.target.value)} /></div>
+        <button className="btn-primary w-full" disabled={!(amount > 0) || busy}>Ghi phiếu thu</button>
       </form>
     </Modal>
   );
 }
 
-function AddMaterial({ orderId, products, onClose, onSaved }: { orderId: string; products: Product[]; onClose: () => void; onSaved: () => void }) {
-  const [query, setQuery] = useState('');
-  const [pick, setPick] = useState<Product | null>(null);
-  const [qty, setQty] = useState('');
-  const [error, setError] = useState('');
-  const shown = products
-    .filter((p) => matches(p, query))
-    .sort((a, b) => (a.kind === b.kind ? 0 : a.kind === 'material' ? -1 : 1))
-    .slice(0, 30);
-
-  async function save(e: React.FormEvent) {
-    e.preventDefault();
-    const q = Number(qty.replace(',', '.'));
-    if (!pick || !(q > 0)) { setError('Chọn vật tư và nhập số lượng lớn hơn 0.'); return; }
-    const { error } = await supabase().rpc('add_order_material', { p_order_id: orderId, p_product_id: pick.id, p_quantity: q });
-    if (error) setError(errorText(error)); else onSaved();
-  }
+function DueForm({ row, onClose, onSave }: { row: MoneyRow; onClose: () => void; onSave: (due: string | null, reached: boolean) => void }) {
+  const [due, setDue] = useState(row.due ?? '');
+  const [reached, setReached] = useState(!!row.reached);
   return (
-    <Modal title="Thêm vật tư đã dùng" onClose={onClose}>
-      <form onSubmit={save} className="space-y-3">
-        {!pick ? (
-          <>
-            <input className="input" autoFocus placeholder="Tìm vật tư…" value={query} onChange={(e) => setQuery(e.target.value)} />
-            <ul className="max-h-72 divide-y divide-line overflow-y-auto">
-              {shown.map((p) => (
-                <li key={p.id}>
-                  <button type="button" className="flex w-full justify-between py-2 text-left" onClick={() => setPick(p)}>
-                    <span>{p.name} <span className="text-sm text-muted">· {p.code}</span></span>
-                    <span className="text-sm text-muted">tồn {formatQty(p.stock)} {p.unit}</span>
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </>
-        ) : (
-          <>
-            <div className="flex items-center justify-between rounded-xl bg-brand-soft px-3 py-2">
-              <span>{pick.name} · tồn {formatQty(pick.stock)} {pick.unit}</span>
-              <button type="button" className="text-sm text-brand" onClick={() => setPick(null)}>Đổi</button>
-            </div>
-            <div><label className="label">Số lượng ({pick.unit})</label>
-              <input className="input" autoFocus inputMode="decimal" value={qty} onChange={(e) => setQty(e.target.value)} /></div>
-            <button className="btn-primary w-full">Ghi xuất kho cho đơn</button>
-          </>
-        )}
-        {error && <p className="text-sm text-danger">{error}</p>}
+    <Modal title={`${dotLabel(row)}: hẹn ngày / mốc`} onClose={onClose}>
+      <form className="space-y-3" onSubmit={(e) => { e.preventDefault(); onSave(due || null, reached); }}>
+        <div><label className="label" htmlFor="d-due">Hạn trả (để trống nếu chưa hẹn)</label><input id="d-due" type="date" className="input" value={due} onChange={(e) => setDue(e.target.value)} /></div>
+        {!row.one && <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={reached} onChange={(e) => setReached(e.target.checked)} /> Đã tới mốc &quot;{TRIGGERS[row.trigger]}&quot; (tính là đến hạn)</label>}
+        <button className="btn-primary w-full">Lưu</button>
       </form>
     </Modal>
   );
