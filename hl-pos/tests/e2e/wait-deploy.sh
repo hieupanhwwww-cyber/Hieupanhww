@@ -1,8 +1,9 @@
 #!/bin/bash
-# Đợi Netlify đưa bản mới lên: tests/e2e/wait-deploy.sh <đường dẫn> <chuỗi phải có trong HTML>
-URL="${APP_URL:-https://profound-taiyaki-e22af3.netlify.app}$1"
-for i in $(seq 1 60); do
-  if curl -sS "$URL" | grep -q -- "$2"; then echo "bản mới đã lên"; exit 0; fi
+# Đợi Netlify chạy đúng commit đang ở HEAD (trang có thẻ meta hl-build = 7 ký tự đầu của commit).
+URL="${APP_URL:-https://profound-taiyaki-e22af3.netlify.app}/login"
+SHA=$(git rev-parse --short=7 HEAD)
+for i in $(seq 1 50); do
+  if curl -sS "$URL" | grep -q "hl-build\" content=\"$SHA\""; then echo "bản $SHA đã lên"; exit 0; fi
   sleep 10
 done
-echo "QUÁ 10 PHÚT chưa thấy bản mới"; exit 1
+echo "QUÁ 8 PHÚT chưa thấy bản $SHA"; exit 1
