@@ -4,12 +4,13 @@ import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { supabase, errorText } from '@/lib/supabase/client';
 import { useProfile } from '@/lib/useProfile';
-import { getOrder, closeOrder, addPayment, deletePayment, setStatus, setPlanRow, setFollowAt, deleteOrder, type OrderFull } from '@/lib/ordersApi';
+import { getOrder, closeOrder, addPayment, deletePayment, setStatus, setPlanRow, setFollowAt, deleteOrder, reviseOrder, discardRevision, type OrderFull } from '@/lib/ordersApi';
+import { ChangesSection, HandoverSection, NotesSection, PhotosSection, SignBlock, signOf } from '@/components/orders/AfterClose';
 import { loadSettings, type Settings } from '@/lib/settings';
 import { loadProducts, type Product } from '@/lib/products';
 import {
   STATUS, PLAN_STATE, PAY_METHOD, TRIGGERS, orderMoney, quoteTotals, planOver, planWarnText, dotLabel, payNote, receiptNo, fmtDate, fmtQty, vnToday, addDays,
-  type OrderStatus, type MoneyRow,
+  type OrderStatus, type MoneyRow, type SignRecord,
 } from '@/lib/orderMoney';
 import { formatVnd } from '@/lib/money';
 import { Modal } from '@/components/Modal';
@@ -78,6 +79,7 @@ export default function OrderPage() {
           <h2 className="font-semibold">Báo giá</h2>
           <div className="flex flex-wrap gap-2">
             {order.draft && <Link className="btn-ghost py-1.5 text-sm" href={`/don-noi-that/${id}/sua`}>{closed ? 'Tiếp tục sửa bản mới' : 'Sửa báo giá'}</Link>}
+            {closed && !order.draft && <button className="btn-ghost py-1.5 text-sm" disabled={busy} onClick={() => act(async () => { await reviseOrder(id); router.push(`/don-noi-that/${id}/sua`); })}>Sửa báo giá (tạo bản {order.versions.length + 1})</button>}
             {order.draft && <Link className="btn-ghost py-1.5 text-sm" href={`/in/bao-gia/${id}?ban=nhap`}>Xem / In {closed ? 'bản đang sửa' : ''}</Link>}
             {closed && <Link className="btn-ghost py-1.5 text-sm" href={`/in/bao-gia/${id}`}>Xem / In bản chốt</Link>}
           </div>
@@ -92,6 +94,15 @@ export default function OrderPage() {
               {isOwner && <button className="btn-danger text-sm" disabled={busy} onClick={() => { if (confirm(`Xóa báo giá ${head.code}?`)) act(async () => { await deleteOrder(id); router.replace('/don-noi-that'); }); }}>Xóa báo giá</button>}
             </div>
           </>
+        )}
+        {closed && order.draft && (
+          <div className="rounded-xl border border-amber-300 bg-amber-50 p-3 text-sm">
+            <div>Đang soạn <b>bản {order.versions.length + 1}</b>: {formatVnd(draftTotal)} (bản hiện hành {formatVnd(order.versions.at(-1)?.total ?? 0)}). Chưa chốt thì tiền của đơn chưa đổi.</div>
+            <div className="mt-2 flex flex-wrap gap-2">
+              <button className="btn-primary py-1.5 text-sm" disabled={busy} onClick={() => setModal('close')}>Chốt bản {order.versions.length + 1}</button>
+              <button className="btn-ghost py-1.5 text-sm" disabled={busy} onClick={() => { if (confirm('Bỏ bản sửa đang soạn?')) act(() => discardRevision(id)); }}>Bỏ bản sửa</button>
+            </div>
+          </div>
         )}
         {closed && (
           <ul className="divide-y divide-line text-sm">
@@ -192,6 +203,11 @@ export default function OrderPage() {
         </section>
       )}
 
+      {closed && <ChangesSection full={full} names={names} isOwner={isOwner} myId={me.id} act={act} />}
+      {closed && <HandoverSection full={full} names={names} isOwner={isOwner} myId={me.id} act={act} settings={settings} />}
+      <NotesSection full={full} names={names} isOwner={isOwner} myId={me.id} act={act} />
+      <PhotosSection full={full} names={names} isOwner={isOwner} myId={me.id} act={act} />
+
       {/* ---------- nhật ký ---------- */}
       <section className="card">
         <h2 className="mb-1 font-semibold">Nhật ký</h2>
@@ -204,7 +220,7 @@ export default function OrderPage() {
 
       {error && <p className="text-danger">{error}</p>}
 
-      {modal === 'close' && order.draft && <CloseForm total={draftTotal} plan={order.draft.plan} onClose={() => setModal(null)}
+      {modal === 'close' && order.draft && <CloseForm total={draftTotal} plan={order.draft.plan} revision={closed ? order.versions.length + 1 : 0} customer={order.draft.customer.name} code={head.code} onClose={() => setModal(null)}
         onSave={(a) => act(async () => { await closeOrder(id, a); setModal(null); })} />}
       {modal === 'pay' && <PayForm preset={payPreset} code={head.code} settings={settings} due={m.due} onClose={() => setModal(null)}
         onSave={(a) => act(async () => { const r = await addPayment(id, a); setModal(null); router.push(`/in/phieu-thu/${id}?so=${r.no}&moi=1`); })} />}
@@ -215,21 +231,24 @@ export default function OrderPage() {
   );
 }
 
-function CloseForm({ total, plan, onClose, onSave }: { total: number; plan: OrderFull['order']['plan']; onClose: () => void; onSave: (a: { date: string; deposit: number; method: 'transfer' | 'cash'; sign: null }) => void }) {
-  const firstPct = plan.length > 1 ? (plan[0].fixed ? plan[0].amt ?? 0 : Math.round((total * plan[0].pct) / 100)) : 0;
+function CloseForm({ total, plan, revision, customer, code, onClose, onSave }: { total: number; plan: OrderFull['order']['plan']; revision: number; customer: string; code: string; onClose: () => void; onSave: (a: { date: string; deposit: number; method: 'transfer' | 'cash'; sign: SignRecord | null }) => void }) {
+  const firstPct = !revision && plan.length > 1 ? (plan[0].fixed ? plan[0].amt ?? 0 : Math.round((total * plan[0].pct) / 100)) : 0;
   const [date, setDate] = useState(vnToday());
   const [deposit, setDeposit] = useState(firstPct);
   const [method, setMethod] = useState<'transfer' | 'cash'>('transfer');
+  const [s, setS] = useState({ img: null as string | null, name: customer });
+  const [busy, setBusy] = useState(false);
   const over = planOver(plan, total);
   return (
-    <Modal title="Chốt đơn" onClose={onClose}>
-      <form className="space-y-3" onSubmit={(e) => { e.preventDefault(); onSave({ date, deposit, method, sign: null }); }}>
-        <p className="text-sm">Sau khi chốt, báo giá <b>{formatVnd(total)}</b> được khóa lại. Muốn đổi thì tạo bản sửa.</p>
+    <Modal title={revision ? `Chốt bản ${revision}` : 'Chốt đơn'} onClose={onClose}>
+      <form className="space-y-3" onSubmit={async (e) => { e.preventDefault(); if (busy) return; setBusy(true); onSave({ date, deposit: revision ? 0 : deposit, method, sign: await signOf(s, { code, no: revision || 1, total, date }) }); }}>
+        <p className="text-sm">Sau khi chốt, báo giá <b>{formatVnd(total)}</b> được khóa lại{revision ? ' và thay bản trước. Tiền đã thu giữ nguyên.' : '. Muốn đổi thì tạo bản sửa.'}</p>
         {over && <p className="text-sm text-danger">{planWarnText(plan, total)} Sửa lịch thanh toán trước khi chốt.</p>}
         <div><label className="label" htmlFor="c-date">Ngày chốt</label><input id="c-date" type="date" className="input" value={date} onChange={(e) => setDate(e.target.value)} /></div>
-        <div><label className="label" htmlFor="c-dep">Tiền cọc nhận ngay (để 0 nếu chưa nhận)</label><MoneyInput id="c-dep" value={deposit} onChange={setDeposit} /></div>
-        {deposit > 0 && <MethodPick method={method} onChange={setMethod} />}
-        <button className="btn-primary w-full" disabled={over}>Chốt đơn</button>
+        {!revision && <div><label className="label" htmlFor="c-dep">Tiền cọc nhận ngay (để 0 nếu chưa nhận)</label><MoneyInput id="c-dep" value={deposit} onChange={setDeposit} /></div>}
+        {!revision && deposit > 0 && <MethodPick method={method} onChange={setMethod} />}
+        <SignBlock defaultName={customer} onChange={setS} />
+        <button className="btn-primary w-full" disabled={over || busy}>{revision ? `Chốt bản ${revision}` : 'Chốt đơn'}</button>
       </form>
     </Modal>
   );

@@ -9,7 +9,11 @@ export type OrderHead = {
 };
 export type LogEntry = { id: number; at: string; by: string | null; text: string };
 export type Material = { id: string; product_id: string; quantity: number; created_at: string };
-export type OrderFull = { head: OrderHead; order: Order; log: LogEntry[]; materials: Material[]; payMeta: Record<string, { created_by: string | null; created_at: string }> };
+export type Note = { id: string; text: string; created_by: string | null; created_at: string };
+export type Attachment = { id: string; path: string; name: string; stage: string; created_by: string | null; created_at: string };
+export type ChangeMeta = { created_by: string | null; created_at: string };
+export type OrderFull = { head: OrderHead; order: Order; log: LogEntry[]; materials: Material[]; notes: Note[]; attachments: Attachment[];
+  payMeta: Record<string, { created_by: string | null; created_at: string }>; changeMeta: Record<string, ChangeMeta> };
 
 const HEAD_COLS = 'id, code, status, customer_name, customer_phone, project, quote_date, total, closed_at, follow_at, rev, created_at, plan, pay_due, handover';
 const n = Number;
@@ -30,9 +34,9 @@ export async function listOrders(): Promise<{ head: OrderHead; order: Order }[]>
     sb.from('orders').select(HEAD_COLS).order('created_at', { ascending: false }),
     sb.from('order_payments').select('id, order_id, no, amount, date, method, note, deposit'),
     sb.from('order_quotes').select('order_id, quote').is('version_no', null),
-    sb.from('order_changes').select('id, order_id, sign, title, amount, reason, note, status, confirmed_at').then((r) => (r.error ? { data: [], error: null } : r)),
+    sb.from('order_changes').select('id, order_id, sign, title, amount, reason, note, status, confirmed_at'),
   ]);
-  const err = o.error ?? p.error ?? d.error;
+  const err = o.error ?? p.error ?? d.error ?? c.error;
   if (err) throw err;
   const pays = new Map<string, Payment[]>(), drafts = new Map<string, Quote>(), chgs = new Map<string, Change[]>();
   for (const r of p.data ?? []) pays.set(r.order_id, [...(pays.get(r.order_id) ?? []), toPayment(r)]);
@@ -50,15 +54,17 @@ export async function listOrders(): Promise<{ head: OrderHead; order: Order }[]>
 
 export async function getOrder(id: string): Promise<OrderFull> {
   const sb = supabase();
-  const [o, q, p, l, m, c] = await Promise.all([
+  const [o, q, p, l, m, c, nt, at] = await Promise.all([
     sb.from('orders').select(HEAD_COLS).eq('id', id).maybeSingle(),
     sb.from('order_quotes').select('version_no, quote, sub, disc, total, closed_at, sign').eq('order_id', id).order('version_no', { nullsFirst: false }),
     sb.from('order_payments').select('id, no, amount, date, method, note, deposit, created_by, created_at').eq('order_id', id).order('no'),
     sb.from('order_log').select('id, at, by, text').eq('order_id', id).order('id', { ascending: false }).limit(200),
     sb.from('stock_movements').select('id, product_id, quantity, created_at').eq('order_id', id).order('created_at'),
-    sb.from('order_changes').select('id, sign, title, amount, reason, note, status, confirmed_at, sign_rec').eq('order_id', id).order('created_at').then((r) => (r.error ? { data: [], error: null } : r)),
+    sb.from('order_changes').select('id, sign, title, amount, reason, note, status, confirmed_at, sign_rec, created_by, created_at').eq('order_id', id).order('created_at'),
+    sb.from('order_notes').select('id, text, created_by, created_at').eq('order_id', id).order('created_at', { ascending: false }),
+    sb.from('order_attachments').select('id, path, name, stage, created_by, created_at').eq('order_id', id).order('created_at', { ascending: false }),
   ]);
-  const err = o.error ?? q.error ?? p.error ?? l.error ?? m.error;
+  const err = o.error ?? q.error ?? p.error ?? l.error ?? m.error ?? c.error ?? nt.error ?? at.error;
   if (err) throw err;
   if (!o.data) throw new Error('Không tìm thấy đơn.');
   const r = o.data as unknown as HeadRow;
@@ -72,6 +78,9 @@ export async function getOrder(id: string): Promise<OrderFull> {
     log: (l.data ?? []) as LogEntry[],
     materials: (m.data ?? []).map((x) => ({ ...x, quantity: n(x.quantity) })) as Material[],
     payMeta: Object.fromEntries((p.data ?? []).map((x) => [x.id, { created_by: x.created_by, created_at: x.created_at }])),
+    changeMeta: Object.fromEntries(((c.data ?? []) as Record<string, string>[]).map((x) => [x.id, { created_by: x.created_by, created_at: x.created_at }])),
+    notes: (nt.data ?? []) as Note[],
+    attachments: (at.data ?? []) as Attachment[],
   };
 }
 
@@ -89,3 +98,42 @@ export const setFollowAt = (orderId: string, date: string | null) => rpc<void>('
 export const deleteOrder = (orderId: string) => rpc<void>('delete_order', { p_order_id: orderId });
 export const addMaterial = (orderId: string, productId: string, quantity: number) =>
   rpc<string>('add_order_material', { p_order_id: orderId, p_product_id: productId, p_quantity: quantity });
+
+export const reviseOrder = (orderId: string) => rpc<{ rev: number }>('revise_order', { p_order_id: orderId });
+export const discardRevision = (orderId: string) => rpc<void>('discard_revision', { p_order_id: orderId });
+export const addChange = (orderId: string, a: { sign: 1 | -1; title: string; amount: number; reason: string; note: string }) =>
+  rpc<string>('add_change', { p_order_id: orderId, p_sign: a.sign, p_title: a.title, p_amount: a.amount, p_reason: a.reason, p_note: a.note });
+export const confirmChange = (id: string, date: string, sign: SignRecord | null) => rpc<void>('confirm_change', { p_id: id, p_date: date, p_sign: sign });
+export const cancelChange = (id: string) => rpc<void>('cancel_change', { p_id: id });
+export const setHandover = (orderId: string, a: { date: string; months: number; note: string; sign: SignRecord | null }) =>
+  rpc<void>('set_handover', { p_order_id: orderId, p_date: a.date, p_months: a.months, p_note: a.note, p_sign: a.sign });
+export const addNote = (orderId: string, text: string) => rpc<string>('add_note', { p_order_id: orderId, p_text: text });
+export const deleteNote = (id: string) => rpc<void>('delete_note', { p_id: id });
+
+export const PHOTO_BUCKET = 'don-hang';
+export const STAGES: Record<string, string> = { survey: 'Khảo sát', factory: 'Xuất xưởng', install: 'Lắp đặt', handover: 'Nghiệm thu', warranty: 'Bảo hành', other: 'Khác' };
+/** Thu nhỏ ảnh (cạnh dài ≤ 2000 px, JPEG 0,82) rồi tải lên Storage và ghi vào đơn. */
+export async function uploadPhoto(orderId: string, file: File, stage: string): Promise<void> {
+  const img = await createImageBitmap(file);
+  const k = Math.min(1, 2000 / Math.max(img.width, img.height));
+  const c = document.createElement('canvas');
+  c.width = Math.round(img.width * k); c.height = Math.round(img.height * k);
+  c.getContext('2d')!.drawImage(img, 0, 0, c.width, c.height);
+  const blob: Blob = await new Promise((res, rej) => c.toBlob((b) => (b ? res(b) : rej(new Error('Không đọc được ảnh'))), 'image/jpeg', 0.82));
+  const path = `${orderId}/${crypto.randomUUID()}.jpg`;
+  const sb = supabase();
+  const up = await sb.storage.from(PHOTO_BUCKET).upload(path, blob, { contentType: 'image/jpeg' });
+  if (up.error) throw up.error;
+  try { await rpc<string>('add_attachment', { p_order_id: orderId, p_path: path, p_name: file.name, p_stage: stage }); }
+  catch (e) { await sb.storage.from(PHOTO_BUCKET).remove([path]); throw e; }
+}
+export async function deletePhoto(id: string): Promise<void> {
+  const path = await rpc<string>('delete_attachment', { p_id: id });
+  await supabase().storage.from(PHOTO_BUCKET).remove([path]);
+}
+export async function photoUrls(paths: string[]): Promise<Record<string, string>> {
+  if (!paths.length) return {};
+  const { data, error } = await supabase().storage.from(PHOTO_BUCKET).createSignedUrls(paths, 3600);
+  if (error) throw error;
+  return Object.fromEntries((data ?? []).filter((x) => x.signedUrl && x.path).map((x) => [x.path as string, x.signedUrl as string]));
+}
