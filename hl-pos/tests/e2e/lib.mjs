@@ -93,3 +93,36 @@ export function pdfInfo(buf) {
   const mm = (pt) => Math.round((Number(pt) / 72) * 25.4);
   return { pages, w: m ? mm(m[3]) : 0, h: m ? mm(m[4]) : 0 };
 }
+
+/** Gọi hàm RPC bằng phiên của một tài khoản (để dựng dữ liệu nhanh cho kịch bản). */
+export async function rpcAs(user, fn, args) {
+  user._token ??= (await (await fetch(`${SB}/auth/v1/token?grant_type=password`, { method: 'POST', headers: { apikey: PUBLISHABLE, 'content-type': 'application/json' }, body: JSON.stringify({ email: user.email, password: user.password }) })).json()).access_token;
+  const r = await fetch(`${SB}/rest/v1/rpc/${fn}`, { method: 'POST', headers: { apikey: PUBLISHABLE, Authorization: `Bearer ${user._token}`, 'content-type': 'application/json' }, body: JSON.stringify(args) });
+  const body = await r.json().catch(() => null);
+  if (r.status >= 300) throw new Error(`${fn}: ${JSON.stringify(body)}`);
+  return body;
+}
+/** Ký vào ô ký tên (canvas) trong hộp thoại đang mở. */
+export async function signOn(page) {
+  const c = page.locator('canvas[aria-label="Ô ký tên"]');
+  await c.evaluate((el) => el.scrollIntoView({ block: 'center' }));
+  const b = await c.boundingBox();
+  await page.mouse.move(b.x + 20, b.y + b.height * 0.6); await page.mouse.down();
+  for (let i = 1; i <= 12; i++) await page.mouse.move(b.x + 20 + i * 18, b.y + b.height * (0.6 - 0.3 * Math.sin(i / 2)));
+  await page.mouse.up();
+}
+/** Xóa một đơn thử và mọi thứ gắn với nó (kể cả ảnh trong Storage). */
+export async function purgeOrdersByPhone(phone) {
+  const files = await sql(`select name from storage.objects where bucket_id = 'don-hang' and split_part(name, '/', 1) in (select id::text from orders where customer_phone = '${phone}')`);
+  if (files.length) {
+    const k = await key();
+    await fetch(`${SB}/storage/v1/object/don-hang`, { method: 'DELETE', headers: { apikey: k, Authorization: `Bearer ${k}`, 'content-type': 'application/json' }, body: JSON.stringify({ prefixes: files.map((f) => f.name) }) });
+  }
+  await sql(`delete from order_changes where order_id in (select id from orders where customer_phone = '${phone}');
+    delete from order_payments where order_id in (select id from orders where customer_phone = '${phone}');
+    update stock_movements set order_id = null where order_id in (select id from orders where customer_phone = '${phone}');
+    delete from orders where customer_phone = '${phone}';
+    delete from customers where phone = '${phone}';`);
+  const left = await sql(`select count(*)::int as n from orders where customer_phone = '${phone}'`);
+  console.log(left[0].n === 0 ? '(đã xóa đơn thử)' : '!!! CÒN SÓT ĐƠN THỬ');
+}
