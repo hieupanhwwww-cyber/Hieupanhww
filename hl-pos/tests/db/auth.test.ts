@@ -73,4 +73,11 @@ describe('tài khoản và vai trò', () => {
     await expect(asUser(u.id, (q) => q(`select create_sale($1::jsonb, 0, 'cash')`, [JSON.stringify([{ product_id: p.id, quantity: 1 }])]))).rejects.toThrow();
     await expect(asUser(u.id, (q) => q(`select create_order('X', '', '', 1, '[{"label":"a","amount":1}]')`))).rejects.toThrow();
   });
+
+  it('cờ do chủ tạo được ghi sau khi tạo tài khoản thì vẫn có hồ sơ nhân viên', async () => {
+    const [u] = await sql(`insert into auth.users (email, raw_user_meta_data) values ('b@x.vn', '{"full_name":"Minh"}') returning id`);
+    await sql(`update auth.users set raw_app_meta_data = raw_app_meta_data || '{"hl_staff":true}' where id = $1`, [u.id]);
+    await sql(`update auth.users set email = 'b2@x.vn' where id = $1`, [u.id]);
+    expect(await sql('select role, full_name from profiles where id = $1', [u.id])).toEqual([{ role: 'staff', full_name: 'Minh' }]);
+  });
 });

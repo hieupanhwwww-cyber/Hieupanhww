@@ -14,12 +14,16 @@ begin
   -- Người lạ tự đăng ký qua API sẽ không có hồ sơ => không có quyền gì.
   if coalesce((new.raw_app_meta_data ->> 'hl_staff')::boolean, false) then
     insert into public.profiles (id, full_name)
-    values (new.id, coalesce(new.raw_user_meta_data ->> 'full_name', ''));
+    values (new.id, coalesce(new.raw_user_meta_data ->> 'full_name', ''))
+    on conflict (id) do nothing;
   end if;
   return new;
 end $$;
 
 create trigger on_auth_user_created after insert on auth.users
+  for each row execute function public.handle_new_user();
+-- Phòng khi Supabase ghi app_metadata sau bước tạo tài khoản
+create trigger on_auth_user_flagged after update of raw_app_meta_data on auth.users
   for each row execute function public.handle_new_user();
 
 create function public.is_member() returns boolean
