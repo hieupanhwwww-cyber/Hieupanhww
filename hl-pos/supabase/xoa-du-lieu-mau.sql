@@ -2,7 +2,7 @@
 -- Tài khoản và thông tin cửa hàng được giữ lại.
 begin;
 truncate public.sale_item_costs, public.sale_items, public.stock_movements, public.sales,
-         public.order_log, public.order_payments, public.order_quotes, public.orders, public.customers,
+         public.order_log, public.order_changes, public.order_notes, public.order_attachments, public.order_payments, public.order_quotes, public.orders, public.customers,
          public.product_costs, public.products;
 alter sequence public.sale_code_seq restart;
 commit;
