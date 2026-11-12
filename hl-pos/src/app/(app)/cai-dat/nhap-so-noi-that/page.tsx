@@ -33,13 +33,14 @@ export default function ImportPage() {
   async function run() {
     if (!payload) return;
     setBusy(true); setError('');
+    let r: Result | null = null;
     try {
       const { data, error } = await supabase().rpc('import_snt', { p: payload });
       if (error) throw error;
-      const r = data as Result;
-      setResult(r);
+      r = data as Result;
+      const res = r;
       // đối chiếu từng đơn: số máy chủ so với số tính lại từ file
-      const codeOf = new Map(r.renamed.map((x) => [x.from, x.to]));
+      const codeOf = new Map(res.renamed.map((x) => [x.from, x.to]));
       const codes = payload.orders.map((o) => codeOf.get(o.code) ?? o.code);
       const sb = supabase();
       const { data: os, error: e1 } = await sb.from('orders').select('id, code').in('code', codes);
@@ -49,7 +50,8 @@ export default function ImportPage() {
       const byId = new Map((ts ?? []).map((t) => [t.order_id, { total: Number(t.total), paid: Number(t.paid), due: Number(t.due) }]));
       const app = new Map((os ?? []).map((x) => [x.code, byId.get(x.id) ?? null]));
       setChecks(payload.orders.map((o) => { const c = codeOf.get(o.code) ?? o.code; return { code: c, customer: (o.versions.at(-1)?.quote ?? o.draft)?.customer.name ?? '', exp: expectedTotals(o), app: app.get(c) ?? null }; }));
-    } catch (e) { setError(errorText(e)); }
+      setResult(res);
+    } catch (e) { setError(errorText(e)); if (r) setResult(r); }
     setBusy(false);
   }
 
