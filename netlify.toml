@@ -6,3 +6,7 @@
 
 [build.environment]
   NODE_VERSION = "22"
+
+# Bộ chuyển đổi Next.js của Netlify (tạo hàm máy chủ cho trang và API)
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
